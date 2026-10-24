@@ -1,0 +1,79 @@
+<div class="oxford-app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="crest"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div class="brand-info">
+        <h2>OXFORD</h2>
+        <span>International School</span>
+      </div>
+    </div>
+    <div class="location-badge">
+      <i class="fa-solid fa-location-dot"></i> Harpur, Raxaul, Bihar
+    </div>
+    <nav class="nav">
+      <button [class.active]="activeTab === 'dashboard'" (click)="switchTab('dashboard')">
+        <i class="fa-solid fa-chart-pie"></i> Executive Dashboard
+      </button>
+      <button [class.active]="activeTab === 'admissions'" (click)="switchTab('admissions')">
+        <i class="fa-solid fa-user-plus"></i> Admissions
+      </button>
+      <button [class.active]="activeTab === 'students'" (click)="switchTab('students')">
+        <i class="fa-solid fa-users"></i> Students
+      </button>
+      <button [class.active]="activeTab === 'employees'" (click)="switchTab('employees')">
+        <i class="fa-solid fa-chalkboard-user"></i> Staff (LSP)
+      </button>
+      <button [class.active]="activeTab === 'fees'" (click)="switchTab('fees')">
+        <i class="fa-solid fa-file-invoice-dollar"></i> Fee Engine (OCP)
+      </button>
+      <button [class.active]="activeTab === 'timetable'" (click)="switchTab('timetable')">
+        <i class="fa-solid fa-calendar-days"></i> Auto Timetable
+      </button>
+      <button [class.active]="activeTab === 'whatsapp'" (click)="switchTab('whatsapp')">
+        <i class="fa-brands fa-whatsapp"></i> WhatsApp System
+      </button>
+      <button [class.active]="activeTab === 'tickets'" (click)="switchTab('tickets')">
+        <i class="fa-solid fa-triangle-exclamation"></i> Issue Escalation
+      </button>
+    </nav>
+    <div class="authority">
+      <small>Authorized By</small>
+      <strong>{{ institution.authorizedBy }}</strong>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="header">
+      <div>
+        <h1>{{ institution.name }}</h1>
+        <p>{{ institution.location }} &bull; Target Capacity: {{ institution.targetCapacity }} Students</p>
+      </div>
+      <div class="badge badge-success">API Status: Connected</div>
+    </header>
+
+    <div class="content" *ngIf="activeTab === 'dashboard'">
+      <div class="kpi-row" *ngIf="dashboardMetrics">
+        <div class="kpi-card">
+          <span>ACTIVE STUDENTS</span>
+          <h3>{{ dashboardMetrics.activeStudents }}</h3>
+          <p>{{ dashboardMetrics.capacityUtilizationPercentage }}% Capacity</p>
+        </div>
+        <div class="kpi-card">
+          <span>COLLECTED FEES</span>
+          <h3>₹ {{ dashboardMetrics.totalCollected | number }}</h3>
+          <p>Billed: ₹ {{ dashboardMetrics.totalBilled | number }}</p>
+        </div>
+        <div class="kpi-card">
+          <span>STAFF & FACULTY</span>
+          <h3>{{ dashboardMetrics.activeStaff }}</h3>
+          <p>Teaching & Non-Teaching</p>
+        </div>
+        <div class="kpi-card">
+          <span>ESCALATED TICKETS</span>
+          <h3>{{ dashboardMetrics.escalatedTickets }}</h3>
+          <p>Assigned to Management</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

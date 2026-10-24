@@ -1,0 +1,58 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: oxford-csms
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/school?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+
+# Security & JWT Configuration
+oxford:
+  csms:
+    institution:
+      name: "Oxford International School"
+      location: "Harpur, Raxaul, East Champaran, Bihar"
+      authorized-by: "Anil Kumar Gupt (Management)"
+      lead-architect: "Sundram Kumar"
+      target-capacity: 2000
+    jwt:
+      secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+      expiration-ms: 86400000 # 24 hours
+    whatsapp:
+      api-endpoint: "https://api.whatsapp.example.com/v1/messages"
+      default-sender: "+91-6254-OXFORD"
+      simulate: true
+
+# Observability & Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.oxford.csms: INFO
+    org.springframework.security: DEBUG

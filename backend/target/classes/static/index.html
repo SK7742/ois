@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oxford International School | CSMS Portal</title>
+    <!-- Fonts & Styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+    <!-- ============================================================== -->
+    <!-- SECURE AUTHENTICATION SCREEN (LOGIN)                          -->
+    <!-- ============================================================== -->
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <div class="login-brand">
+                <div class="login-crest">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h2>OXFORD</h2>
+                <span>INTERNATIONAL SCHOOL</span>
+                <p class="campus-sub">Harpur, Raxaul, East Champaran, Bihar</p>
+            </div>
+
+            <div class="login-card-body">
+                <h3>Sign in to CSMS Portal</h3>
+                <p class="login-subtitle">Enter your official institutional credentials</p>
+
+                <form id="login-form" onsubmit="handleUserLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username"><i class="fa-solid fa-user"></i> Username or Email</label>
+                        <input type="text" id="login-username" required placeholder="e.g. admin or teacher.sharma">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
+                        <input type="password" id="login-password" required placeholder="Enter password">
+                    </div>
+
+                    <div id="login-error-msg" class="login-error" style="display: none;"></div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login-submit">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Account
+                    </button>
+                </form>
+
+                <div class="demo-accounts-panel">
+                    <div class="demo-title">1-Click Fast Sign-In:</div>
+                    <div class="demo-chips">
+                        <button type="button" class="chip chip-admin" onclick="quickFill('admin', 'Admin@123')">
+                            <i class="fa-solid fa-shield"></i> Admin (Super User)
+                        </button>
+                        <button type="button" class="chip chip-teacher" onclick="quickFill('teacher.sharma', 'Teacher@123')">
+                            <i class="fa-solid fa-chalkboard-user"></i> Teacher (Faculty Portal)
+                        </button>
+                        <button type="button" class="chip chip-student" onclick="quickFill('student.aarav', 'Student@123')">
+                            <i class="fa-solid fa-user-graduate"></i> Student (Aarav Kumar)
+                        </button>
+                        <button type="button" class="chip chip-mgmt" onclick="quickFill('anil.gupt', 'Anil@123')">
+                            <i class="fa-solid fa-building-columns"></i> Management (Anil Gupt)
+                        </button>
+                    </div>
+                    <p style="font-size: 0.82rem; color: #475569; margin-top: 14px; text-align: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <i class="fa-solid fa-key" style="color: #2563eb;"></i> <strong>Superuser Access:</strong> Username: <code style="font-weight: 700; color: #1e3a8a;">admin</code> &bull; Password: <code style="font-weight: 700; color: #1e3a8a;">Admin@123</code> or <code style="font-weight: 700; color: #1e3a8a;">admin</code>
+                    </p>
+                </div>
+
+                <div class="login-footer">
+                    Authorized By: <strong>Anil Kumar Gupt (Management)</strong><br>
+                    Lead Architect: <strong>Sundram Kumar</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MAIN APPLICATION PORTAL (ACTIVE SESSION)                       -->
+    <!-- ============================================================== -->
+    <div id="app" class="app-layout" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="crest-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>OXFORD</h2>
+                    <span>International School</span>
+                </div>
+            </div>
+
+            <div class="school-tag">
+                <i class="fa-solid fa-location-dot"></i> Harpur, Raxaul, Bihar
+            </div>
+
+            <!-- Role Badge Display -->
+            <div class="active-portal-badge" id="sidebar-role-indicator">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span id="role-display-text">ADMINISTRATOR PORTAL</span>
+            </div>
+
+            <!-- DYNAMIC ROLE-BASED NAVIGATION -->
+            <nav class="nav-menu" id="role-nav-menu">
+                <!-- Nav items will be rendered dynamically based on active role -->
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="authority-badge">
+                    <small>Logged in as</small>
+                    <strong id="sidebar-logged-user">Administrator</strong>
+                    <span id="sidebar-logged-privilege">Super User Access</span>
+                </div>
+                <button class="btn btn-outline btn-sm btn-block logout-sidebar-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="main-content">
+            <!-- Top Header Navbar -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 id="page-title">Institution Dashboard</h1>
+                    <span class="sub-caption" id="page-subcaption">Oxford International School &bull; Harpur Campus &bull; Capacity: 2,000</span>
+                </div>
+
+                <div class="header-actions">
+                    <div class="user-profile-pill">
+                        <div class="avatar" id="header-avatar">A</div>
+                        <div class="profile-info">
+                            <strong id="header-user-name">Administrator</strong>
+                            <small id="header-user-role">Super User</small>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline btn-sm" onclick="handleLogout()" title="Log out from CSMS">
+                        <i class="fa-solid fa-power-off"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Tab Content Views -->
+            <div class="content-body">
+
+                <!-- =================================================== -->
+                <!-- 1. ADMIN (SUPER USER) MODULES                       -->
+                <!-- =================================================== -->
+
+                <!-- ADMIN: EXECUTIVE DASHBOARD -->
+                <section id="view-admin-dashboard" class="view-panel">
+                    <div class="kpi-grid">
+                        <div class="kpi-card accent-blue clickable-tile" onclick="navigateTo('students')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('students')" title="View Enrolled Students Directory">
+                            <div class="kpi-header">
+                                <span>ENROLLED STUDENTS</span>
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </div>
+                            <div class="kpi-value" id="kpi-students">--</div>
+                            <div class="kpi-footer">Campus Capacity: <strong>2,000</strong> (<span id="kpi-capacity-pct">--</span>% Enrolled)</div>
+                            <div class="tile-nav-hint"><span>Open Student Register</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-green clickable-tile" onclick="navigateTo('fees')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('fees')" title="View Fee Collections & Ledger">
+                            <div class="kpi-header">
+                                <span>FEE REVENUE</span>
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                            </div>
+                            <div class="kpi-value" id="kpi-collected">₹ 0</div>
+                            <div class="kpi-footer">Billed This Term: <span id="kpi-billed">₹ 0</span></div>
+                            <div class="tile-nav-hint"><span>Manage Invoices & Payments</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-purple clickable-tile" onclick="navigateTo('employees')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('employees')" title="View Faculty & Staff Directory">
+                            <div class="kpi-header">
+                                <span>FACULTY & STAFF</span>
+                                <i class="fa-solid fa-users-gear"></i>
+                            </div>
+                            <div class="kpi-value" id="kpi-staff">--</div>
+                            <div class="kpi-footer">Teaching & Administrative Staff</div>
+                            <div class="tile-nav-hint"><span>View Personnel Register</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-amber clickable-tile" onclick="navigateTo('tickets')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('tickets')" title="View Campus Support & Escalated Grievances">
+                            <div class="kpi-header">
+                                <span>PRIORITY GRIEVANCES</span>
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="kpi-value" id="kpi-escalated">0</div>
+                            <div class="kpi-footer">Management Attention Required</div>
+                            <div class="tile-nav-hint"><span>Review Campus Helpdesk</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-school"></i> Institutional Overview & Campus Summary</h3>
+                                <span class="badge badge-primary">Super User View</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-description">
+                                    Oxford International School, established in Harpur, Raxaul, East Champaran, Bihar, is a premier institution dedicated to academic excellence, sports development, and digital innovation. The centralized management platform coordinates admissions, student progress, academic schedules, school transit, fee collections, and automated parent communications.
+                                </p>
+                                <div class="institution-details-grid">
+                                    <div class="detail-box">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <div>
+                                            <strong>Campus Location</strong>
+                                            <p>Harpur, Raxaul, East Champaran, Bihar - 845305</p>
+                                        </div>
+                                    </div>
+                                    <div class="detail-box">
+                                        <i class="fa-solid fa-user-check"></i>
+                                        <div>
+                                            <strong>Authorized By</strong>
+                                            <p>Anil Kumar Gupt (Management)</p>
+                                        </div>
+                                    </div>
+                                    <div class="detail-box">
+                                        <i class="fa-solid fa-compass-drafting"></i>
+                                        <div>
+                                            <strong>Lead Systems Architect</strong>
+                                            <p>Sundram Kumar</p>
+                                        </div>
+                                    </div>
+                                    <div class="detail-box clickable-tile" onclick="navigateTo('students')" role="button" tabindex="0" title="Click to view student directory">
+                                        <i class="fa-solid fa-users" style="color: #2563eb;"></i>
+                                        <div>
+                                            <strong>Target Student Scale <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem; color: #2563eb; margin-left: 4px;"></i></strong>
+                                            <p>1,500 – 2,000 Capacity (View Directory)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-bolt"></i> Administrative Operations</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="quick-actions-grid">
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('admissions')">
+                                        <div class="tile-icon icon-blue"><i class="fa-solid fa-file-signature"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Process Admissions</div>
+                                            <div class="tile-desc">Applications, inquiries & intake</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('fees')">
+                                        <div class="tile-icon icon-green"><i class="fa-solid fa-receipt"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Fee Operations</div>
+                                            <div class="tile-desc">Invoicing, receipts & waivers</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('students')">
+                                        <div class="tile-icon icon-indigo"><i class="fa-solid fa-users"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Student Directory</div>
+                                            <div class="tile-desc">Profiles, attendance & rolls</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('employees')">
+                                        <div class="tile-icon icon-purple"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Faculty & Staff</div>
+                                            <div class="tile-desc">Teaching & support staff</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="openAddWorkItemModal()">
+                                        <div class="tile-icon icon-amber"><i class="fa-solid fa-list-check"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Work Items</div>
+                                            <div class="tile-desc">Assign tasks & directives</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('timetable')">
+                                        <div class="tile-icon icon-teal"><i class="fa-solid fa-calendar-days"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Master Timetable</div>
+                                            <div class="tile-desc">Collision-free scheduling</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('whatsapp')">
+                                        <div class="tile-icon icon-green"><i class="fa-brands fa-whatsapp"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">WhatsApp Broadcast</div>
+                                            <div class="tile-desc">Instant parent messaging</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('leaves')">
+                                        <div class="tile-icon icon-amber"><i class="fa-solid fa-calendar-check"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Leave Queue</div>
+                                            <div class="tile-desc">Faculty & student absence approvals</div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="quick-action-tile" onclick="navigateTo('tickets')">
+                                        <div class="tile-icon icon-rose"><i class="fa-solid fa-headset"></i></div>
+                                        <div class="tile-content">
+                                            <div class="tile-title">Support Tickets</div>
+                                            <div class="tile-desc">Campus facilities & grievances</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: ADMISSIONS -->
+                <section id="view-admissions" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Admissions & Student Intake Management</h2>
+                                <p>Review incoming student applications, verify credentials, and enroll directly into the active register.</p>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline" onclick="openModal('modal-new-application')">
+                                    <i class="fa-solid fa-file-circle-plus"></i> New Application
+                                </button>
+                                <button class="btn btn-primary" onclick="openModal('modal-new-inquiry')">
+                                    <i class="fa-solid fa-plus"></i> New Prospect Inquiry
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs-subnav">
+                                <button class="subtab-btn active" id="btn-subtab-apps" onclick="switchSubtab('adm-applications', this)">
+                                    <i class="fa-solid fa-file-lines"></i> Submitted Applications
+                                </button>
+                                <button class="subtab-btn" id="btn-subtab-inquiries" onclick="switchSubtab('adm-inquiries', this)">
+                                    <i class="fa-solid fa-clipboard-question"></i> Inquiry Records
+                                </button>
+                            </div>
+
+                            <div id="subtab-adm-applications">
+                                <div class="filter-toolbar">
+                                    <div class="search-box">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        <input type="text" id="filter-app-search" placeholder="Search by student, app #, parent, phone..." oninput="debounceAppSearch()">
+                                    </div>
+                                    <select id="filter-app-grade" onchange="loadApplications()">
+                                        <option value="">All Classes</option>
+                                        <option value="KG">KG</option>
+                                        <option value="LKG">LKG</option>
+                                        <option value="UKG">UKG</option>
+                                        <option value="Class 1">Class 1</option>
+                                        <option value="Class 2">Class 2</option>
+                                        <option value="Class 3">Class 3</option>
+                                        <option value="Class 4">Class 4</option>
+                                        <option value="Class 5">Class 5</option>
+                                        <option value="Class 6">Class 6</option>
+                                        <option value="Class 7">Class 7</option>
+                                        <option value="Class 8">Class 8</option>
+                                        <option value="Class 9">Class 9</option>
+                                        <option value="Class 10">Class 10</option>
+                                        <option value="Class 11">Class 11</option>
+                                        <option value="Class 12">Class 12</option>
+                                    </select>
+                                    <select id="filter-app-status" onchange="loadApplications()">
+                                        <option value="">All Statuses</option>
+                                        <option value="SUBMITTED">Submitted</option>
+                                        <option value="UNDER_REVIEW">Under Review</option>
+                                        <option value="DOCUMENTS_VERIFIED">Documents Verified</option>
+                                        <option value="ENROLLED">Enrolled</option>
+                                        <option value="REJECTED">Rejected</option>
+                                        <option value="INACTIVE">Inactive</option>
+                                    </select>
+                                    <select id="filter-app-active" onchange="loadApplications()">
+                                        <option value="">All (Active & Inactive)</option>
+                                        <option value="true" selected>Active Only</option>
+                                        <option value="false">Inactive / Archived Only</option>
+                                    </select>
+                                    <button class="btn btn-outline btn-sm" onclick="clearApplicationFilters()" title="Reset Filters">
+                                        <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+                                    </button>
+                                </div>
+
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Application #</th>
+                                                <th>Student Name</th>
+                                                <th>Applied Grade</th>
+                                                <th>Assigned Placement</th>
+                                                <th>Parent / Guardian</th>
+                                                <th>Documents</th>
+                                                <th>Status</th>
+                                                <th>Active State</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="applications-table-body">
+                                            <tr><td colspan="9" class="text-center">Loading applications...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="subtab-adm-inquiries" style="display: none;">
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Candidate</th>
+                                                <th>Grade</th>
+                                                <th>Parent / Phone</th>
+                                                <th>Previous School</th>
+                                                <th>Status</th>
+                                                <th>Notes</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="inquiries-table-body">
+                                            <tr><td colspan="7" class="text-center">Loading inquiries...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: STUDENTS -->
+                <section id="view-students" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Master Student Directory</h2>
+                                <p>Comprehensive student directory with enrollment records, attendance rates, and fee status.</p>
+                            </div>
+                            <div class="filter-controls">
+                                <select id="filter-student-class" onchange="loadStudents()">
+                                    <option value="">All Classes</option>
+                                    <option value="KG">KG</option>
+                                    <option value="LKG">LKG</option>
+                                    <option value="UKG">UKG</option>
+                                    <option value="Class 1">Class 1</option>
+                                    <option value="Class 2">Class 2</option>
+                                    <option value="Class 3">Class 3</option>
+                                    <option value="Class 4">Class 4</option>
+                                    <option value="Class 5">Class 5</option>
+                                    <option value="Class 6">Class 6</option>
+                                    <option value="Class 7">Class 7</option>
+                                    <option value="Class 8">Class 8</option>
+                                    <option value="Class 9">Class 9</option>
+                                    <option value="Class 10">Class 10</option>
+                                    <option value="Class 11">Class 11</option>
+                                    <option value="Class 12">Class 12</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="openModal('modal-add-student')">
+                                    <i class="fa-solid fa-plus"></i> Add Student
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Admission #</th>
+                                            <th>Student Full Name</th>
+                                            <th>Class & Section</th>
+                                            <th>Roll No</th>
+                                            <th>Guardian Phone</th>
+                                            <th>Attendance</th>
+                                            <th>Fee Status</th>
+                                            <th>Report Card</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="students-table-body">
+                                        <tr><td colspan="8" class="text-center">Loading student records...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: EMPLOYEES -->
+                <section id="view-employees" class="view-panel">
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <h2>Faculty & Staff Directory</h2>
+                                <p>Institutional directory of teaching faculty, subject heads, and operational support staff.</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary" onclick="openAddWorkItemModal()" title="Assign a task, directive, or duty to any faculty member">
+                                    <i class="fa-solid fa-list-check"></i> Assign Work Item
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs-subnav">
+                                <button class="subtab-btn active" onclick="switchSubtab('emp-all', this)">All Personnel</button>
+                                <button class="subtab-btn" onclick="switchSubtab('emp-teaching', this)">Teaching Faculty</button>
+                                <button class="subtab-btn" onclick="switchSubtab('emp-non-teaching', this)">Operational Staff</button>
+                            </div>
+
+                            <div id="subtab-emp-all">
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Staff ID</th>
+                                                <th>Full Name</th>
+                                                <th>Department</th>
+                                                <th>Designation</th>
+                                                <th>Qualification</th>
+                                                <th>Monthly Salary</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employees-table-body">
+                                            <tr><td colspan="7" class="text-center">Loading personnel records...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="subtab-emp-teaching" style="display: none;">
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Staff ID</th>
+                                                <th>Faculty Name</th>
+                                                <th>Specialization</th>
+                                                <th>Assigned Class</th>
+                                                <th>Weekly Target Periods</th>
+                                                <th>Official Email</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teaching-table-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="subtab-emp-non-teaching" style="display: none;">
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Staff ID</th>
+                                                <th>Staff Name</th>
+                                                <th>Operational Wing</th>
+                                                <th>Shift Timing</th>
+                                                <th>Contact Phone</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="non-teaching-table-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: FEES -->
+                <section id="view-fees" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Institutional Fee Management</h2>
+                                <p>Automated fee invoicing, merit scholarship deductions, payment processing, and receipts.</p>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-outline" onclick="openModal('modal-generate-invoice')">
+                                    <i class="fa-solid fa-file-invoice"></i> Issue Single Invoice
+                                </button>
+                                <button class="btn btn-primary" onclick="bulkGenerateClass10()">
+                                    <i class="fa-solid fa-bolt"></i> Generate Class 10 Invoices
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="finance-overview-bar">
+                                <div class="metric-pill">Billed: <strong id="fee-bar-billed">₹ 0</strong></div>
+                                <div class="metric-pill pill-success">Collected: <strong id="fee-bar-collected">₹ 0</strong></div>
+                                <div class="metric-pill pill-warning">Outstanding: <strong id="fee-bar-pending">₹ 0</strong></div>
+                                <div class="metric-pill pill-info">Collection Efficiency: <strong id="fee-bar-rate">0%</strong></div>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice #</th>
+                                            <th>Student Name</th>
+                                            <th>Term Period</th>
+                                            <th>Gross Fee</th>
+                                            <th>Scholarship / Concession</th>
+                                            <th>Net Amount</th>
+                                            <th>Paid</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoices-table-body">
+                                        <tr><td colspan="9" class="text-center">Loading invoices...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: LEAVES -->
+                <section id="view-leaves" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Leave Management & Approvals</h2>
+                                <p>Review, authorize, or decline absence requests from faculty, support staff, and students.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Applicant</th>
+                                            <th>Category</th>
+                                            <th>Leave Type</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Reason</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaves-table-body">
+                                        <tr><td colspan="8" class="text-center">Loading leave requests...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: TRANSPORTATION -->
+                <section id="view-transport" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>School Transportation & Fleet Routes</h2>
+                                <p>Manage school buses, driver assignments, and student route stops connecting Harpur and Raxaul.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="route-cards-grid" id="routes-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: TIMETABLE -->
+                <section id="view-timetable" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Master Academic Timetable</h2>
+                                <p>Algorithmic scheduling engine ensuring zero teacher or classroom period collisions.</p>
+                            </div>
+                            <div class="filter-controls">
+                                <select id="timetable-grade">
+                                    <option value="KG">KG</option>
+                                    <option value="LKG">LKG</option>
+                                    <option value="UKG">UKG</option>
+                                    <option value="Class 1">Class 1</option>
+                                    <option value="Class 2">Class 2</option>
+                                    <option value="Class 3">Class 3</option>
+                                    <option value="Class 4">Class 4</option>
+                                    <option value="Class 5">Class 5</option>
+                                    <option value="Class 6">Class 6</option>
+                                    <option value="Class 7">Class 7</option>
+                                    <option value="Class 8">Class 8</option>
+                                    <option value="Class 9">Class 9</option>
+                                    <option value="Class 10" selected>Class 10</option>
+                                    <option value="Class 11">Class 11</option>
+                                    <option value="Class 12">Class 12</option>
+                                </select>
+                                <select id="timetable-section">
+                                    <option value="A" selected>Section A</option>
+                                    <option value="B">Section B</option>
+                                    <option value="C">Section C</option>
+                                    <option value="D">Section D</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="triggerAutoTimetable()">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Generate Schedule
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="timetable-grid" id="timetable-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: ACTIVITIES -->
+                <section id="view-activities" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Co-Curricular Clubs & Events</h2>
+                                <p>Extracurricular student societies, annual sports meet, and science exhibitions.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="clubs-grid" id="clubs-container"></div>
+                            <h3 class="section-heading"><i class="fa-solid fa-calendar-day"></i> Official Institution Events Calendar</h3>
+                            <div class="events-list" id="events-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: EXAMS -->
+                <section id="view-exams" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Examination Management & Gradebook</h2>
+                                <p>CBSE patterned term marks records and instant official report card generation.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateSampleReportCard(1)">
+                                <i class="fa-solid fa-print"></i> Generate Sample Report Card
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Term</th>
+                                            <th>Student Name</th>
+                                            <th>Subject</th>
+                                            <th>Marks Obtained</th>
+                                            <th>Maximum Marks</th>
+                                            <th>Grade Letter</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="exam-grades-table-body">
+                                        <tr><td colspan="7" class="text-center">Loading grade records...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: WHATSAPP -->
+                <section id="view-whatsapp" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Automated WhatsApp Alerts & Communications</h2>
+                                <p>Instant parent notifications for fee dues, student absences, and school management circulars.</p>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-outline" onclick="triggerTestFeeAlert()">
+                                    <i class="fa-solid fa-bell"></i> Send Fee Due Alert
+                                </button>
+                                <button class="btn btn-primary" onclick="triggerEmergencyBroadcastPrompt()">
+                                    <i class="fa-solid fa-bullhorn"></i> Emergency Broadcast
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Dispatch Time</th>
+                                            <th>Recipient Mobile</th>
+                                            <th>Recipient Name</th>
+                                            <th>Notice Template</th>
+                                            <th>Message Text</th>
+                                            <th>Delivery Status</th>
+                                            <th>Reference ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="whatsapp-table-body">
+                                        <tr><td colspan="7" class="text-center">Loading communication logs...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN: TICKETS -->
+                <section id="view-tickets" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Campus Helpdesk & Issue Escalation</h2>
+                                <p>Service-level tracking for campus facilities, academic inquiries, and direct escalation to Higher Management.</p>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-outline" onclick="triggerAutoSlaCheck()">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> Check SLA Deadlines
+                                </button>
+                                <button class="btn btn-primary" onclick="openModal('modal-create-ticket')">
+                                    <i class="fa-solid fa-plus"></i> Raise Campus Ticket
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket #</th>
+                                            <th>Issue Title</th>
+                                            <th>Category</th>
+                                            <th>Priority SLA</th>
+                                            <th>Current Status</th>
+                                            <th>Escalated Authority</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tickets-table-body">
+                                        <tr><td colspan="7" class="text-center">Loading ticket records...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =================================================== -->
+                <!-- 2. TEACHER (FACULTY & REPORTEES) MODULES            -->
+                <!-- =================================================== -->
+
+                <section id="view-teacher-dashboard" class="view-panel">
+                    <div class="kpi-grid">
+                        <div class="kpi-card accent-blue clickable-tile" onclick="navigateTo('teacher-students')" role="button" tabindex="0" title="View Assigned Class Students Register">
+                            <div class="kpi-header">
+                                <span>ASSIGNED CLASS</span>
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                            </div>
+                            <div class="kpi-value" id="teacher-dash-class">Class 10A</div>
+                            <div class="kpi-footer">Class Teacher: <strong id="teacher-dash-name">Dr. Satish Sharma</strong></div>
+                            <div class="tile-nav-hint"><span>View Assigned Class &rarr;</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-green clickable-tile" onclick="navigateTo('teacher-attendance')" role="button" tabindex="0" title="Today's Classroom Attendance Register">
+                            <div class="kpi-header">
+                                <span>TODAY'S ATTENDANCE</span>
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <div class="kpi-value" id="teacher-today-att-rate">--%</div>
+                            <div class="kpi-footer" id="teacher-today-att-summary">Total: <span id="teacher-class-strength">10</span> students</div>
+                            <div class="tile-nav-hint"><span>Take Today's Attendance &rarr;</span> <i class="fa-solid fa-clipboard-user"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-purple clickable-tile" onclick="navigateTo('teacher-timetable')" role="button" tabindex="0" title="View Teaching Schedule">
+                            <div class="kpi-header">
+                                <span>WEEKLY PERIODS</span>
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div class="kpi-value">24</div>
+                            <div class="kpi-footer">Department of Mathematics</div>
+                            <div class="tile-nav-hint"><span>View Schedule</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-amber clickable-tile" onclick="navigateTo('teacher-timetable')" role="button" tabindex="0" title="View Today's Classroom Schedule">
+                            <div class="kpi-header">
+                                <span>TODAY'S TEACHING</span>
+                                <i class="fa-solid fa-calendar-day"></i>
+                            </div>
+                            <div class="kpi-value">4 Periods</div>
+                            <div class="kpi-footer">Next: Period 2 &bull; 09:15 AM (Room 101)</div>
+                            <div class="tile-nav-hint"><span>View Today's Periods</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split">
+                        <div class="card workitems-card-container">
+                            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-list-check" style="color: #2563eb;"></i>
+                                        <span>Work Items</span>
+                                    </h3>
+                                    <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #64748b;">
+                                        Keep track of assigned tasks, notes, directives & reminders.
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                    <div class="workitem-filter-group" style="display: flex; background: #f1f5f9; padding: 3px; border-radius: 8px; gap: 2px;">
+                                        <button type="button" class="btn-filter-chip active" id="filter-workitem-all" onclick="filterTeacherWorkItems('ALL')">All (<span id="count-workitem-all">0</span>)</button>
+                                        <button type="button" class="btn-filter-chip" id="filter-workitem-pending" onclick="filterTeacherWorkItems('PENDING')">Pending (<span id="count-workitem-pending">0</span>)</button>
+                                        <button type="button" class="btn-filter-chip" id="filter-workitem-completed" onclick="filterTeacherWorkItems('COMPLETED')">Completed (<span id="count-workitem-completed">0</span>)</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm" onclick="openAddWorkItemModal()" title="Add a new work item or note">
+                                        <i class="fa-solid fa-plus"></i> New Work Item
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-container">
+                                    <table class="data-table" id="teacher-workitems-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px; text-align: center;">Status</th>
+                                                <th>Title & Description</th>
+                                                <th style="width: 120px;">Category</th>
+                                                <th style="width: 110px;">Priority</th>
+                                                <th style="width: 140px;">Assigned By</th>
+                                                <th style="width: 110px;">Due Date</th>
+                                                <th style="width: 90px; text-align: center;">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teacher-workitems-body">
+                                            <tr><td colspan="7" class="text-center" style="padding: 24px; color: #64748b;">Loading assigned work items...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-calendar-week"></i> Today's Lecture Schedule</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="periods-timeline">
+                                    <div class="period-item active-period">
+                                        <div class="period-time">08:30 - 09:15</div>
+                                        <div>
+                                            <strong>Period 1: Mathematics (Algebra)</strong>
+                                            <p>Class 10A &bull; Room 101 &bull; Active Lecture</p>
+                                        </div>
+                                    </div>
+                                    <div class="period-item">
+                                        <div class="period-time">09:15 - 10:00</div>
+                                        <div>
+                                            <strong>Period 2: Advanced Trigonometry</strong>
+                                            <p>Class 10B &bull; Room 102</p>
+                                        </div>
+                                    </div>
+                                    <div class="period-item">
+                                        <div class="period-time">11:00 - 11:45</div>
+                                        <div>
+                                            <strong>Period 4: Problem Solving Workshop</strong>
+                                            <p>Class 9A &bull; Room 204</p>
+                                        </div>
+                                    </div>
+                                    <div class="period-item">
+                                        <div class="period-time">01:00 - 01:45</div>
+                                        <div>
+                                            <strong>Period 6: Senior Secondary Geometry</strong>
+                                            <p>Class 12A &bull; Room 301</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TEACHER: TODAY'S ATTENDANCE REGISTER -->
+                <section id="view-teacher-attendance" class="view-panel">
+                    <div class="card attendance-card-container">
+                        <div class="card-header attendance-register-header">
+                            <div class="header-title-box">
+                                <div class="header-icon-box">
+                                    <i class="fa-solid fa-clipboard-user"></i>
+                                </div>
+                                <div>
+                                    <h2>Classroom Attendance Register</h2>
+                                    <p>Daily morning roll call register with real-time analytics & automated guardian notifications</p>
+                                </div>
+                            </div>
+                            <div class="filter-controls attendance-toolbar">
+                                <div class="att-date-wrapper">
+                                    <span class="date-input-icon"><i class="fa-regular fa-calendar-days"></i></span>
+                                    <input type="date" id="att-date-picker" class="att-date-input" onchange="loadTeacherAttendance()">
+                                </div>
+                                <button class="btn btn-outline-success att-action-btn" onclick="markAllAttendanceStatus('PRESENT')" title="Mark all students Present">
+                                    <i class="fa-solid fa-check-double"></i> All Present
+                                </button>
+                                <button class="btn btn-outline-danger att-action-btn" onclick="markAllAttendanceStatus('ABSENT')" title="Mark all students Absent">
+                                    <i class="fa-solid fa-xmark"></i> All Absent
+                                </button>
+                                <button class="btn btn-save-att" onclick="saveClassAttendance()" id="btn-save-attendance">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Save Register
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 24px;">
+                            <!-- Top Summary Banner -->
+                            <div class="attendance-top-banner">
+                                <div class="banner-class-info">
+                                    <div class="class-pill-badge" id="att-class-badge">
+                                        <i class="fa-solid fa-chalkboard"></i> Class 10 - Section A
+                                    </div>
+                                    <div class="date-chip-badge">
+                                        <i class="fa-regular fa-calendar-check"></i> <span id="att-display-date">Today</span>
+                                    </div>
+                                    <label class="whatsapp-alert-toggle" title="When checked, saving will trigger automated WhatsApp alerts to parents of students marked Absent">
+                                        <input type="checkbox" id="att-send-whatsapp" checked>
+                                        <span class="whatsapp-icon-circle"><i class="fa-brands fa-whatsapp"></i></span>
+                                        <span>Dispatch WhatsApp alert to absent parents</span>
+                                    </label>
+                                </div>
+                                <div class="attendance-summary-pills">
+                                    <div class="att-pill pill-total">
+                                        <span class="pill-label"><i class="fa-solid fa-users"></i> Total</span>
+                                        <strong id="att-stat-total">0</strong>
+                                    </div>
+                                    <div class="att-pill pill-present">
+                                        <span class="pill-label"><i class="fa-solid fa-circle-check"></i> Present</span>
+                                        <strong id="att-stat-present">0</strong>
+                                    </div>
+                                    <div class="att-pill pill-absent">
+                                        <span class="pill-label"><i class="fa-solid fa-circle-xmark"></i> Absent</span>
+                                        <strong id="att-stat-absent">0</strong>
+                                    </div>
+                                    <div class="att-pill pill-late">
+                                        <span class="pill-label"><i class="fa-solid fa-clock"></i> Late</span>
+                                        <strong id="att-stat-late">0</strong>
+                                    </div>
+                                    <div class="att-pill pill-excused">
+                                        <span class="pill-label"><i class="fa-solid fa-shield-halved"></i> Excused</span>
+                                        <strong id="att-stat-excused">0</strong>
+                                    </div>
+                                    <div class="att-pill pill-rate">
+                                        <span class="pill-label"><i class="fa-solid fa-chart-pie"></i> Rate</span>
+                                        <strong id="att-stat-rate">0%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-container" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                                <table class="data-table" id="attendance-register-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 280px;">Name</th>
+                                            <th style="width: 320px; text-align: center;">Daily Attendance Status</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendance-table-body">
+                                        <tr><td colspan="3" class="text-center">Loading class register...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TEACHER: ASSIGNED CLASS REGISTER -->
+                <section id="view-teacher-students" class="view-panel">
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                            <div>
+                                <h2 id="teacher-students-heading">Assigned Class: Class 10A</h2>
+                                <p>List of students assigned to the class tagged under your faculty profile with parent details, attendance percentage, fee reminders, report cards, and notes.</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button class="btn btn-primary" onclick="navigateTo('teacher-attendance')" title="Redirect to take today's classroom attendance">
+                                    <i class="fa-solid fa-clipboard-user"></i> Take Today's Attendance &rarr;
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table" id="assigned-class-students-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>Parent Name</th>
+                                            <th>Mobile</th>
+                                            <th>Address</th>
+                                            <th style="text-align: center;">Attendance %</th>
+                                            <th>Fee Reminder</th>
+                                            <th style="text-align: center;">Report Card</th>
+                                            <th>Notes Summary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teacher-students-body">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TEACHER: MARKS ENTRY -->
+                <section id="view-teacher-marks" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Gradebook & Term Assessment for Reportees</h2>
+                                <p>Record and update term marks for students in your assigned sections.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveTeacherMarks()">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Grade Sheet
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Admission #</th>
+                                            <th>Student Name</th>
+                                            <th>Subject</th>
+                                            <th>Assessment Term</th>
+                                            <th>Max Marks</th>
+                                            <th>Marks Scored</th>
+                                            <th>Grade Letter</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teacher-marks-body">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TEACHER: TIMETABLE -->
+                <section id="view-teacher-timetable" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>My Faculty Lecture Schedule</h2>
+                                <p>Personal weekly teaching periods across assigned classrooms and sections.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="timetable-grid" id="teacher-timetable-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TEACHER: LEAVES -->
+                <section id="view-teacher-leave" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Faculty Absence & Leave Application</h2>
+                                <p>Submit casual, duty, or medical leave requests directly to Management for authorization.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openModal('modal-apply-leave')">
+                                <i class="fa-solid fa-plane-departure"></i> Apply for Leave
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Leave Type</th>
+                                            <th>Duration</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Reason</th>
+                                            <th>Approval Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teacher-leaves-table-body">
+                                        <tr><td colspan="6" class="text-center">Loading faculty leave records...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =================================================== -->
+                <!-- 3. STUDENT (OWN PRIVILEGE ONLY) MODULES            -->
+                <!-- =================================================== -->
+
+                <section id="view-student-dashboard" class="view-panel">
+                    <div class="student-hero-banner">
+                        <div class="student-avatar-big" id="student-hero-avatar">AK</div>
+                        <div class="student-hero-info">
+                            <h2 id="student-hero-name">Welcome back, Aarav Kumar!</h2>
+                            <p id="student-hero-class">Class 10A &bull; Roll Number: <strong>#1</strong> &bull; Admission No: <strong>OIS-2026-1001</strong></p>
+                            <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Enrolled & Active &bull; Session 2026-2027</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid" style="margin-top: 24px;">
+                        <div class="kpi-card accent-blue clickable-tile" onclick="navigateTo('student-timetable')" role="button" tabindex="0" title="View Class 10A Schedule & Attendance">
+                            <div class="kpi-header">
+                                <span>MY ATTENDANCE</span>
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <div class="kpi-value">96.0%</div>
+                            <div class="kpi-footer">Present 115 / 120 Academic Days</div>
+                            <div class="tile-nav-hint"><span>View Daily Attendance</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-green clickable-tile" onclick="navigateTo('student-fees')" role="button" tabindex="0" title="View Fee Invoices & Receipts">
+                            <div class="kpi-header">
+                                <span>MY FEE STATUS</span>
+                                <i class="fa-solid fa-receipt"></i>
+                            </div>
+                            <div class="kpi-value text-success">CLEARED</div>
+                            <div class="kpi-footer">Term 1 Tuition & Lab Fees Paid</div>
+                            <div class="tile-nav-hint"><span>View Fee Receipts</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-purple clickable-tile" onclick="navigateTo('student-report-card')" role="button" tabindex="0" title="View CBSE Term Report Card">
+                            <div class="kpi-header">
+                                <span>TERM AGGREGATE</span>
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <div class="kpi-value">89.4%</div>
+                            <div class="kpi-footer">Overall Grade: <strong>A1 (Exemplary)</strong></div>
+                            <div class="tile-nav-hint"><span>Open Report Card</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <div class="kpi-card accent-amber clickable-tile" onclick="navigateTo('student-transit')" role="button" tabindex="0" title="View Bus Route & Stop Schedule">
+                            <div class="kpi-header">
+                                <span>MY BUS TRANSIT</span>
+                                <i class="fa-solid fa-bus"></i>
+                            </div>
+                            <div class="kpi-value" style="font-size: 1.3rem;">Route 1</div>
+                            <div class="kpi-footer">Stop: Raxaul Station Gate 1</div>
+                            <div class="tile-nav-hint"><span>Bus Stops & Timing</span> <i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-book"></i> Today's Class 10A Schedule</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="periods-timeline">
+                                    <div class="period-item">
+                                        <div class="period-time">08:30 - 09:15</div>
+                                        <div><strong>Period 1: Mathematics</strong> &bull; Dr. Satish Sharma (Room 101)</div>
+                                    </div>
+                                    <div class="period-item">
+                                        <div class="period-time">09:15 - 10:00</div>
+                                        <div><strong>Period 2: Physics & Chemistry</strong> &bull; Mrs. Pooja Verma (Science Lab)</div>
+                                    </div>
+                                    <div class="period-item">
+                                        <div class="period-time">10:15 - 11:00</div>
+                                        <div><strong>Period 3: English Literature</strong> &bull; Mr. Rakesh Jha (Room 101)</div>
+                                    </div>
+                                    <div class="period-item">
+                                        <div class="period-time">11:00 - 11:45</div>
+                                        <div><strong>Period 4: Computer Science</strong> &bull; Er. Sundram Kumar (IT Lab)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-star"></i> My Campus Clubs & Activities</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="club-card" style="margin-bottom: 12px;">
+                                    <span class="badge badge-purple">PRESIDENT</span>
+                                    <h4 style="margin: 8px 0; color: var(--primary);">Oxford Robotics & AI Society</h4>
+                                    <p style="font-size: 0.84rem; color: var(--text-secondary);">Meets Wednesdays & Fridays 03:30 PM &bull; Innovation Lab</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="generateSampleReportCard(1)">
+                                    <i class="fa-solid fa-file-pdf"></i> Download My Mid-Term Report Card
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STUDENT: REPORT CARD -->
+                <section id="view-student-report-card" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>My Academic Report Card & Term Results</h2>
+                                <p>Official progress report issued by Oxford International School Examination Wing.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateSampleReportCard(1)">
+                                <i class="fa-solid fa-print"></i> Print Official Card
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Max Marks</th>
+                                            <th>Marks Obtained</th>
+                                            <th>Grade Letter</th>
+                                            <th>Evaluation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="student-report-card-body">
+                                        <tr><td colspan="5" class="text-center">Loading term grades...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STUDENT: FEES -->
+                <section id="view-student-fees" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>My Fee Account & Payment Receipts</h2>
+                                <p>Personal fee dues, paid receipts, and payment transactions.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice #</th>
+                                            <th>Billing Term</th>
+                                            <th>Tuition Fee</th>
+                                            <th>Net Amount</th>
+                                            <th>Paid Amount</th>
+                                            <th>Status</th>
+                                            <th>Receipt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="student-fees-table-body">
+                                        <tr><td colspan="7" class="text-center">Loading fee statements...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STUDENT: TIMETABLE -->
+                <section id="view-student-timetable" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>My Class 10A Timetable</h2>
+                                <p>Standard weekly period schedule (Monday to Saturday &bull; 08:30 AM to 02:30 PM).</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="timetable-grid" id="student-timetable-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STUDENT: TRANSPORT -->
+                <section id="view-student-transit" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>My School Bus Transit Details</h2>
+                                <p>Daily morning pickup and afternoon drop schedule for student commuters.</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="student-transit-card" class="route-card" style="max-width: 600px;">
+                                <h3><i class="fa-solid fa-bus"></i> Route 1: Raxaul Railway Station &ndash; Harpur Campus</h3>
+                                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                                    <strong>Bus Vehicle:</strong> Tata Marcopolo 40-Seater (BR-05-PA-1234)<br>
+                                    <strong>Designated Driver:</strong> Mahendra Prasad (+91-9801441122)
+                                </p>
+                                <div class="stop-timeline">
+                                    <div class="stop-point">
+                                        <strong>Raxaul Railway Station Gate 1 (My Assigned Stop)</strong><br>
+                                        <small class="text-secondary">Morning Pickup: 07:15 AM &bull; Afternoon Drop: 03:45 PM</small>
+                                    </div>
+                                    <div class="stop-point">
+                                        <strong>Customs Chowk Raxaul</strong><br>
+                                        <small class="text-secondary">07:30 AM / 03:30 PM</small>
+                                    </div>
+                                    <div class="stop-point">
+                                        <strong>Oxford International School Harpur Gate</strong><br>
+                                        <small class="text-secondary">Arrival: 08:00 AM &bull; Departure: 03:00 PM</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STUDENT: LEAVE -->
+                <section id="view-student-leave" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>My Absence / Medical Leave Submissions</h2>
+                                <p>Notify class teacher and school administration regarding planned absence.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openModal('modal-apply-leave')">
+                                <i class="fa-solid fa-plus"></i> Submit Leave Form
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Leave Type</th>
+                                            <th>From Date</th>
+                                            <th>To Date</th>
+                                            <th>Reason</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="student-leaves-table-body">
+                                        <tr><td colspan="5" class="text-center">Loading submitted absence records...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODALS                                                         -->
+    <!-- ============================================================== -->
+
+    <!-- Modal: New Inquiry -->
+    <div id="modal-new-inquiry" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Prospect Inquiry</h3>
+                <span class="close-btn" onclick="closeModal('modal-new-inquiry')">&times;</span>
+            </div>
+            <form id="form-new-inquiry" onsubmit="handleCreateInquiry(event)">
+                <div class="form-group">
+                    <label>Candidate Student Name</label>
+                    <input type="text" id="inq-candidate-name" required placeholder="e.g. Suman Roy">
+                </div>
+                <div class="form-group">
+                    <label>Target Grade *</label>
+                    <select id="inq-target-grade" required>
+                        <option value="KG">KG</option>
+                        <option value="LKG">LKG</option>
+                        <option value="UKG">UKG</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 10" selected>Class 10</option>
+                        <option value="Class 11">Class 11</option>
+                        <option value="Class 12">Class 12</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Parent / Guardian Name</label>
+                    <input type="text" id="inq-parent-name" required placeholder="e.g. Anand Roy">
+                </div>
+                <div class="form-group">
+                    <label>Contact Phone</label>
+                    <input type="text" id="inq-contact-phone" required placeholder="+91-9801XXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Previous School & Notes</label>
+                    <textarea id="inq-notes" placeholder="e.g. Transferring from Bettiah"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-new-inquiry')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Inquiry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: New Formal Application -->
+    <div id="modal-new-application" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <div>
+                    <h3>Submit Formal Student Application</h3>
+                    <small style="color: #64748b;">Oxford International School &bull; Harpur, Raxaul</small>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-new-application')">&times;</span>
+            </div>
+            <form id="form-new-application" onsubmit="handleCreateApplication(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Candidate Student Name *</label>
+                        <input type="text" id="app-student-name" required placeholder="e.g. Sameer Verma">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth *</label>
+                        <input type="date" id="app-dob" required value="2011-04-12">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <select id="app-gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Applied Grade (By Parent) *</label>
+                        <select id="app-applied-grade" required onchange="handleAppliedGradeChange()">
+                            <option value="KG">KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10" selected>Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Recommended / Enrolling Class *</label>
+                        <select id="app-target-grade" required onchange="handleRecommendedGradeChange()">
+                            <option value="KG">KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10" selected>Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Assigned Section *</label>
+                        <select id="app-assigned-section" required>
+                            <option value="A" selected>Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Father / Guardian Name *</label>
+                        <input type="text" id="app-father-name" required placeholder="e.g. Ramesh Verma">
+                    </div>
+                    <div class="form-group">
+                        <label>Mother's Name</label>
+                        <input type="text" id="app-mother-name" placeholder="e.g. Sunita Verma">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Phone *</label>
+                        <input type="text" id="app-contact-phone" required placeholder="+91-9801XXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Residential Address</label>
+                        <input type="text" id="app-address" placeholder="Harpur, Raxaul, Bihar" value="Harpur, Raxaul, Bihar">
+                    </div>
+                </div>
+
+                <!-- Mandatory pedagogical comment box if recommended class != applied class -->
+                <div id="app-class-change-box" style="display: none;" class="pedagogy-alert-box">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem; color: #b45309; margin-top: 2px;"></i>
+                    <div style="flex: 1;">
+                        <strong>Academic Placement Recommendation:</strong>
+                        <p style="margin: 2px 0 6px 0;">The student applied for <span id="text-orig-applied" style="font-weight: 700;">Class 10</span>, but management recommends <span id="text-rec-assigned" style="font-weight: 700; color: #b45309;">Class 9</span>. A pedagogical assessment justification note is <u>mandatory</u>.</p>
+                        <textarea id="app-class-change-reason" placeholder="State reason (e.g., Diagnostic test indicates student needs foundational reinforcement in Math/Science before proceeding to target grade)..." rows="2" style="width: 100%; padding: 8px; border: 1px solid #fde68a; border-radius: 6px; font-size: 0.84rem; background: #ffffff;"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 14px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="app-doc-verified" checked style="width: auto;">
+                        <strong>Birth Certificate & Transfer Credentials Verified</strong>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-new-application')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Generate Invoice -->
+    <div id="modal-generate-invoice" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Issue Student Fee Invoice</h3>
+                <span class="close-btn" onclick="closeModal('modal-generate-invoice')">&times;</span>
+            </div>
+            <form id="form-generate-invoice" onsubmit="handleGenerateInvoice(event)">
+                <div class="form-group">
+                    <label>Select Enrolled Student</label>
+                    <select id="inv-student-id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Billing Term</label>
+                    <input type="text" id="inv-billing-period" value="Term 1 - 2026" required>
+                </div>
+                <div class="form-group">
+                    <label>Scholarship or Concession Policy</label>
+                    <select id="inv-scholarship-type">
+                        <option value="NONE">Standard Tuition Rate</option>
+                        <option value="MERIT">Merit Academic Excellence (25% Waiver)</option>
+                        <option value="SIBLING">Sibling Enrollment Concession (15% Waiver)</option>
+                        <option value="EWS">EWS Affirmative Action (50% Concession)</option>
+                        <option value="STAFF_WARD">Oxford Staff Ward Benefit (75% Waiver)</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-generate-invoice')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Pay Invoice -->
+    <div id="modal-pay-invoice" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Record Fee Payment</h3>
+                <span class="close-btn" onclick="closeModal('modal-pay-invoice')">&times;</span>
+            </div>
+            <form id="form-pay-invoice" onsubmit="handlePayInvoice(event)">
+                <input type="hidden" id="pay-invoice-id">
+                <div class="form-group">
+                    <label>Invoice Number</label>
+                    <input type="text" id="pay-invoice-num" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Payment Amount (₹)</label>
+                    <input type="number" step="0.01" id="pay-amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Payment Mode</label>
+                    <select id="pay-method">
+                        <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                        <option value="CASH">School Cash Counter</option>
+                        <option value="NET_BANKING">Net Banking (NEFT/RTGS)</option>
+                        <option value="DEBIT_CARD">Debit / Credit Card</option>
+                        <option value="CHEQUE">Cheque / Demand Draft</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Bank / Transaction Reference</label>
+                    <input type="text" id="pay-ref" placeholder="e.g. UPI-982736412">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-pay-invoice')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Issue Official Receipt</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Apply Leave -->
+    <div id="modal-apply-leave" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Apply for Leave</h3>
+                <span class="close-btn" onclick="closeModal('modal-apply-leave')">&times;</span>
+            </div>
+            <form id="form-apply-leave" onsubmit="handleApplyLeave(event)">
+                <div class="form-group">
+                    <label>Leave Category</label>
+                    <select id="leave-type">
+                        <option value="CASUAL">Casual Leave</option>
+                        <option value="SICK">Medical / Sick Leave</option>
+                        <option value="DUTY">Official Duty / Academic Leave</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" id="leave-start-date" required>
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" id="leave-end-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Absence</label>
+                    <textarea id="leave-reason" required placeholder="Specify details..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-apply-leave')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Create Ticket -->
+    <div id="modal-create-ticket" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Raise Campus Service Ticket</h3>
+                <span class="close-btn" onclick="closeModal('modal-create-ticket')">&times;</span>
+            </div>
+            <form id="form-create-ticket" onsubmit="handleCreateTicket(event)">
+                <div class="form-group">
+                    <label>Issue Subject</label>
+                    <input type="text" id="ticket-title" required placeholder="e.g. Science Lab Water Dispenser Leak">
+                </div>
+                <div class="form-group">
+                    <label>Department / Wing</label>
+                    <select id="ticket-category">
+                        <option value="FACILITIES">Campus Facilities & Maintenance</option>
+                        <option value="ACADEMIC_GRIEVANCE">Academic Grievance</option>
+                        <option value="IT_SUPPORT">Smart Classroom & IT Support</option>
+                        <option value="TRANSPORTATION">Transportation & Bus Logistics</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Severity Priority (SLA)</label>
+                    <select id="ticket-priority">
+                        <option value="MEDIUM">Medium Priority (24h SLA)</option>
+                        <option value="HIGH">High Priority (12h SLA)</option>
+                        <option value="CRITICAL">Critical Severity (4h Immediate Management Escalation)</option>
+                        <option value="LOW">Low Priority (48h SLA)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="ticket-description" required placeholder="Describe location and exact issue..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-ticket')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Register Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Report Card Viewer -->
+    <div id="modal-report-card" class="modal">
+        <div class="modal-content report-card-modal">
+            <div class="modal-header">
+                <h3>Official Academic Progress Report</h3>
+                <span class="close-btn" onclick="closeModal('modal-report-card')">&times;</span>
+            </div>
+            <div class="report-card-printable" id="printable-report-card"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="window.print()">Print Official Report</button>
+                <button type="button" class="btn btn-primary" onclick="closeModal('modal-report-card')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Student Academic Notes -->
+    <div id="modal-student-notes" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 38px; height: 38px; border-radius: 8px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                        <i class="fa-solid fa-note-sticky"></i>
+                    </div>
+                    <div>
+                        <h3 id="notes-modal-title" style="margin: 0;">Student Notes & Observations</h3>
+                        <p id="notes-modal-subtitle" style="margin: 0; font-size: 0.85rem; color: #64748b;">Class Teacher Academic Record</p>
+                    </div>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-student-notes')">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <input type="hidden" id="notes-student-id">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;">Teacher's Notes Summary:</label>
+                    <textarea id="notes-student-textarea" rows="5" class="form-control" style="width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; padding: 12px; font-size: 0.9rem; font-family: inherit; resize: vertical;" placeholder="Add academic performance remarks, behavioral notes, guardian feedback, or learning milestones..."></textarea>
+                </div>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 12px; font-size: 0.82rem; color: #64748b; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i>
+                    <span>Notes are saved in the student profile and visible across faculty registers.</span>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modal-student-notes')">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn-save-notes" onclick="saveStudentNotes()">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Notes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add / Assign Work Item -->
+    <div id="modal-add-workitem" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 38px; height: 38px; border-radius: 8px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h3 id="workitem-modal-title" style="margin: 0;">Work Items</h3>
+                        <p id="workitem-modal-subtitle" style="margin: 0; font-size: 0.85rem; color: #64748b;">Manage tasks, notes, reminders & academic duties</p>
+                    </div>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-add-workitem')">&times;</span>
+            </div>
+            <form id="form-add-workitem" onsubmit="handleSaveWorkItem(event)">
+                <div class="modal-body" style="padding: 20px;">
+                    <input type="hidden" id="workitem-edit-id">
+
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;">Title / Directive <span style="color:#ef4444;">*</span></label>
+                        <input type="text" id="workitem-title" class="form-control" required placeholder="e.g. Prepare Half-Yearly Question Papers, Follow up on fee dues...">
+                    </div>
+
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                        <div class="form-group">
+                            <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;">Item Type</label>
+                            <select id="workitem-type" class="form-control">
+                                <option value="TASK">Task (Action Item)</option>
+                                <option value="REMINDER">Reminder</option>
+                                <option value="NOTE">Personal Note</option>
+                                <option value="ACADEMIC_DUTY">Academic Duty</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;">Priority Level</label>
+                            <select id="workitem-priority" class="form-control">
+                                <option value="MEDIUM">Medium Priority</option>
+                                <option value="URGENT">Urgent Priority</option>
+                                <option value="HIGH">High Priority</option>
+                                <option value="LOW">Low Priority</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                        <div class="form-group">
+                            <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;">Target Due Date</label>
+                            <input type="date" id="workitem-due-date" class="form-control">
+                        </div>
+                        <div class="form-group" id="workitem-assignee-group">
+                            <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;" id="workitem-assignee-label">Assign To Faculty / Staff</label>
+                            <div id="workitem-assignee-control">
+                                <select id="workitem-assigned-to" class="form-control">
+                                    <option value="teacher.sharma">Dr. Satish Sharma (Class 10A Teacher)</option>
+                                    <option value="teacher.verma">Mrs. Pooja Verma (Class 9B Teacher)</option>
+                                    <option value="sundram.kumar">Er. Sundram Kumar (Lead Architect)</option>
+                                    <option value="anil.gupt">Anil Kumar Gupt (Management)</option>
+                                    <option value="admin">System Administrator</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label style="font-weight: 600; font-size: 0.88rem; color: #334155; margin-bottom: 6px; display: block;">Description / Instructions / Details</label>
+                        <textarea id="workitem-description" rows="4" class="form-control" style="width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; padding: 12px; font-size: 0.9rem; font-family: inherit; resize: vertical;" placeholder="Detailed instructions, student names or notes to remember..."></textarea>
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 12px; font-size: 0.82rem; color: #64748b; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i>
+                        <span id="workitem-note-hint">Assigned work items appear in real time on the faculty member's workspace dashboard.</span>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-workitem')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-workitem">
+                        <i class="fa-solid fa-paper-plane"></i> Save Work Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Student -->
+    <div id="modal-add-student" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Enroll New Student</h3>
+                <span class="close-btn" onclick="closeModal('modal-add-student')">&times;</span>
+            </div>
+            <form id="form-add-student" onsubmit="handleCreateStudent(event)">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="std-first-name" required placeholder="e.g. Rahul">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="std-last-name" required placeholder="e.g. Verma">
+                </div>
+                <div class="form-group">
+                    <label>Class & Section</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <select id="std-class" required>
+                            <option value="KG">KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10" selected>Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                        <select id="std-section" required>
+                            <option value="A" selected>Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Roll Number</label>
+                    <input type="number" id="std-roll-no" required placeholder="e.g. 18">
+                </div>
+                <div class="form-group">
+                    <label>Guardian Name</label>
+                    <input type="text" id="std-guardian-name" required placeholder="e.g. Ramesh Verma">
+                </div>
+                <div class="form-group">
+                    <label>Guardian Mobile Phone</label>
+                    <input type="text" id="std-guardian-phone" required placeholder="+91-9801XXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Residential Address (Raxaul / Champaran)</label>
+                    <input type="text" id="std-address" required placeholder="e.g. Main Road, Harpur, Raxaul">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-student')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Enroll to Active Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- CUSTOM ENTERPRISE DIALOG MODAL (CONFIRM & ALERT)               -->
+    <!-- ============================================================== -->
+    <div id="modal-custom-dialog" class="modal">
+        <div class="modal-content custom-dialog-modal">
+            <div class="custom-dialog-body">
+                <div class="custom-dialog-icon dialog-icon-info" id="dialog-icon-wrapper">
+                    <i id="dialog-icon" class="fa-solid fa-circle-info"></i>
+                </div>
+                <h4 id="dialog-title">Institutional Notice</h4>
+                <p id="dialog-message">Please confirm your action.</p>
+            </div>
+            <div class="custom-dialog-actions" id="dialog-actions">
+                <button type="button" class="btn btn-outline" id="dialog-btn-cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="dialog-btn-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- INQUIRY INTERACTION & COMMENT HISTORY MODAL                    -->
+    <!-- ============================================================== -->
+    <div id="modal-inquiry-history" class="modal">
+        <div class="modal-content inquiry-timeline-modal">
+            <div class="modal-header">
+                <div>
+                    <h3 id="inq-history-title">Student Inquiry Interaction History</h3>
+                    <small id="inq-history-subtitle" style="color: #64748b;">Chronological audit & admissions notes</small>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-inquiry-history')">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px; overflow-y: auto; max-height: calc(85vh - 120px);">
+                <!-- Header Summary Card -->
+                <div class="inquiry-header-summary">
+                    <div class="summary-item">
+                        <small>Candidate Student</small>
+                        <strong id="inq-hist-candidate">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Target Grade</small>
+                        <strong id="inq-hist-grade">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Parent / Guardian</small>
+                        <strong id="inq-hist-parent">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Contact Phone</small>
+                        <strong id="inq-hist-phone">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Current Pipeline Status</small>
+                        <span id="inq-hist-status" class="badge badge-warning">NEW</span>
+                    </div>
+                </div>
+
+                <!-- Add Comment Form Box -->
+                <div class="new-comment-box" style="margin-bottom: 24px;">
+                    <h4><i class="fa-solid fa-comment-medical" style="color: #2563eb;"></i> Add Interaction / Follow-up Note</h4>
+                    <form id="form-inquiry-comment" onsubmit="handleAddInquiryComment(event)" style="padding: 0;">
+                        <input type="hidden" id="inq-comment-inquiry-id">
+                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.8rem; margin-bottom: 4px;">Interaction Category</label>
+                                <select id="inq-comment-type" required style="padding: 8px 10px; font-size: 0.84rem;">
+                                    <option value="PHONE_CALL">📞 Phone Call with Parent</option>
+                                    <option value="CAMPUS_VISIT">🏫 Campus Visit / Walk-in</option>
+                                    <option value="DOCUMENT_FOLLOWUP">📑 Document Follow-up</option>
+                                    <option value="ASSESSMENT">📝 Entrance Test / Assessment</option>
+                                    <option value="FEE_DISCUSSION">💰 Fee & Concession Discussion</option>
+                                    <option value="GENERAL_NOTE">📋 General Observation / Note</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.8rem; margin-bottom: 4px;">Update Pipeline Stage</label>
+                                <select id="inq-comment-stage" style="padding: 8px 10px; font-size: 0.84rem;">
+                                    <option value="NEW">New Prospect</option>
+                                    <option value="CONTACTED" selected>Contacted & Pitch Made</option>
+                                    <option value="TEST_SCHEDULED">Assessment Scheduled</option>
+                                    <option value="QUALIFIED">Qualified for Admission</option>
+                                    <option value="DISQUALIFIED">Disqualified / Lost</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 0.8rem; margin-bottom: 4px;">Counselor Interaction Notes *</label>
+                            <textarea id="inq-comment-text" required placeholder="Detail the conversation with parent, queries raised, commitments made, or next steps..." rows="3" style="font-size: 0.86rem; padding: 8px 10px;"></textarea>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn btn-primary btn-sm" id="btn-post-comment">
+                                <i class="fa-solid fa-paper-plane"></i> Log Interaction Note
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Interaction Timeline -->
+                <h4 style="margin: 0 0 14px 0; font-size: 0.96rem; color: #1e293b; display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="fa-solid fa-clock-rotate-left"></i> Interaction History Timeline</span>
+                    <span id="inq-comments-count-pill" class="badge badge-primary">0 entries</span>
+                </h4>
+                <div class="timeline-feed" id="inquiry-timeline-feed">
+                    <div style="text-align: center; color: #94a3b8; padding: 16px;">Loading interaction history...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: ADJUST CLASS / SECTION WITH MANDATORY COMMENT           -->
+    <!-- ============================================================== -->
+    <div id="modal-adjust-class" class="modal">
+        <div class="modal-content" style="max-width: 580px;">
+            <div class="modal-header">
+                <div>
+                    <h3>Adjust Academic Placement</h3>
+                    <small style="color: #64748b;">Recommend or reassign student to lower or alternate class</small>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-adjust-class')">&times;</span>
+            </div>
+            <form id="form-adjust-class" onsubmit="handleSaveClassAdjustment(event)">
+                <input type="hidden" id="adjust-app-id">
+                <div class="inquiry-header-summary" style="margin-bottom: 16px;">
+                    <div class="summary-item">
+                        <small>Candidate Student</small>
+                        <strong id="adjust-student-name">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Originally Applied For</small>
+                        <strong id="adjust-applied-grade" style="color: #64748b;">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Currently Assigned</small>
+                        <strong id="adjust-current-assigned" style="color: #2563eb;">-</strong>
+                    </div>
+                </div>
+
+                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>New Recommended Class *</label>
+                        <select id="adjust-target-grade" required>
+                            <option value="KG">KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Assigned Section *</label>
+                        <select id="adjust-section" required>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pedagogy-alert-box" style="margin-bottom: 12px;">
+                    <i class="fa-solid fa-graduation-cap" style="font-size: 1.2rem; color: #b45309; margin-top: 2px;"></i>
+                    <div style="font-size: 0.84rem;">
+                        <strong>Mandatory Pedagogical Justification:</strong>
+                        <p style="margin: 2px 0 0 0;">If enrolling into a lower class or adjusting section, detail the entrance assessment score, diagnostic evaluation, or counseling discussion justifying this decision.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pedagogical Assessment & Justification Note *</label>
+                    <textarea id="adjust-reason" required rows="3" placeholder="e.g. Diagnostic assessment indicates student has learning gaps in Class 8 mathematics and science; management counsels and enrolls student into Class 7 for foundation consolidation."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-adjust-class')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Placement & Record Audit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- APPLICATION INTERACTION & AUDIT HISTORY TIMELINE MODAL         -->
+    <!-- ============================================================== -->
+    <div id="modal-application-history" class="modal">
+        <div class="modal-content inquiry-timeline-modal" style="max-width: 820px;">
+            <div class="modal-header">
+                <div>
+                    <h3 id="app-history-title">Application Audit & Interaction Timeline</h3>
+                    <small id="app-history-subtitle" style="color: #64748b;">Chronological management records & pedagogical comments</small>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-application-history')">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px; overflow-y: auto; max-height: calc(85vh - 120px);">
+                <!-- Header Summary Card -->
+                <div class="inquiry-header-summary">
+                    <div class="summary-item">
+                        <small>Application #</small>
+                        <strong id="app-hist-app-no">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Candidate Student</small>
+                        <strong id="app-hist-candidate">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Applied Grade</small>
+                        <span id="app-hist-applied-grade" class="badge badge-secondary">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <small>Assigned Grade & Sec</small>
+                        <span id="app-hist-assigned-grade" class="badge badge-primary">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <small>Guardian & Phone</small>
+                        <strong id="app-hist-parent">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Active Status</small>
+                        <span id="app-hist-active-badge" class="badge badge-active">ACTIVE</span>
+                    </div>
+                    <div class="summary-item">
+                        <small>Workflow Status</small>
+                        <span id="app-hist-status" class="badge badge-warning">SUBMITTED</span>
+                    </div>
+                </div>
+
+                <!-- Add Comment Form Box -->
+                <div class="new-comment-box" style="margin-bottom: 24px;">
+                    <h4><i class="fa-solid fa-comment-medical" style="color: #2563eb;"></i> Add Management Comment or Audit Note</h4>
+                    <form id="form-application-comment" onsubmit="handleAddApplicationComment(event)" style="padding: 0;">
+                        <input type="hidden" id="app-comment-application-id">
+                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.8rem; margin-bottom: 4px;">Interaction Category</label>
+                                <select id="app-comment-type" required style="padding: 8px 10px; font-size: 0.84rem;">
+                                    <option value="PEDAGOGICAL_EVALUATION">🎓 Pedagogical Evaluation & Grade Advice</option>
+                                    <option value="DOCUMENT_AUDIT">📑 Document Verification Audit</option>
+                                    <option value="PARENT_COUNSELING">👨‍👩‍👦 Parent Counseling & Placement Agreement</option>
+                                    <option value="FEE_CONCESSION">💰 Fee / Concession Note</option>
+                                    <option value="ADMINISTRATIVE_ACTION">⚡ Administrative Action</option>
+                                    <option value="GENERAL_NOTE">📋 General Observation / Note</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.8rem; margin-bottom: 4px;">Update Status (Optional)</label>
+                                <select id="app-comment-status" style="padding: 8px 10px; font-size: 0.84rem;">
+                                    <option value="">Keep Current Status</option>
+                                    <option value="UNDER_REVIEW">Under Review</option>
+                                    <option value="DOCUMENTS_VERIFIED">Documents Verified</option>
+                                    <option value="ENROLLED">Enrolled</option>
+                                    <option value="REJECTED">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 0.8rem; margin-bottom: 4px;">Comment / Justification Note *</label>
+                            <textarea id="app-comment-text" required placeholder="Record details of evaluation, parent consent for class placement, document checks, or administrative reasons..." rows="3" style="font-size: 0.86rem; padding: 8px 10px;"></textarea>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn btn-primary btn-sm" id="btn-post-app-comment">
+                                <i class="fa-solid fa-paper-plane"></i> Post Comment to History
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Interaction Timeline -->
+                <h4 style="margin: 0 0 14px 0; font-size: 0.96rem; color: #1e293b; display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="fa-solid fa-clock-rotate-left"></i> Chronological Application Audit Trail</span>
+                    <span id="app-comments-count-pill" class="badge badge-primary">0 entries</span>
+                </h4>
+                <div class="timeline-feed" id="application-timeline-feed">
+                    <div style="text-align: center; color: #94a3b8; padding: 16px;">Loading application history...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

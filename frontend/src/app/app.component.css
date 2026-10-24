@@ -1,0 +1,126 @@
+.oxford-app {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #f8fafc;
+}
+.sidebar {
+  width: 260px;
+  background: #0b1329;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.crest {
+  width: 40px;
+  height: 40px;
+  background: #d97706;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.brand-info h2 {
+  font-size: 1.2rem;
+  margin: 0;
+  letter-spacing: 1px;
+}
+.brand-info span {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+.location-badge {
+  background: rgba(217, 119, 6, 0.15);
+  color: #f59e0b;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+.nav button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 4px;
+}
+.nav button:hover, .nav button.active {
+  background: #1e3a8a;
+  color: #fff;
+}
+.authority {
+  margin-top: auto;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  background: #fff;
+  padding: 18px 30px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #0f172a;
+}
+.header p {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+.content {
+  padding: 30px;
+}
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.kpi-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+.kpi-card span {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #64748b;
+}
+.kpi-card h3 {
+  font-size: 1.8rem;
+  margin: 6px 0;
+  color: #0f172a;
+}
+.kpi-card p {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
