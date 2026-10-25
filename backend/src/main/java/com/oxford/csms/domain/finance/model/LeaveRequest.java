@@ -34,6 +34,10 @@ public class LeaveRequest extends BaseEntity {
     @Column(nullable = false)
     private LeaveStatus status = LeaveStatus.PENDING;
 
+    private String studentClass;
+
+    private String rollNo;
+
     private String reviewedBy;
 
     private String remarks;
@@ -122,6 +126,22 @@ public class LeaveRequest extends BaseEntity {
 
     public void setStatus(LeaveStatus status) {
         this.status = status;
+    }
+
+    public String getStudentClass() {
+        return studentClass;
+    }
+
+    public void setStudentClass(String studentClass) {
+        this.studentClass = studentClass;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
     }
 
     public String getReviewedBy() {

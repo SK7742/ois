@@ -1,11 +1,14 @@
-# Oxford CSMS - Process Termination Helper
+# Oxford CSMS - Process & Container Termination Helper
+Write-Host "[INFO] Stopping Oxford CSMS Docker containers..."
+docker compose down 2>$null
+
 $pids = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
 $stopped = $false
 
 if ($pids) {
     foreach ($p in $pids) {
         if ($p -gt 0) {
-            Write-Host "[INFO] Terminating Oxford CSMS process listening on port 8080 (PID: $p)..."
+            Write-Host "[INFO] Terminating local process listening on port 8080 (PID: $p)..."
             Stop-Process -Id $p -Force -ErrorAction SilentlyContinue
             $stopped = $true
         }
@@ -21,8 +24,4 @@ if ($backendProcs) {
     }
 }
 
-if ($stopped) {
-    Write-Host "[INFO] Oxford CSMS application has been stopped successfully."
-} else {
-    Write-Host "[INFO] Oxford CSMS application is not running (Port 8080 is free)."
-}
+Write-Host "[INFO] Oxford CSMS application has been stopped successfully."

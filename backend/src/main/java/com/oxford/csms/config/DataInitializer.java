@@ -172,7 +172,7 @@ public class DataInitializer implements CommandLineRunner {
                     "teacher.sharma",
                     "Dr. Satish Sharma",
                     "admin",
-                    "Er. Sundram Kumar (Admin)",
+                    "Er. Shivam Kumar (Admin)",
                     "ADMIN",
                     LocalDate.now().plusDays(1)
             ));
@@ -217,7 +217,7 @@ public class DataInitializer implements CommandLineRunner {
         // 1. Users & Security Roles
         userRepository.save(new User("admin", passwordEncoder.encode("Admin@123"), "System Administrator", "admin@oxford.edu", "+91-9801234567", Set.of(Role.ROLE_ADMIN, Role.ROLE_MANAGEMENT)));
         userRepository.save(new User("anil.gupt", passwordEncoder.encode("Anil@123"), "Anil Kumar Gupt (Management)", "anil.gupt@oxford.edu", "+91-9801122334", Set.of(Role.ROLE_MANAGEMENT, Role.ROLE_ADMIN)));
-        userRepository.save(new User("sundram.kumar", passwordEncoder.encode("Sundram@123"), "Er. Sundram Kumar (Lead Architect)", "sundram.kumar@oxford.edu", "+91-9801998877", Set.of(Role.ROLE_ADMIN, Role.ROLE_TEACHER)));
+        userRepository.save(new User("shivam.kumar", passwordEncoder.encode("Shivam@123"), "Er. Shivam Kumar (Lead Architect)", "shivam.kumar@oxford.edu", "+91-9801998877", Set.of(Role.ROLE_ADMIN, Role.ROLE_TEACHER)));
         userRepository.save(new User("teacher.sharma", passwordEncoder.encode("Teacher@123"), "Dr. Satish Sharma", "satish.sharma@oxford.edu", "+91-9801445566", Set.of(Role.ROLE_TEACHER)));
         userRepository.save(new User("teacher.verma", passwordEncoder.encode("Teacher@123"), "Mrs. Pooja Verma", "pooja.verma@oxford.edu", "+91-9801332211", Set.of(Role.ROLE_TEACHER)));
         userRepository.save(new User("student.aarav", passwordEncoder.encode("Student@123"), "Aarav Kumar", "aarav.kumar@student.oxford.edu", "+91-9801776655", Set.of(Role.ROLE_STUDENT)));
@@ -240,7 +240,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("48000"), new BigDecimal("9000"), "English", 24, false, null
         ));
         TeachingStaff t4 = teachingStaffRepository.save(new TeachingStaff(
-                "EMP-T-004", "Sundram", "Kumar", "sundram.kumar@oxford.edu", "+91-9801998877",
+                "EMP-T-004", "Shivam", "Kumar", "shivam.kumar@oxford.edu", "+91-9801998877",
                 "Computer Science", "Lead Architect & IT Head", "B.Tech Computer Science", LocalDate.of(2021, 1, 5),
                 new BigDecimal("65000"), new BigDecimal("15000"), "Computer Science", 18, false, null
         ));
@@ -541,7 +541,7 @@ public class DataInitializer implements CommandLineRunner {
         timetableService.generateTimetableForClass("Class 10", "B", "Room 102");
 
         // 9. Clubs & Events
-        ActivityClub c1 = clubRepository.save(new ActivityClub("Oxford Robotics & AI Society", "ROBOTICS", "Er. Sundram Kumar", "Wednesday & Friday 03:30 PM", 35, "Hands-on robotics, microcontrollers, IoT, and coding with Python."));
+        ActivityClub c1 = clubRepository.save(new ActivityClub("Oxford Robotics & AI Society", "ROBOTICS", "Er. Shivam Kumar", "Wednesday & Friday 03:30 PM", 35, "Hands-on robotics, microcontrollers, IoT, and coding with Python."));
         ActivityClub c2 = clubRepository.save(new ActivityClub("Oxford Debate & Oratory Society", "DEBATE", "Mr. Rakesh Jha", "Tuesday & Thursday 03:30 PM", 40, "Inter-school debate preparation, public speaking, and Model UN training."));
         ActivityClub c3 = clubRepository.save(new ActivityClub("Eco & Nature Explorers Club", "SCIENCE", "Mrs. Pooja Verma", "Monday 03:30 PM", 50, "Botanical studies, rainwater harvesting, and environmental awareness in Champaran."));
         ActivityClub c4 = clubRepository.save(new ActivityClub("Oxford Sports & Athletics Guild", "SPORTS", "Mr. Amit Pandey", "Daily 06:30 AM & 03:30 PM", 60, "Athletics track training, football, basketball, and cricket teams."));
@@ -551,7 +551,7 @@ public class DataInitializer implements CommandLineRunner {
         clubEnrollmentRepository.save(new ClubEnrollment(c3.getId(), s4.getId(), s4.getFullName(), "Executive Member"));
         clubEnrollmentRepository.save(new ClubEnrollment(c4.getId(), s5.getId(), s5.getFullName(), "Vice Captain"));
 
-        eventRepository.save(new ActivityEvent("Annual Champaran Science & Tech Exhibition 2026", LocalDate.now().plusDays(20), "School Auditorium & Exhibition Hall", "All Grades", "Er. Sundram Kumar", "Showcasing student science innovations, smart farming models, and robotic rovers."));
+        eventRepository.save(new ActivityEvent("Annual Champaran Science & Tech Exhibition 2026", LocalDate.now().plusDays(20), "School Auditorium & Exhibition Hall", "All Grades", "Er. Shivam Kumar", "Showcasing student science innovations, smart farming models, and robotic rovers."));
         eventRepository.save(new ActivityEvent("Inter-School English Debate Championship", LocalDate.now().plusDays(32), "Auditorium Main Hall", "Grades 8 to 12", "Mr. Rakesh Jha", "Topic: 'Artificial Intelligence in Classroom Pedagogy: Catalyst or Compromise?'"));
         eventRepository.save(new ActivityEvent("Oxford Annual Winter Sports Meet 2026", LocalDate.now().plusDays(48), "Main Athletics Stadium", "All Grades", "Mr. Amit Pandey", "House competitions in sprint, relay, long jump, football, and cricket."));
 

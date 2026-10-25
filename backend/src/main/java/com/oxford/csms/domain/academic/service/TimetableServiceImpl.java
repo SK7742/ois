@@ -53,7 +53,7 @@ public class TimetableServiceImpl implements TimetableService {
             requirements.add(new AutoTimetableEngine.SubjectRequirement("English", 6, 3L, "Mr. R. Jha"));
             requirements.add(new AutoTimetableEngine.SubjectRequirement("Social Science", 5, 4L, "Mr. A. Mishra"));
             requirements.add(new AutoTimetableEngine.SubjectRequirement("Hindi", 5, 5L, "Mrs. K. Pandey"));
-            requirements.add(new AutoTimetableEngine.SubjectRequirement("Computer Science", 4, 6L, "Er. Sundram Kumar"));
+            requirements.add(new AutoTimetableEngine.SubjectRequirement("Computer Science", 4, 6L, "Er. Shivam Kumar"));
             requirements.add(new AutoTimetableEngine.SubjectRequirement("Physical Education", 4, 7L, "Mr. V. Yadav"));
             requirements.add(new AutoTimetableEngine.SubjectRequirement("Art & Culture", 4, 8L, "Ms. A. Singh"));
         } else {

@@ -7,7 +7,7 @@
 | **Institution** | Oxford International School |
 | **Location** | Harpur, Raxaul, East Champaran, Bihar |
 | **Authorized By** | Anil Kumar Gupt (Management) |
-| **Lead Architect** | Sundram Kumar |
+| **Lead Architect** | Shivam Kumar |
 | **Target Scale** | 1,500 – 2,000 Students |
 | **Backend Stack** | Java 21/23, Spring Boot 3.3.5, Spring Security (Stateless JWT RBAC), JPA/Hibernate |
 | **Frontend Stack** | Angular 18 SPA + Embedded Web Client (HTML5/CSS3/ES6 Modern Dashboard) |
@@ -139,13 +139,30 @@ API documentation and telemetry:
 - **Prometheus Metrics:** `http://localhost:8080/actuator/prometheus`
 - **H2 Console:** `http://localhost:8080/h2-console` (`jdbc:h2:mem:oxford_csms_db`)
 
-### Option B: Containerized Deployment (Docker Compose)
-To run the full stack with MySQL 8, Spring Boot backend, Angular frontend, Prometheus, and Grafana:
-```bash
-docker-compose up --build
-```
-Ports:
-- **Frontend SPA:** `http://localhost:4200`
-- **Backend API:** `http://localhost:8080`
-- **Prometheus:** `http://localhost:9090`
-- **Grafana:** `http://localhost:3000` (User: `admin` / Password: `admin`)
+### Option C: Containerized Deployment (Docker - App Containerized, Local MySQL DB)
+Run the application container in Docker while keeping MySQL running on your local machine:
+
+1. **Ensure Local MySQL is Running:**
+   - MySQL service `MySQL84` is running on port `3306` with database `school`.
+   - Access has been configured for `root`@`%` with password `root`.
+
+2. **Start the Application Container (1-Click or CLI):**
+   - **Windows:** Double-click [`docker-start.bat`](file:///C:/Users/DELL/.gemini/antigravity/scratch/oxford-csms/docker-start.bat) or run:
+     ```cmd
+     docker-start.bat
+     ```
+   - **CLI / Linux / macOS:** Run:
+     ```bash
+     docker compose up -d --build
+     ```
+
+3. **Access the Portal:**
+   - **Web UI & REST API:** `http://localhost:8080/`
+   - **Actuator Health Check:** `http://localhost:8080/actuator/health`
+
+4. **Stop the Container:**
+   - **Windows:** Run `docker-stop.bat`
+   - **CLI:** Run `docker compose down`
+
+> [!NOTE]
+> The container connects to the local host MySQL database using `host.docker.internal:3306/school` with `extra_hosts: "host.docker.internal:host-gateway"`. If you ever wish to run the entire stack including a containerized MySQL database, use `docker compose -f docker-compose.full-stack.yml up -d`.

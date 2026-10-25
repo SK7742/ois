@@ -1,77 +1,37 @@
 version: '3.8'
 
-services:
-  # MySQL Relational Database
-  mysql:
-    image: mysql:8.0
-    container_name: oxford-csms-mysql
-    restart: always
-    environment:
-      MYSQL_DATABASE: oxford_csms_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_USER: oxford_user
-      MYSQL_PASSWORD: oxford_password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+# ==============================================================================
+# Oxford International School CSMS - Containerized Application (Local MySQL DB)
+# ==============================================================================
+# In this topology:
+# - Application (Spring Boot + Static Web UI) runs inside Docker on port 8080.
+# - MySQL Database stays on the LOCAL HOST machine on port 3306.
+# - The container connects to the host database via 'host.docker.internal'.
+# ==============================================================================
 
-  # Spring Boot Microservice / Modular Monolith
-  backend:
+services:
+  app:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: oxford-csms-backend
-    restart: always
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/oxford_csms_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: oxford_user
-      SPRING_DATASOURCE_PASSWORD: oxford_password
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    image: oxford-csms-app:latest
+    container_name: oxford-csms-app
+    restart: unless-stopped
     ports:
       - "8080:8080"
-
-  # Angular Frontend Application
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: oxford-csms-frontend
-    restart: always
-    depends_on:
-      - backend
-    ports:
-      - "4200:80"
-
-  # Prometheus Telemetry Collector
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: oxford-csms-prometheus
-    restart: always
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-
-  # Grafana Observability Dashboard
-  grafana:
-    image: grafana/grafana:latest
-    container_name: oxford-csms-grafana
-    restart: always
-    depends_on:
-      - prometheus
-    ports:
-      - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-
-volumes:
-  mysql_data:
+      # Connects directly to local MySQL running on host machine
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/school?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_PORT=8080
+    extra_hosts:
+      # Ensures 'host.docker.internal' resolves to host machine on Windows, macOS & Linux
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

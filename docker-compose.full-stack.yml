@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # MySQL Relational Database
+  mysql:
+    image: mysql:8.0
+    container_name: oxford-csms-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: school
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: oxford_user
+      MYSQL_PASSWORD: oxford_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Microservice / Modular Monolith
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: oxford-csms-app
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/school?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+
+  # Prometheus Telemetry Collector
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: oxford-csms-prometheus
+    restart: always
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  # Grafana Observability Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: oxford-csms-grafana
+    restart: always
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+volumes:
+  mysql_data:

@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea
+.vscode
+target/classes
+target/generated-sources
+target/maven-archiver
+target/maven-status
+target/test-classes
+*.log

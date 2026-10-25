@@ -71,7 +71,7 @@
 
                 <div class="login-footer">
                     Authorized By: <strong>Anil Kumar Gupt (Management)</strong><br>
-                    Lead Architect: <strong>Sundram Kumar</strong>
+                    Lead Architect: <strong>Shivam Kumar</strong>
                 </div>
             </div>
         </div>
@@ -81,6 +81,9 @@
     <!-- MAIN APPLICATION PORTAL (ACTIVE SESSION)                       -->
     <!-- ============================================================== -->
     <div id="app" class="app-layout" style="display: none;">
+        <!-- Mobile Sidebar Backdrop Overlay -->
+        <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleMobileSidebar(false)"></div>
+
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="brand">
@@ -125,8 +128,13 @@
             <!-- Top Header Navbar -->
             <header class="top-header">
                 <div class="header-left">
-                    <h1 id="page-title">Institution Dashboard</h1>
-                    <span class="sub-caption" id="page-subcaption">Oxford International School &bull; Harpur Campus &bull; Capacity: 2,000</span>
+                    <button class="mobile-menu-toggle" id="btn-mobile-menu" onclick="toggleMobileSidebar()" title="Toggle Sidebar Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1 id="page-title">Institution Dashboard</h1>
+                        <span class="sub-caption" id="page-subcaption">Oxford International School &bull; Harpur Campus &bull; Capacity: 2,000</span>
+                    </div>
                 </div>
 
                 <div class="header-actions">
@@ -224,7 +232,7 @@
                                         <i class="fa-solid fa-compass-drafting"></i>
                                         <div>
                                             <strong>Lead Systems Architect</strong>
-                                            <p>Sundram Kumar</p>
+                                            <p>Shivam Kumar</p>
                                         </div>
                                     </div>
                                     <div class="detail-box clickable-tile" onclick="navigateTo('students')" role="button" tabindex="0" title="Click to view student directory">
@@ -392,18 +400,18 @@
                                 </div>
 
                                 <div class="table-container">
-                                    <table class="data-table">
+                                    <table id="applications-table" class="data-table">
                                         <thead>
                                             <tr>
-                                                <th>Application #</th>
-                                                <th>Student Name</th>
-                                                <th>Applied Grade</th>
-                                                <th>Assigned Placement</th>
-                                                <th>Parent / Guardian</th>
-                                                <th>Documents</th>
-                                                <th>Status</th>
-                                                <th>Active State</th>
-                                                <th>Actions</th>
+                                                <th data-sort="applicationNumber">Application #</th>
+                                                <th data-sort="studentName">Student Name</th>
+                                                <th data-sort="appliedGrade">Applied Grade</th>
+                                                <th data-sort="targetGrade">Assigned Placement</th>
+                                                <th data-sort="fatherName">Parent / Guardian</th>
+                                                <th data-sort="documentsVerified">Documents</th>
+                                                <th data-sort="status">Status</th>
+                                                <th data-sort="active">Active State</th>
+                                                <th style="width: 140px; text-align: center;">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody id="applications-table-body">
@@ -415,18 +423,18 @@
 
                             <div id="subtab-adm-inquiries" style="display: none;">
                                 <div class="table-container">
-                                    <table class="data-table">
+                                    <table id="inquiries-table" class="data-table">
                                         <thead>
-                                            <tr>
-                                                <th>Candidate</th>
-                                                <th>Grade</th>
-                                                <th>Parent / Phone</th>
-                                                <th>Previous School</th>
-                                                <th>Status</th>
-                                                <th>Notes</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
+                                        <tr>
+                                            <th data-sort="studentName">Candidate</th>
+                                            <th data-sort="grade">Grade</th>
+                                            <th data-sort="parentName">Parent / Phone</th>
+                                            <th data-sort="previousSchool">Previous School</th>
+                                            <th data-sort="status">Status</th>
+                                            <th data-sort="notes">Notes</th>
+                                            <th style="width: 100px; text-align: center;">Action</th>
+                                        </tr>
+                                    </thead>
                                         <tbody id="inquiries-table-body">
                                             <tr><td colspan="7" class="text-center">Loading inquiries...</td></tr>
                                         </tbody>
@@ -471,17 +479,17 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="students-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Admission #</th>
-                                            <th>Student Full Name</th>
-                                            <th>Class & Section</th>
-                                            <th>Roll No</th>
-                                            <th>Guardian Phone</th>
-                                            <th>Attendance</th>
-                                            <th>Fee Status</th>
-                                            <th>Report Card</th>
+                                            <th data-sort="admissionNo">Admission #</th>
+                                            <th data-sort="fullName">Student Full Name</th>
+                                            <th data-sort="currentClass">Class & Section</th>
+                                            <th data-sort="rollNo" data-sort-type="number">Roll No</th>
+                                            <th data-sort="guardianPhone">Guardian Phone</th>
+                                            <th data-sort="attendanceRate" data-sort-type="number">Attendance</th>
+                                            <th data-sort="feeStatus">Fee Status</th>
+                                            <th style="width: 130px; text-align: center;">Report Card</th>
                                         </tr>
                                     </thead>
                                     <tbody id="students-table-body">
@@ -516,16 +524,16 @@
 
                             <div id="subtab-emp-all">
                                 <div class="table-container">
-                                    <table class="data-table">
+                                    <table id="employees-table" class="data-table">
                                         <thead>
                                             <tr>
-                                                <th>Staff ID</th>
-                                                <th>Full Name</th>
-                                                <th>Department</th>
-                                                <th>Designation</th>
-                                                <th>Qualification</th>
-                                                <th>Monthly Salary</th>
-                                                <th>Status</th>
+                                                <th data-sort="employeeCode">Staff ID</th>
+                                                <th data-sort="fullName">Full Name</th>
+                                                <th data-sort="department">Department</th>
+                                                <th data-sort="designation">Designation</th>
+                                                <th data-sort="qualification">Qualification</th>
+                                                <th data-sort="basicSalary" data-sort-type="number">Monthly Salary</th>
+                                                <th data-sort="status">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody id="employees-table-body">
@@ -537,17 +545,17 @@
 
                             <div id="subtab-emp-teaching" style="display: none;">
                                 <div class="table-container">
-                                    <table class="data-table">
+                                    <table id="teaching-table" class="data-table">
                                         <thead>
-                                            <tr>
-                                                <th>Staff ID</th>
-                                                <th>Faculty Name</th>
-                                                <th>Specialization</th>
-                                                <th>Assigned Class</th>
-                                                <th>Weekly Target Periods</th>
-                                                <th>Official Email</th>
-                                            </tr>
-                                        </thead>
+                                        <tr>
+                                            <th data-sort="employeeCode">Staff ID</th>
+                                            <th data-sort="fullName">Faculty Name</th>
+                                            <th data-sort="subjectSpecialization">Specialization</th>
+                                            <th data-sort="assignedClass">Assigned Class</th>
+                                            <th data-sort="weeklyTargetPeriods" data-sort-type="number">Weekly Target Periods</th>
+                                            <th data-sort="email">Official Email</th>
+                                        </tr>
+                                    </thead>
                                         <tbody id="teaching-table-body"></tbody>
                                     </table>
                                 </div>
@@ -555,16 +563,16 @@
 
                             <div id="subtab-emp-non-teaching" style="display: none;">
                                 <div class="table-container">
-                                    <table class="data-table">
+                                    <table id="non-teaching-table" class="data-table">
                                         <thead>
-                                            <tr>
-                                                <th>Staff ID</th>
-                                                <th>Staff Name</th>
-                                                <th>Operational Wing</th>
-                                                <th>Shift Timing</th>
-                                                <th>Contact Phone</th>
-                                            </tr>
-                                        </thead>
+                                        <tr>
+                                            <th data-sort="employeeCode">Staff ID</th>
+                                            <th data-sort="fullName">Staff Name</th>
+                                            <th data-sort="operationalDomain">Operational Wing</th>
+                                            <th data-sort="shiftTiming">Shift Timing</th>
+                                            <th data-sort="phone">Contact Phone</th>
+                                        </tr>
+                                    </thead>
                                         <tbody id="non-teaching-table-body"></tbody>
                                     </table>
                                 </div>
@@ -599,18 +607,18 @@
                             </div>
 
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="invoices-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Invoice #</th>
-                                            <th>Student Name</th>
-                                            <th>Term Period</th>
-                                            <th>Gross Fee</th>
-                                            <th>Scholarship / Concession</th>
-                                            <th>Net Amount</th>
-                                            <th>Paid</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th data-sort="invoiceNumber">Invoice #</th>
+                                            <th data-sort="studentName">Student Name</th>
+                                            <th data-sort="billingPeriod">Term Period</th>
+                                            <th data-sort="grossAmount" data-sort-type="number">Gross Fee</th>
+                                            <th data-sort="discountAmount" data-sort-type="number">Scholarship / Concession</th>
+                                            <th data-sort="netPayable" data-sort-type="number">Net Amount</th>
+                                            <th data-sort="paidAmount" data-sort-type="number">Paid</th>
+                                            <th data-sort="status">Status</th>
+                                            <th style="width: 110px; text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="invoices-table-body">
@@ -633,17 +641,17 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="leaves-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Applicant</th>
-                                            <th>Category</th>
-                                            <th>Leave Type</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th data-sort="applicantName">Applicant</th>
+                                            <th data-sort="applicantType">Category</th>
+                                            <th data-sort="leaveType">Leave Type</th>
+                                            <th data-sort="startDate" data-sort-type="date">Start Date</th>
+                                            <th data-sort="endDate" data-sort-type="date">End Date</th>
+                                            <th data-sort="reason">Reason</th>
+                                            <th data-sort="status">Status</th>
+                                            <th style="min-width: 160px; text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="leaves-table-body">
@@ -744,16 +752,16 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="exam-grades-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Term</th>
-                                            <th>Student Name</th>
-                                            <th>Subject</th>
-                                            <th>Marks Obtained</th>
-                                            <th>Maximum Marks</th>
-                                            <th>Grade Letter</th>
-                                            <th>Action</th>
+                                            <th data-sort="term">Term</th>
+                                            <th data-sort="studentName">Student Name</th>
+                                            <th data-sort="subjectName">Subject</th>
+                                            <th data-sort="marksObtained" data-sort-type="number">Marks Obtained</th>
+                                            <th data-sort="maxMarks" data-sort-type="number">Maximum Marks</th>
+                                            <th data-sort="letterGrade">Grade Letter</th>
+                                            <th style="width: 130px; text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="exam-grades-table-body">
@@ -784,16 +792,16 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="whatsapp-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Dispatch Time</th>
-                                            <th>Recipient Mobile</th>
-                                            <th>Recipient Name</th>
-                                            <th>Notice Template</th>
-                                            <th>Message Text</th>
-                                            <th>Delivery Status</th>
-                                            <th>Reference ID</th>
+                                            <th data-sort="createdAt" data-sort-type="date">Dispatch Time</th>
+                                            <th data-sort="recipientPhone">Recipient Mobile</th>
+                                            <th data-sort="recipientName">Recipient Name</th>
+                                            <th data-sort="templateName">Notice Template</th>
+                                            <th data-sort="messageBody">Message Text</th>
+                                            <th data-sort="status">Delivery Status</th>
+                                            <th data-sort="providerMessageId">Reference ID</th>
                                         </tr>
                                     </thead>
                                     <tbody id="whatsapp-table-body">
@@ -824,16 +832,16 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="tickets-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Ticket #</th>
-                                            <th>Issue Title</th>
-                                            <th>Category</th>
-                                            <th>Priority SLA</th>
-                                            <th>Current Status</th>
-                                            <th>Escalated Authority</th>
-                                            <th>Action</th>
+                                            <th data-sort="ticketNumber">Ticket #</th>
+                                            <th data-sort="title">Issue Title</th>
+                                            <th data-sort="category">Category</th>
+                                            <th data-sort="priority">Priority SLA</th>
+                                            <th data-sort="status">Current Status</th>
+                                            <th data-sort="escalatedTo">Escalated Authority</th>
+                                            <th style="width: 110px; text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tickets-table-body">
@@ -850,6 +858,7 @@
                 <!-- =================================================== -->
 
                 <section id="view-teacher-dashboard" class="view-panel">
+                    <div id="teacher-dash-alerts-container" style="margin-bottom: 1.25rem;"></div>
                     <div class="kpi-grid">
                         <div class="kpi-card accent-blue clickable-tile" onclick="navigateTo('teacher-students')" role="button" tabindex="0" title="View Assigned Class Students Register">
                             <div class="kpi-header">
@@ -920,12 +929,12 @@
                                     <table class="data-table" id="teacher-workitems-table">
                                         <thead>
                                             <tr>
-                                                <th style="width: 50px; text-align: center;">Status</th>
-                                                <th>Title & Description</th>
-                                                <th style="width: 120px;">Category</th>
-                                                <th style="width: 110px;">Priority</th>
-                                                <th style="width: 140px;">Assigned By</th>
-                                                <th style="width: 110px;">Due Date</th>
+                                                <th data-sort="status">Status</th>
+                                                <th data-sort="title">Title & Description</th>
+                                                <th data-sort="category">Category</th>
+                                                <th data-sort="priority">Priority</th>
+                                                <th data-sort="assignedBy">Assigned By</th>
+                                                <th data-sort="dueDate" data-sort-type="date">Due Date</th>
                                                 <th style="width: 90px; text-align: center;">Actions</th>
                                             </tr>
                                         </thead>
@@ -1087,14 +1096,14 @@
                                 <table class="data-table" id="assigned-class-students-table">
                                     <thead>
                                         <tr>
-                                            <th>Student Name</th>
-                                            <th>Parent Name</th>
-                                            <th>Mobile</th>
-                                            <th>Address</th>
-                                            <th style="text-align: center;">Attendance %</th>
-                                            <th>Fee Reminder</th>
+                                            <th data-sort="fullName">Student Name</th>
+                                            <th data-sort="guardianName">Parent Name</th>
+                                            <th data-sort="guardianPhone">Mobile</th>
+                                            <th data-sort="address">Address</th>
+                                            <th data-sort="attendanceRate" data-sort-type="number" style="text-align: center;">Attendance %</th>
+                                            <th data-sort="feeStatus">Fee Reminder</th>
                                             <th style="text-align: center;">Report Card</th>
-                                            <th>Notes Summary</th>
+                                            <th data-sort="notes">Notes Summary</th>
                                         </tr>
                                     </thead>
                                     <tbody id="teacher-students-body">
@@ -1120,16 +1129,16 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="teacher-marks-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Admission #</th>
-                                            <th>Student Name</th>
-                                            <th>Subject</th>
+                                            <th data-sort="admissionNo">Admission #</th>
+                                            <th data-sort="studentName">Student Name</th>
+                                            <th data-sort="subjectName">Subject</th>
                                             <th>Assessment Term</th>
-                                            <th>Max Marks</th>
-                                            <th>Marks Scored</th>
-                                            <th>Grade Letter</th>
+                                            <th data-sort="maxMarks" data-sort-type="number">Max Marks</th>
+                                            <th data-sort="marksObtained" data-sort-type="number">Marks Scored</th>
+                                            <th data-sort="letterGrade">Grade Letter</th>
                                         </tr>
                                     </thead>
                                     <tbody id="teacher-marks-body">
@@ -1156,35 +1165,105 @@
                     </div>
                 </section>
 
-                <!-- TEACHER: LEAVES -->
+                <!-- TEACHER: LEAVES (STUDENT LEAVE APPROVALS & FACULTY LEAVES) -->
                 <section id="view-teacher-leave" class="view-panel">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2>Faculty Absence & Leave Application</h2>
-                                <p>Submit casual, duty, or medical leave requests directly to Management for authorization.</p>
-                            </div>
-                            <button class="btn btn-primary" onclick="openModal('modal-apply-leave')">
-                                <i class="fa-solid fa-plane-departure"></i> Apply for Leave
+                    <!-- Top Navigation Subtabs for Teacher Leave Module -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 10px;">
+                        <div class="workitem-filter-group" style="display: flex; background: #e2e8f0; padding: 4px; border-radius: 8px; gap: 4px;">
+                            <button type="button" class="btn-filter-chip active" id="tab-btn-student-leaves" onclick="switchTeacherLeaveTab('student-leaves')" style="padding: 8px 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-user-clock" style="color: #2563eb;"></i>
+                                <span>Assigned Student Leaves</span>
+                                <span class="badge badge-warning" id="teacher-pending-student-leaves-count" style="font-size: 0.75rem; padding: 2px 6px;">0</span>
+                            </button>
+                            <button type="button" class="btn-filter-chip" id="tab-btn-my-leaves" onclick="switchTeacherLeaveTab('my-leaves')" style="padding: 8px 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-plane-departure" style="color: #64748b;"></i>
+                                <span>My Faculty Absence & Leaves</span>
                             </button>
                         </div>
-                        <div class="card-body">
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
+                    </div>
+
+                    <!-- SUBPANEL 1: ASSIGNED CLASS STUDENT LEAVES -->
+                    <div id="panel-teacher-student-leaves">
+                        <div class="card">
+                            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                                <div>
+                                    <h2 style="display: flex; align-items: center; gap: 10px;">
+                                        <i class="fa-solid fa-user-graduate" style="color: #2563eb;"></i>
+                                        <span>Student Leave Requests</span>
+                                        <span class="badge badge-info" id="teacher-assigned-class-badge" style="font-size: 0.85rem; vertical-align: middle;">Class 10A</span>
+                                    </h2>
+                                    <p style="margin-top: 4px; color: #64748b;">
+                                        Review, approve, or decline classroom absence requests submitted by students in your assigned class. Both Teacher and Admin have authorization to decide requests.
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                    <div class="workitem-filter-group" style="display: flex; background: #f1f5f9; padding: 3px; border-radius: 8px; gap: 2px;">
+                                        <button type="button" class="btn-filter-chip active" id="filter-stuleave-all" onclick="filterTeacherStudentLeaves('ALL')">All (<span id="count-stuleave-all">0</span>)</button>
+                                        <button type="button" class="btn-filter-chip" id="filter-stuleave-pending" onclick="filterTeacherStudentLeaves('PENDING')">Pending (<span id="count-stuleave-pending">0</span>)</button>
+                                        <button type="button" class="btn-filter-chip" id="filter-stuleave-reviewed" onclick="filterTeacherStudentLeaves('REVIEWED')">Reviewed (<span id="count-stuleave-reviewed">0</span>)</button>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm" onclick="loadTeacherLeaves()" title="Refresh requests">
+                                        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-container">
+                                    <table class="data-table" id="teacher-student-leaves-table">
+                                        <thead>
+                                            <tr>
+                                                <th data-sort="applicantName">Student Name & Roll</th>
+                                                <th data-sort="leaveType">Leave Type</th>
+                                                <th data-sort="days" data-sort-type="number">Duration</th>
+                                                <th data-sort="startDate" data-sort-type="date">Absence Dates</th>
+                                                <th data-sort="reason">Reason / Guardian Note</th>
+                                                <th data-sort="status">Status</th>
+                                                <th style="min-width: 170px;">Action / Reviewer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teacher-student-leaves-table-body">
+                                            <tr><td colspan="7" class="text-center" style="padding: 24px; color: #64748b;">Loading assigned student leave records...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBPANEL 2: MY FACULTY LEAVE APPLICATIONS -->
+                    <div id="panel-teacher-my-leaves" style="display: none;">
+                        <div class="card">
+                            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                                <div>
+                                    <h2 style="display: flex; align-items: center; gap: 10px;">
+                                        <i class="fa-solid fa-plane-departure" style="color: #0284c7;"></i>
+                                        <span>Faculty Absence & Leave Application</span>
+                                    </h2>
+                                    <p style="margin-top: 4px; color: #64748b;">Submit personal casual, duty, or medical leave requests directly to Management for authorization.</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openModal('modal-apply-leave')">
+                                    <i class="fa-solid fa-plus"></i> Apply for Faculty Leave
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-container">
+                                    <table id="teacher-leaves-table" class="data-table">
+                                        <thead>
                                         <tr>
-                                            <th>Leave Type</th>
+                                            <th data-sort="leaveType">Leave Type</th>
                                             <th>Duration</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Reason</th>
-                                            <th>Approval Status</th>
+                                            <th data-sort="startDate" data-sort-type="date">Start Date</th>
+                                            <th data-sort="endDate" data-sort-type="date">End Date</th>
+                                            <th data-sort="reason">Reason</th>
+                                            <th data-sort="status">Approval Status</th>
+                                            <th data-sort="reviewedBy">Reviewed By</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="teacher-leaves-table-body">
-                                        <tr><td colspan="6" class="text-center">Loading faculty leave records...</td></tr>
-                                    </tbody>
-                                </table>
+                                        <tbody id="teacher-leaves-table-body">
+                                            <tr><td colspan="7" class="text-center" style="padding: 24px; color: #64748b;">Loading faculty leave records...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1267,7 +1346,7 @@
                                     </div>
                                     <div class="period-item">
                                         <div class="period-time">11:00 - 11:45</div>
-                                        <div><strong>Period 4: Computer Science</strong> &bull; Er. Sundram Kumar (IT Lab)</div>
+                                        <div><strong>Period 4: Computer Science</strong> &bull; Er. Shivam Kumar (IT Lab)</div>
                                     </div>
                                 </div>
                             </div>
@@ -1335,16 +1414,16 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="student-fees-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Invoice #</th>
-                                            <th>Billing Term</th>
-                                            <th>Tuition Fee</th>
-                                            <th>Net Amount</th>
-                                            <th>Paid Amount</th>
-                                            <th>Status</th>
-                                            <th>Receipt</th>
+                                            <th data-sort="invoiceNumber">Invoice #</th>
+                                            <th data-sort="billingPeriod">Billing Term</th>
+                                            <th data-sort="grossAmount" data-sort-type="number">Tuition Fee</th>
+                                            <th data-sort="netPayable" data-sort-type="number">Net Amount</th>
+                                            <th data-sort="paidAmount" data-sort-type="number">Paid Amount</th>
+                                            <th data-sort="status">Status</th>
+                                            <th style="width: 130px; text-align: center;">Receipt</th>
                                         </tr>
                                     </thead>
                                     <tbody id="student-fees-table-body">
@@ -1420,14 +1499,14 @@
                         </div>
                         <div class="card-body">
                             <div class="table-container">
-                                <table class="data-table">
+                                <table id="student-leaves-table" class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Leave Type</th>
-                                            <th>From Date</th>
-                                            <th>To Date</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
+                                            <th data-sort="leaveType">Leave Type</th>
+                                            <th data-sort="startDate" data-sort-type="date">From Date</th>
+                                            <th data-sort="endDate" data-sort-type="date">To Date</th>
+                                            <th data-sort="reason">Reason</th>
+                                            <th data-sort="status">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody id="student-leaves-table-body">
@@ -1875,7 +1954,7 @@
                                 <select id="workitem-assigned-to" class="form-control">
                                     <option value="teacher.sharma">Dr. Satish Sharma (Class 10A Teacher)</option>
                                     <option value="teacher.verma">Mrs. Pooja Verma (Class 9B Teacher)</option>
-                                    <option value="sundram.kumar">Er. Sundram Kumar (Lead Architect)</option>
+                                    <option value="shivam.kumar">Er. Shivam Kumar (Lead Architect)</option>
                                     <option value="anil.gupt">Anil Kumar Gupt (Management)</option>
                                     <option value="admin">System Administrator</option>
                                 </select>
@@ -2261,6 +2340,6 @@
     <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
-    <script src="/app.js"></script>
+    <script src="/app.js?v=2.4"></script>
 </body>
 </html>

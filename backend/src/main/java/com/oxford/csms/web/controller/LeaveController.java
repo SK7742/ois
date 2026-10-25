@@ -27,7 +27,11 @@ public class LeaveController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<LeaveRequest>>> getAllLeaves(
             @RequestParam(required = false) Long applicantId,
-            @RequestParam(required = false) String applicantType) {
+            @RequestParam(required = false) String applicantType,
+            @RequestParam(required = false) String studentClass) {
+        if (studentClass != null && !studentClass.isBlank()) {
+            return ResponseEntity.ok(ApiResponse.ok(leaveService.getStudentLeaveRequestsByClass(studentClass)));
+        }
         if (applicantId != null && applicantType != null) {
             return ResponseEntity.ok(ApiResponse.ok(leaveService.getLeaveRequestsByApplicant(applicantId, applicantType)));
         }

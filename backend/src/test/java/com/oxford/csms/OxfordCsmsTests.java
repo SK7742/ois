@@ -26,7 +26,7 @@ class OxfordCsmsTests {
         reqs.add(new AutoTimetableEngine.SubjectRequirement("Mathematics", 6, 1L, "Dr. Satish Sharma"));
         reqs.add(new AutoTimetableEngine.SubjectRequirement("Science", 6, 2L, "Mrs. Pooja Verma"));
         reqs.add(new AutoTimetableEngine.SubjectRequirement("English", 6, 3L, "Mr. Rakesh Jha"));
-        reqs.add(new AutoTimetableEngine.SubjectRequirement("Computer Science", 6, 4L, "Er. Sundram Kumar"));
+        reqs.add(new AutoTimetableEngine.SubjectRequirement("Computer Science", 6, 4L, "Er. Shivam Kumar"));
 
         List<TimetableSlot> schedule = engine.generateSchedule("Class 10", "A", "Room 101", reqs, List.of());
 
