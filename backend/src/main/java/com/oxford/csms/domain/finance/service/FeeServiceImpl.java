@@ -75,7 +75,7 @@ public class FeeServiceImpl implements FeeService {
 
         // Include transport fee if student opted for institutional transport
         BigDecimal transportFee = BigDecimal.ZERO;
-        if (student.getTransportOpted() && student.getTransportFeeMonthly() != null && student.getTransportFeeMonthly().compareTo(BigDecimal.ZERO) > 0) {
+        if (Boolean.TRUE.equals(student.getTransportOpted()) && student.getTransportFeeMonthly() != null && student.getTransportFeeMonthly().compareTo(BigDecimal.ZERO) > 0) {
             transportFee = student.getTransportFeeMonthly();
             gross = gross.add(transportFee);
         }
@@ -129,6 +129,12 @@ public class FeeServiceImpl implements FeeService {
                 }
                 if (invoice.getRollNo() == null) {
                     invoice.setRollNo(student.getRollNo());
+                }
+                // Auto-apply transport / conveyance fee if opted by student and not set in invoice
+                if (Boolean.TRUE.equals(student.getTransportOpted()) && student.getTransportFeeMonthly() != null && student.getTransportFeeMonthly().compareTo(BigDecimal.ZERO) > 0) {
+                    if (invoice.getConveyanceFee() == null || invoice.getConveyanceFee().compareTo(BigDecimal.ZERO) == 0) {
+                        invoice.setConveyanceFee(student.getTransportFeeMonthly());
+                    }
                 }
                 student.setFeeStatus(Student.StudentFeeStatus.PENDING);
                 studentRepository.save(student);

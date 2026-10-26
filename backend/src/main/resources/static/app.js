@@ -1521,20 +1521,8 @@ async function handleDeleteStudent(studentId, studentName) {
 function openInvoiceForStudent(studentId, currentClass) {
     navigateTo('fees');
     setTimeout(() => {
-        const classSelect = document.getElementById('fee-class-filter');
-        if (classSelect && currentClass) {
-            classSelect.value = currentClass;
-            loadClassStudentsForFee();
-        }
-        setTimeout(() => {
-            const studentSelect = document.getElementById('invoice-student-id');
-            if (studentSelect) {
-                studentSelect.value = studentId;
-                handleStudentSelectForInvoice(studentId);
-            }
-            openModal('modal-generate-invoice');
-        }, 300);
-    }, 200);
+        openSingleInvoiceModal(studentId);
+    }, 250);
 }
 
 async function loadEmployees() {
@@ -1739,6 +1727,7 @@ async function openSingleInvoiceModal(studentId = null) {
         }
         if (badge) badge.style.display = 'inline-flex';
         if (helpText) helpText.innerHTML = '<i class="fa-solid fa-lock" style="color: #047857;"></i> <strong>Locked:</strong> Generating official fee invoice for the pre-selected student.';
+        await handleStudentSelectForInvoice(studentId);
     } else {
         currentLockedInvoiceStudentId = null;
         if (select) {
@@ -1749,33 +1738,10 @@ async function openSingleInvoiceModal(studentId = null) {
         }
         if (badge) badge.style.display = 'none';
         if (helpText) helpText.textContent = 'Choose the student for whom this fee receipt / invoice is being generated.';
+        await handleStudentSelectForInvoice(null);
     }
 
-    calculateInvoiceTotal();
     openModal('modal-generate-invoice');
-}
-
-async function handleGenerateInvoice(event) {
-    event.preventDefault();
-    const studentId = currentLockedInvoiceStudentId || document.getElementById('inv-student-id').value;
-    if (!studentId) {
-        showToast("Select Student", "Please select an enrolled student to issue invoice", "warning");
-        return;
-    }
-    const billingPeriod = document.getElementById('inv-billing-period').value;
-    const scholarshipType = document.getElementById('inv-scholarship-type').value;
-
-    const res = await fetch(`${API_BASE}/api/finance/fees/invoices/generate`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ studentId, billingPeriod, scholarshipType })
-    });
-    const d = await res.json();
-    if (d.success) {
-        closeModal('modal-generate-invoice');
-        loadFees();
-        showToast("Invoice Issued", `Invoice #${d.data.invoiceNumber} issued. Net Payable: ₹${d.data.netPayable}`, "success");
-    }
 }
 
 async function bulkGenerateAllStudents() {
@@ -4106,7 +4072,7 @@ function calculateInvoiceTotal() {
 
 async function handleGenerateInvoice(event) {
     event.preventDefault();
-    const studentId = document.getElementById('inv-student-id').value;
+    const studentId = currentLockedInvoiceStudentId || document.getElementById('inv-student-id').value;
     const billingPeriod = document.getElementById('inv-billing-period').value.trim() || 'October 2026';
     const dueDate = document.getElementById('inv-due-date').value || null;
     const scholarshipType = document.getElementById('inv-scholarship-type').value;
@@ -4374,7 +4340,96 @@ function triggerPrintSlip(containerId) {
     }, 450);
 }
 
-function handleStudentSelectForInvoice(studentId) {
+async function handleStudentSelectForInvoice(studentId) {
+    if (!studentId) {
+        const item3 = document.getElementById('inv-item-3');
+        if (item3) item3.value = 0;
+        const banner = document.getElementById('inv-transport-banner');
+        if (banner) banner.style.display = 'none';
+        const concBanner = document.getElementById('inv-concession-banner');
+        if (concBanner) concBanner.style.display = 'none';
+        const tag = document.getElementById('inv-conveyance-tag');
+        if (tag) tag.textContent = '';
+        calculateInvoiceTotal();
+        return;
+    }
+
+    let student = (allEnrolledStudentsCache || []).find(s => String(s.id) === String(studentId));
+    if (!student) {
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, { headers: getAuthHeaders() });
+            const d = await res.json();
+            if (d.success) student = d.data;
+        } catch (e) {
+            console.error("Error fetching student details:", e);
+        }
+    }
+
+    if (student) {
+        // Transport Option & Monthly Bus Fee
+        const isTransport = student.transportOpted === true || student.transportOpted === 1 || String(student.transportOpted) === '1' || String(student.transportOpted) === 'true';
+        const transportFare = parseFloat(student.transportFeeMonthly) || 0;
+        const item3 = document.getElementById('inv-item-3');
+        const transportBanner = document.getElementById('inv-transport-banner');
+        const conveyanceTag = document.getElementById('inv-conveyance-tag');
+
+        if (isTransport && transportFare > 0) {
+            if (item3) item3.value = transportFare;
+            if (transportBanner) {
+                transportBanner.style.display = 'flex';
+                const routeEl = document.getElementById('inv-transport-route-name');
+                const fareEl = document.getElementById('inv-transport-fee-amount');
+                if (routeEl) routeEl.textContent = (student.busRouteName || 'Assigned Transit Route') + (student.pickupDropPoint ? ` (${student.pickupDropPoint})` : '');
+                if (fareEl) fareEl.textContent = transportFare.toLocaleString();
+            }
+            if (conveyanceTag) conveyanceTag.textContent = `(+₹${transportFare} Bus Fare Auto-applied)`;
+        } else {
+            if (item3) item3.value = 0;
+            if (transportBanner) transportBanner.style.display = 'none';
+            if (conveyanceTag) conveyanceTag.textContent = '';
+        }
+
+        // Fee Concession Mapping
+        const cat = student.feeCategory || 'GENERAL';
+        const sTypeSelect = document.getElementById('inv-scholarship-type');
+        const concBanner = document.getElementById('inv-concession-banner');
+        const concName = document.getElementById('inv-concession-name');
+        const concDesc = document.getElementById('inv-concession-desc');
+
+        if (cat === 'MERIT_SCHOLARSHIP') {
+            if (sTypeSelect) sTypeSelect.value = 'MERIT';
+            if (concBanner) {
+                concBanner.style.display = 'flex';
+                if (concName) concName.textContent = 'Merit Academic Scholarship';
+                if (concDesc) concDesc.textContent = '25% Tuition Waiver applied automatically';
+            }
+        } else if (cat === 'SIBLING_CONCESSION') {
+            if (sTypeSelect) sTypeSelect.value = 'SIBLING';
+            if (concBanner) {
+                concBanner.style.display = 'flex';
+                if (concName) concName.textContent = 'Sibling Enrollment Concession';
+                if (concDesc) concDesc.textContent = '15% Tuition Waiver applied automatically';
+            }
+        } else if (cat === 'EWS_BPL') {
+            if (sTypeSelect) sTypeSelect.value = 'EWS';
+            if (concBanner) {
+                concBanner.style.display = 'flex';
+                if (concName) concName.textContent = 'EWS / BPL Affirmative Concession';
+                if (concDesc) concDesc.textContent = '50% Tuition Waiver applied automatically';
+            }
+        } else if (cat === 'STAFF_WARD') {
+            if (sTypeSelect) sTypeSelect.value = 'STAFF_WARD';
+            if (concBanner) {
+                concBanner.style.display = 'flex';
+                if (concName) concName.textContent = 'Staff Ward Benefit';
+                if (concDesc) concDesc.textContent = '75% Tuition Waiver applied automatically';
+            }
+        } else {
+            if (sTypeSelect) sTypeSelect.value = 'NONE';
+            if (concBanner) concBanner.style.display = 'none';
+        }
+    }
+
     calculateInvoiceTotal();
 }
 
