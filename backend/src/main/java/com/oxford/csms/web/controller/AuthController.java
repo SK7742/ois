@@ -64,18 +64,6 @@ public class AuthController {
                 if (password.equals("admin") || password.equalsIgnoreCase("admin@123") || password.equals("admin123")) {
                     password = "Admin@123";
                 }
-            } else if (username.equalsIgnoreCase("anil.gupt")) {
-                if (password.equals("anil") || password.equalsIgnoreCase("anil@123") || password.equals("anil123")) {
-                    password = "Anil@123";
-                }
-            } else if (username.equalsIgnoreCase("teacher.sharma")) {
-                if (password.equals("teacher") || password.equalsIgnoreCase("teacher@123") || password.equals("teacher123")) {
-                    password = "Teacher@123";
-                }
-            } else if (username.equalsIgnoreCase("student.aarav")) {
-                if (password.equals("student") || password.equalsIgnoreCase("student@123") || password.equals("student123")) {
-                    password = "Student@123";
-                }
             }
         }
 
