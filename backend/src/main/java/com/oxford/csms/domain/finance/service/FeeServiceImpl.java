@@ -158,7 +158,12 @@ public class FeeServiceImpl implements FeeService {
 
     @Override
     public int generateBulkInvoicesForClass(String grade, String billingPeriod, LocalDate dueDate) {
-        List<Student> students = studentRepository.findByCurrentClass(grade);
+        List<Student> students;
+        if (grade == null || grade.isBlank() || "ALL".equalsIgnoreCase(grade) || "ALL_STUDENTS".equalsIgnoreCase(grade) || "All Students".equalsIgnoreCase(grade)) {
+            students = studentRepository.findAll();
+        } else {
+            students = studentRepository.findByCurrentClass(grade);
+        }
         int count = 0;
         for (Student student : students) {
             generateInvoice(student.getId(), billingPeriod, dueDate, "NONE");

@@ -1250,6 +1250,7 @@ async function loadEmployees() {
     }
 }
 async function loadFees() {
+    ensureInvoiceStudentsLoaded();
     try {
         loadStudentsForFeeClass();
         const resSummary = await fetch(`${API_BASE}/api/finance/fees/summary`, { headers: getAuthHeaders() });
@@ -1328,9 +1329,74 @@ async function loadFees() {
         console.error("Fee load error:", e);
     }
 }
+let allEnrolledStudentsCache = [];
+let currentLockedInvoiceStudentId = null;
+
+async function ensureInvoiceStudentsLoaded() {
+    const select = document.getElementById('inv-student-id');
+    if (!select) return;
+    if (allEnrolledStudentsCache.length === 0) {
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/students`, { headers: getAuthHeaders() });
+            const d = await res.json();
+            allEnrolledStudentsCache = d.data || [];
+        } catch (e) {
+            console.error("Failed to load enrolled students:", e);
+        }
+    }
+    if (allEnrolledStudentsCache.length > 0) {
+        const currentVal = select.value;
+        select.innerHTML = '<option value="">-- Choose Enrolled Student --</option>' + 
+            allEnrolledStudentsCache.map(s => {
+                const name = s.fullName || (s.firstName + ' ' + (s.lastName || '')).trim();
+                const rollText = s.rollNo != null ? `(Roll #${s.rollNo})` : '';
+                return `<option value="${s.id}">${escapeHtml(name)} (${escapeHtml(s.admissionNo)}) - ${escapeHtml(s.currentClass)} Sec ${escapeHtml(s.section || 'A')} ${rollText}</option>`;
+            }).join('');
+        if (currentVal) {
+            select.value = currentVal;
+        }
+    }
+}
+
+async function openSingleInvoiceModal(studentId = null) {
+    await ensureInvoiceStudentsLoaded();
+    const select = document.getElementById('inv-student-id');
+    const badge = document.getElementById('inv-student-lock-badge');
+    const helpText = document.getElementById('inv-student-help-text');
+
+    if (studentId) {
+        currentLockedInvoiceStudentId = studentId;
+        if (select) {
+            select.value = studentId;
+            select.disabled = true;
+            select.style.backgroundColor = '#f1f5f9';
+            select.style.cursor = 'not-allowed';
+        }
+        if (badge) badge.style.display = 'inline-flex';
+        if (helpText) helpText.innerHTML = '<i class="fa-solid fa-lock" style="color: #047857;"></i> <strong>Locked:</strong> Generating official fee invoice for the pre-selected student.';
+    } else {
+        currentLockedInvoiceStudentId = null;
+        if (select) {
+            select.disabled = false;
+            select.style.backgroundColor = '#ffffff';
+            select.style.cursor = '';
+            select.value = '';
+        }
+        if (badge) badge.style.display = 'none';
+        if (helpText) helpText.textContent = 'Choose the student for whom this fee receipt / invoice is being generated.';
+    }
+
+    calculateInvoiceTotal();
+    openModal('modal-generate-invoice');
+}
+
 async function handleGenerateInvoice(event) {
     event.preventDefault();
-    const studentId = document.getElementById('inv-student-id').value;
+    const studentId = currentLockedInvoiceStudentId || document.getElementById('inv-student-id').value;
+    if (!studentId) {
+        showToast("Select Student", "Please select an enrolled student to issue invoice", "warning");
+        return;
+    }
     const billingPeriod = document.getElementById('inv-billing-period').value;
     const scholarshipType = document.getElementById('inv-scholarship-type').value;
 
@@ -1347,21 +1413,30 @@ async function handleGenerateInvoice(event) {
     }
 }
 
-async function bulkGenerateClass10() {
-    const confirmed = await appConfirm("Generate Bulk Invoices", "Generate Term 1 fee invoices for all Class 10 students?", "Generate Invoices");
+async function bulkGenerateAllStudents() {
+    const confirmed = await appConfirm(
+        "Generate Bulk Invoices for All Students",
+        "Are you sure you want to generate Term 1 fee invoices for ALL enrolled students across all classes simultaneously?",
+        "Generate Invoices for All Students"
+    );
     if (!confirmed) return;
     try {
         const res = await fetch(`${API_BASE}/api/finance/fees/invoices/generate-bulk`, {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ grade: 'Class 10', billingPeriod: 'Term 1 - 2026' })
+            body: JSON.stringify({ grade: 'ALL', billingPeriod: 'Term 1 - 2026' })
         });
         const d = await res.json();
-        showToast("Invoices Generated", `Term invoices issued for ${d.data.invoicesGenerated} students.`, "success");
+        showToast("Invoices Generated", `Bulk invoices successfully generated for ${d.data.invoicesGenerated} students across all school classes.`, "success");
         loadFees();
     } catch (e) {
         showToast("Generation Error", e.message, "error");
     }
+}
+
+// Backward-compatibility alias
+async function bulkGenerateClass10() {
+    return bulkGenerateAllStudents();
 }
 
 function openPaymentModal(invoiceId, invoiceNumber, balance) {
@@ -4469,13 +4544,7 @@ function renderClassStudentsTable(students, updateStats = true) {
 }
 
 function quickIssueInvoiceForStudent(studentId) {
-    const student = currentClassStudentsCache.find(s => s.id === studentId);
-    const selectEl = document.getElementById('inv-student-id');
-    if (selectEl && studentId) {
-        selectEl.value = studentId;
-    }
-    calculateInvoiceTotal();
-    openModal('modal-generate-invoice');
+    openSingleInvoiceModal(studentId);
 }
 
 function updateClassRosterKpis(total, cleared, pending) {
@@ -4602,10 +4671,5 @@ async function openStudentFeeHistory(studentId) {
 function issueInvoiceForCurrentStudent() {
     if (!currentFeeHistoryStudent) return;
     closeModal('modal-student-fee-history');
-    const selectEl = document.getElementById('inv-student-id');
-    if (selectEl) {
-        selectEl.value = currentFeeHistoryStudent.id;
-    }
-    calculateInvoiceTotal();
-    openModal('modal-generate-invoice');
+    openSingleInvoiceModal(currentFeeHistoryStudent.id);
 }

@@ -55,14 +55,14 @@ public class FeeController {
     }
 
     @PostMapping("/invoices/generate-bulk")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> generateBulkInvoices(@RequestBody Map<String, Object> payload) {
-        String grade = (String) payload.get("grade");
-        String billingPeriod = (String) payload.get("billingPeriod");
-        LocalDate dueDate = payload.get("dueDate") != null ?
+    public ResponseEntity<ApiResponse<Map<String, Object>>> generateBulkInvoices(@RequestBody(required = false) Map<String, Object> payload) {
+        String grade = payload != null && payload.get("grade") != null ? (String) payload.get("grade") : "ALL";
+        String billingPeriod = payload != null && payload.get("billingPeriod") != null ? (String) payload.get("billingPeriod") : "Term 1 - 2026";
+        LocalDate dueDate = payload != null && payload.get("dueDate") != null ?
                 LocalDate.parse(payload.get("dueDate").toString()) : LocalDate.now().plusDays(15);
 
         int count = feeService.generateBulkInvoicesForClass(grade, billingPeriod, dueDate);
-        return ResponseEntity.ok(ApiResponse.ok("Bulk generation complete", Map.of("invoicesGenerated", count, "grade", grade)));
+        return ResponseEntity.ok(ApiResponse.ok("Bulk generation complete", Map.of("invoicesGenerated", count, "grade", grade != null ? grade : "ALL")));
     }
 
     @GetMapping("/invoices")
