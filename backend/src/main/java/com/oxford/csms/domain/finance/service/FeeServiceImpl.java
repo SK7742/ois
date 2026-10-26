@@ -194,22 +194,51 @@ public class FeeServiceImpl implements FeeService {
     @Override
     public PaymentRecord recordPayment(Long invoiceId, BigDecimal amount, PaymentRecord.PaymentMethod method,
                                        String transactionRef, String recordedBy, String remarks) {
+        return recordPaymentWithDiscount(invoiceId, amount, method, transactionRef, recordedBy, remarks, BigDecimal.ZERO, null);
+    }
+
+    @Override
+    public PaymentRecord recordPaymentWithDiscount(Long invoiceId, BigDecimal amount, PaymentRecord.PaymentMethod method,
+                                                  String transactionRef, String recordedBy, String remarks,
+                                                  BigDecimal discount, String discountReason) {
         Invoice invoice = getInvoiceById(invoiceId);
 
         if (invoice.getStatus() == Invoice.InvoiceStatus.PAID) {
             throw new BusinessValidationException("Invoice is already fully paid.");
         }
 
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BusinessValidationException("Payment amount must be greater than zero.");
+        if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
+            if (discountReason == null || discountReason.trim().isEmpty()) {
+                throw new BusinessValidationException("A mandatory reason must be provided when granting a fee discount.");
+            }
+            BigDecimal currentDisc = invoice.getDiscountAmount() != null ? invoice.getDiscountAmount() : BigDecimal.ZERO;
+            BigDecimal newDisc = currentDisc.add(discount);
+            invoice.setDiscountAmount(newDisc);
+            BigDecimal newNet = invoice.getGrossAmount().subtract(newDisc).max(BigDecimal.ZERO);
+            invoice.setNetPayable(newNet);
+
+            String existingScholarship = invoice.getScholarshipApplied();
+            if (existingScholarship != null && !existingScholarship.isBlank() && !existingScholarship.equalsIgnoreCase("NONE")) {
+                invoice.setScholarshipApplied(existingScholarship + "; Concession: " + discountReason.trim());
+            } else {
+                invoice.setScholarshipApplied("Concession: " + discountReason.trim());
+            }
+
+            remarks = (remarks != null && !remarks.isBlank() ? remarks + " | " : "") +
+                    "Discount Granted: Rs. " + discount + " (Reason: " + discountReason.trim() + ")";
         }
 
-        BigDecimal newPaidAmount = invoice.getPaidAmount().add(amount);
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessValidationException("Payment amount cannot be negative.");
+        }
+
+        BigDecimal currentPaid = invoice.getPaidAmount() != null ? invoice.getPaidAmount() : BigDecimal.ZERO;
+        BigDecimal newPaidAmount = currentPaid.add(amount);
         invoice.setPaidAmount(newPaidAmount);
 
         if (newPaidAmount.compareTo(invoice.getNetPayable()) >= 0) {
             invoice.setStatus(Invoice.InvoiceStatus.PAID);
-        } else {
+        } else if (newPaidAmount.compareTo(BigDecimal.ZERO) > 0) {
             invoice.setStatus(Invoice.InvoiceStatus.PARTIALLY_PAID);
         }
 
@@ -222,9 +251,9 @@ public class FeeServiceImpl implements FeeService {
                 invoice.getStudentId(),
                 amount,
                 method,
-                transactionRef != null ? transactionRef : "TXN-" + System.currentTimeMillis(),
-                recordedBy != null ? recordedBy : "Accounts Office",
-                remarks != null ? remarks : "Tuition Fee Oxford International School"
+                transactionRef != null && !transactionRef.isBlank() ? transactionRef : "TXN-" + System.currentTimeMillis(),
+                recordedBy != null && !recordedBy.isBlank() ? recordedBy : "Accounts Office",
+                remarks != null && !remarks.isBlank() ? remarks : "Tuition Fee Oxford International School"
         );
 
         // Check if all student's invoices are cleared

@@ -2015,40 +2015,95 @@
         </div>
     </div>
 
-    <!-- Modal: Pay Invoice -->
+    <!-- Modal: Pay Invoice with Discount & Mandatory Reason -->
     <div id="modal-pay-invoice" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Record Fee Payment</h3>
-                <span class="close-btn" onclick="closeModal('modal-pay-invoice')">&times;</span>
+        <div class="modal-content" style="max-width: 540px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #065f46, #047857); color: #fff; padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="background: rgba(255,255,255,0.2); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: #fff; font-size: 1.15rem;">Record Fee Collection & Receipt</h3>
+                        <small style="color: #a7f3d0;">Oxford International School Treasury</small>
+                    </div>
+                </div>
+                <span class="close-btn" style="color: #fff; font-size: 1.8rem;" onclick="closeModal('modal-pay-invoice')">&times;</span>
             </div>
-            <form id="form-pay-invoice" onsubmit="handlePayInvoice(event)">
+            <form id="form-pay-invoice" onsubmit="handlePayInvoice(event)" style="padding: 20px;">
                 <input type="hidden" id="pay-invoice-id">
-                <div class="form-group">
-                    <label>Invoice Number</label>
-                    <input type="text" id="pay-invoice-num" readonly>
+                <input type="hidden" id="pay-invoice-raw-balance" value="0">
+                
+                <!-- Invoice Info Strip -->
+                <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <small style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px;">INVOICE NUMBER</small>
+                        <div id="pay-invoice-num" style="font-weight: 800; color: #1e3a8a; font-family: monospace; font-size: 1rem;">INV-2026-1001</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <small style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px;">CURRENT BALANCE DUE</small>
+                        <div id="pay-invoice-original-balance" style="font-weight: 800; color: #dc2626; font-size: 1.15rem;">₹ 0</div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Payment Amount (₹)</label>
-                    <input type="number" step="0.01" id="pay-amount" required>
+
+                <!-- Discount Section with Mandatory Reason -->
+                <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <label style="font-weight: 700; color: #065f46; margin: 0; display: flex; align-items: center; gap: 8px; font-size: 0.92rem;">
+                            <i class="fa-solid fa-tag"></i> Grant Fee Discount / Concession
+                        </label>
+                        <span style="font-size: 0.74rem; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Optional</span>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 0.84rem; color: #1e3a8a; font-weight: 600;">Discount Amount (₹)</label>
+                        <input type="number" step="0.01" min="0" id="pay-discount-amount" placeholder="e.g. 500" oninput="recalculateCollectionTotals()" style="border-color: #86efac; font-weight: 600; color: #065f46;">
+                    </div>
+
+                    <div id="pay-discount-reason-group" class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 0.84rem; color: #334155; font-weight: 600; display: flex; align-items: center; justify-content: space-between;">
+                            <span>Discount Reason <span id="pay-reason-asterisk" style="color: #dc2626; display: none;">* (Mandatory)</span></span>
+                            <span id="pay-discount-reason-tag" class="badge badge-danger" style="display: none; font-size: 0.72rem; padding: 2px 6px;">Reason Required</span>
+                        </label>
+                        <input type="text" id="pay-discount-reason" placeholder="e.g. Approved by Principal / Sibling Concession / Merit Scholarship" style="border-color: #cbd5e1; transition: border-color 0.2s ease;">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Payment Mode</label>
-                    <select id="pay-method">
-                        <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
-                        <option value="CASH">School Cash Counter</option>
-                        <option value="NET_BANKING">Net Banking (NEFT/RTGS)</option>
-                        <option value="DEBIT_CARD">Debit / Credit Card</option>
+
+                <!-- Collection Amount -->
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 700; color: #0f172a; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Payment Amount Received (₹) *</span>
+                        <span style="color: #047857; font-weight: 700; font-size: 0.85rem;" id="pay-net-due-label">Net Due: ₹ 0</span>
+                    </label>
+                    <input type="number" step="0.01" min="0" id="pay-amount" required style="font-size: 1.15rem; font-weight: 800; color: #047857; border: 2px solid #059669; background: #fff;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 600;">Payment Mode *</label>
+                    <select id="pay-method" required>
+                        <option value="CASH" selected>School Cash Counter</option>
+                        <option value="UPI">UPI (Google Pay / PhonePe / Paytm / QR)</option>
+                        <option value="NET_BANKING">Net Banking (NEFT / RTGS)</option>
+                        <option value="DEBIT_CARD">Debit / Credit Card (POS Terminal)</option>
                         <option value="CHEQUE">Cheque / Demand Draft</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Bank / Transaction Reference</label>
-                    <input type="text" id="pay-ref" placeholder="e.g. UPI-982736412">
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 600;">Bank / Transaction Reference</label>
+                    <input type="text" id="pay-ref" placeholder="e.g. CASH-TXN-01 or UPI-20261026001">
                 </div>
-                <div class="modal-footer">
+
+                <div class="form-group" style="margin-bottom: 18px;">
+                    <label style="font-weight: 600;">Internal Audit Remarks</label>
+                    <input type="text" id="pay-remarks" placeholder="Optional notes for Oxford account records">
+                </div>
+
+                <div class="modal-footer" style="padding: 14px 0 0 0; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('modal-pay-invoice')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Issue Official Receipt</button>
+                    <button type="submit" class="btn btn-primary btn-lg" style="background: #047857; border-color: #047857; font-weight: 700; padding: 10px 20px;">
+                        <i class="fa-solid fa-receipt"></i> Issue Official Receipt & Settle
+                    </button>
                 </div>
             </form>
         </div>

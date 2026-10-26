@@ -1895,14 +1895,15 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 200;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
     align-items: center;
     justify-content: center;
 }
 
 .modal.active {
-    display: flex;
+    display: flex !important;
 }
 
 .modal-content {

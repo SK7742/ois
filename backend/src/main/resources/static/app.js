@@ -1440,35 +1440,144 @@ async function bulkGenerateClass10() {
 }
 
 function openPaymentModal(invoiceId, invoiceNumber, balance) {
-    document.getElementById('pay-invoice-id').value = invoiceId;
-    document.getElementById('pay-invoice-num').value = invoiceNumber;
-    document.getElementById('pay-amount').value = balance;
+    const balNum = parseFloat(balance) || 0;
+    const invIdEl = document.getElementById('pay-invoice-id');
+    const invNumEl = document.getElementById('pay-invoice-num');
+    const rawBalEl = document.getElementById('pay-invoice-raw-balance');
+    const origBalEl = document.getElementById('pay-invoice-original-balance');
+
+    if (invIdEl) invIdEl.value = invoiceId;
+    if (invNumEl) {
+        if ('value' in invNumEl) invNumEl.value = invoiceNumber || ('INV-' + invoiceId);
+        invNumEl.textContent = invoiceNumber || ('INV-' + invoiceId);
+    }
+    if (rawBalEl) rawBalEl.value = balNum;
+    if (origBalEl) origBalEl.textContent = `₹ ${Math.round(balNum).toLocaleString()}`;
+    
+    // Reset discount fields
+    const discInput = document.getElementById('pay-discount-amount');
+    const reasonInput = document.getElementById('pay-discount-reason');
+    if (discInput) discInput.value = '';
+    if (reasonInput) {
+        reasonInput.value = '';
+        reasonInput.required = false;
+        reasonInput.style.borderColor = '#cbd5e1';
+    }
+    const tag = document.getElementById('pay-discount-reason-tag');
+    const asterisk = document.getElementById('pay-reason-asterisk');
+    if (tag) tag.style.display = 'none';
+    if (asterisk) asterisk.style.display = 'none';
+
+    const payAmtInput = document.getElementById('pay-amount');
+    if (payAmtInput) payAmtInput.value = balNum > 0 ? balNum : 0;
+    
+    const netDueLabel = document.getElementById('pay-net-due-label');
+    if (netDueLabel) netDueLabel.textContent = `Net Due: ₹ ${Math.round(balNum).toLocaleString()}`;
+    
+    const remarksInput = document.getElementById('pay-remarks');
+    if (remarksInput) remarksInput.value = '';
+    
+    const refInput = document.getElementById('pay-ref');
+    if (refInput) refInput.value = 'CASH-' + Date.now().toString().slice(-6);
+
     openModal('modal-pay-invoice');
+}
+
+function recalculateCollectionTotals() {
+    const rawBal = parseFloat(document.getElementById('pay-invoice-raw-balance')?.value) || 0;
+    const discVal = parseFloat(document.getElementById('pay-discount-amount')?.value) || 0;
+    const reasonInput = document.getElementById('pay-discount-reason');
+    const tag = document.getElementById('pay-discount-reason-tag');
+    const asterisk = document.getElementById('pay-reason-asterisk');
+
+    if (discVal > 0) {
+        if (reasonInput) {
+            reasonInput.required = true;
+            reasonInput.style.borderColor = '#dc2626';
+        }
+        if (tag) tag.style.display = 'inline-block';
+        if (asterisk) asterisk.style.display = 'inline';
+    } else {
+        if (reasonInput) {
+            reasonInput.required = false;
+            reasonInput.style.borderColor = '#cbd5e1';
+        }
+        if (tag) tag.style.display = 'none';
+        if (asterisk) asterisk.style.display = 'none';
+    }
+
+    const netDue = Math.max(0, rawBal - discVal);
+    const netDueLabel = document.getElementById('pay-net-due-label');
+    if (netDueLabel) {
+        netDueLabel.textContent = `Net Due: ₹ ${Math.round(netDue).toLocaleString()}`;
+    }
+
+    const payAmountInput = document.getElementById('pay-amount');
+    if (payAmountInput) {
+        payAmountInput.value = netDue;
+    }
 }
 
 async function handlePayInvoice(event) {
     event.preventDefault();
     const invoiceId = document.getElementById('pay-invoice-id').value;
-    const amount = document.getElementById('pay-amount').value;
+    const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
     const paymentMethod = document.getElementById('pay-method').value;
-    const transactionReference = document.getElementById('pay-ref').value;
+    const transactionReference = (document.getElementById('pay-ref')?.value || '').trim();
+    const remarks = (document.getElementById('pay-remarks')?.value || '').trim();
+    const discountAmount = parseFloat(document.getElementById('pay-discount-amount')?.value) || 0;
+    const discountReason = (document.getElementById('pay-discount-reason')?.value || '').trim();
 
-    const res = await fetch(`${API_BASE}/api/finance/fees/invoices/${invoiceId}/pay`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-            amount,
-            paymentMethod,
-            transactionReference,
+    // Validate mandatory discount reason
+    if (discountAmount > 0 && !discountReason) {
+        showToast("Reason Required", "Please provide a mandatory reason for granting the discount / concession.", "warning");
+        const reasonInput = document.getElementById('pay-discount-reason');
+        if (reasonInput) {
+            reasonInput.focus();
+            reasonInput.style.borderColor = '#dc2626';
+        }
+        return;
+    }
+
+    try {
+        const payload = {
+            amount: amount,
+            paymentMethod: paymentMethod,
+            transactionReference: transactionReference || ('TXN-' + Date.now()),
             recordedBy: 'Accounts Counter',
-            remarks: 'Oxford International School Fee Clearance'
-        })
-    });
-    const d = await res.json();
-    if (d.success) {
-        closeModal('modal-pay-invoice');
-        loadFees();
-        showToast("Payment Confirmed", `Receipt #${d.data.receiptNumber} recorded for ₹${d.data.amountPaid}`, "success");
+            remarks: remarks || 'Oxford International School Fee Clearance',
+            discountAmount: discountAmount,
+            discountReason: discountReason
+        };
+
+        const res = await fetch(`${API_BASE}/api/finance/fees/invoices/${invoiceId}/pay`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const d = await res.json();
+        if (d.success) {
+            closeModal('modal-pay-invoice');
+            showToast("Fee Collected", `Official payment receipt #${d.data.receiptNumber} recorded for ₹${d.data.amountPaid}`, "success");
+            
+            // Refresh ledger modal if open
+            if (currentFeeHistoryStudent) {
+                openStudentFeeHistory(currentFeeHistoryStudent.id);
+            }
+            loadFees();
+            loadStudentsForFeeClass();
+
+            // Prompt print official receipt
+            setTimeout(() => {
+                printFeeReceipt(invoiceId);
+            }, 300);
+        } else {
+            showToast("Payment Failed", d.message || "Failed to record payment", "error");
+        }
+    } catch (e) {
+        console.error("Payment error:", e);
+        showToast("Error", e.message, "error");
     }
 }
 
@@ -4340,13 +4449,46 @@ function switchSubtab(subtabId, btn) {
     }
 }
 
+let modalZIndexCounter = 1050;
+const activeModalStack = [];
+
 function openModal(modalId) {
-    document.getElementById(modalId).classList.add('active');
+    const el = document.getElementById(modalId);
+    if (!el) return;
+
+    modalZIndexCounter += 10;
+    el.style.zIndex = modalZIndexCounter;
+    el.classList.add('active');
+
+    if (!activeModalStack.includes(modalId)) {
+        activeModalStack.push(modalId);
+    }
+
+    // Auto-focus first input after animation
+    setTimeout(() => {
+        const input = el.querySelector('input:not([type=hidden]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button.btn-primary');
+        if (input) input.focus();
+    }, 100);
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('active');
+    const el = document.getElementById(modalId);
+    if (!el) return;
+
+    el.classList.remove('active');
+    el.style.zIndex = '';
+
+    const idx = activeModalStack.indexOf(modalId);
+    if (idx !== -1) activeModalStack.splice(idx, 1);
 }
+
+// Global escape key handler to close top-most active modal
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && activeModalStack.length > 0) {
+        const topModal = activeModalStack[activeModalStack.length - 1];
+        closeModal(topModal);
+    }
+});
 
 
 // ==============================================================

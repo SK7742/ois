@@ -23,6 +23,7 @@ public interface FeeService {
     Invoice getInvoiceById(Long id);
 
     PaymentRecord recordPayment(Long invoiceId, BigDecimal amount, PaymentRecord.PaymentMethod method, String transactionRef, String recordedBy, String remarks);
+    PaymentRecord recordPaymentWithDiscount(Long invoiceId, BigDecimal amount, PaymentRecord.PaymentMethod method, String transactionRef, String recordedBy, String remarks, BigDecimal discount, String discountReason);
     List<PaymentRecord> getPaymentsForInvoice(Long invoiceId);
 
     Map<String, Object> getFeeCollectionSummary();

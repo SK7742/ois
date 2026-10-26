@@ -88,7 +88,13 @@ public class FeeController {
         String recordedBy = (String) payload.get("recordedBy");
         String remarks = (String) payload.get("remarks");
 
-        PaymentRecord receipt = feeService.recordPayment(id, amount, method, txnRef, recordedBy, remarks);
+        BigDecimal discount = BigDecimal.ZERO;
+        if (payload.get("discountAmount") != null && !payload.get("discountAmount").toString().isBlank()) {
+            discount = new BigDecimal(payload.get("discountAmount").toString());
+        }
+        String discountReason = (String) payload.get("discountReason");
+
+        PaymentRecord receipt = feeService.recordPaymentWithDiscount(id, amount, method, txnRef, recordedBy, remarks, discount, discountReason);
         return ResponseEntity.ok(ApiResponse.ok("Payment recorded, receipt generated", receipt));
     }
 
