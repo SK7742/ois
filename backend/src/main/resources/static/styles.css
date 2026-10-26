@@ -3902,3 +3902,102 @@ body {
         display: none !important;
     }
 }
+
+
+/* ==============================================================
+   UNIVERSAL ULTRA-STYLISH FORM CONTROLS & DROPDOWNS (ALL PAGES)
+   ============================================================== */
+select,
+.form-control,
+.filter-toolbar select,
+.filter-select-stylish,
+.form-group select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-color: #ffffff !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 15px 15px !important;
+    padding: 10px 42px 10px 14px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    font-family: inherit !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+    cursor: pointer !important;
+    outline: none !important;
+    height: 42px !important;
+    line-height: 1.4 !important;
+    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease !important;
+}
+
+/* Hover State */
+select:hover:not(:disabled),
+.form-control:hover:not(:disabled),
+.filter-toolbar select:hover:not(:disabled),
+.filter-select-stylish:hover:not(:disabled),
+.form-group select:hover:not(:disabled) {
+    border-color: #10b981 !important;
+    background-color: #fafdfc !important;
+    box-shadow: 0 2px 8px -2px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Focus State */
+select:focus,
+.form-control:focus,
+.filter-toolbar select:focus,
+.filter-select-stylish:focus,
+.form-group select:focus {
+    border-color: #059669 !important;
+    box-shadow: 0 0 0 3.5px rgba(5, 150, 105, 0.18), 0 2px 4px 0 rgba(0, 0, 0, 0.05) !important;
+    background-color: #ffffff !important;
+}
+
+/* Disabled State */
+select:disabled,
+.form-control:disabled {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed !important;
+    opacity: 0.75 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+/* Inputs with class .form-control (not select) shouldn't have dropdown arrow */
+input.form-control,
+input[type="text"].form-control,
+input[type="date"].form-control,
+input[type="number"].form-control,
+input[type="email"].form-control,
+input[type="password"].form-control,
+.form-group input,
+.form-group textarea {
+    background-image: none !important;
+    padding-right: 14px !important;
+    cursor: text !important;
+}
+
+/* Form group select should occupy 100% width of its column */
+.form-group select {
+    width: 100% !important;
+}
+
+/* Styled option elements in dropdowns */
+select option {
+    padding: 10px 14px !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+}
+
+select option:checked {
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+    font-weight: 700 !important;
+}
