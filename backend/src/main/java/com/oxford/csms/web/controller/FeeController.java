@@ -49,6 +49,11 @@ public class FeeController {
                 feeService.generateInvoice(studentId, billingPeriod, dueDate, scholarshipType)));
     }
 
+    @PostMapping("/invoices/detailed")
+    public ResponseEntity<ApiResponse<Invoice>> createDetailedInvoice(@RequestBody Invoice invoice) {
+        return ResponseEntity.ok(ApiResponse.ok("Fee receipt / invoice generated", feeService.createDetailedInvoice(invoice)));
+    }
+
     @PostMapping("/invoices/generate-bulk")
     public ResponseEntity<ApiResponse<Map<String, Object>>> generateBulkInvoices(@RequestBody Map<String, Object> payload) {
         String grade = (String) payload.get("grade");

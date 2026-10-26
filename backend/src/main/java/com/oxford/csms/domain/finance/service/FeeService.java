@@ -16,6 +16,7 @@ public interface FeeService {
     List<FeeStructure> getAllFeeStructures();
 
     Invoice generateInvoice(Long studentId, String billingPeriod, LocalDate dueDate, String scholarshipType);
+    Invoice createDetailedInvoice(Invoice invoice);
     int generateBulkInvoicesForClass(String grade, String billingPeriod, LocalDate dueDate);
     List<Invoice> getAllInvoices();
     List<Invoice> getInvoicesByStudent(Long studentId);

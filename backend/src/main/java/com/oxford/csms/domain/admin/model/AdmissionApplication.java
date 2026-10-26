@@ -11,11 +11,15 @@ public class AdmissionApplication extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String applicationNumber;
 
+    private String slNo;
+
     @Column(nullable = false)
     private String studentName;
 
     @Column(nullable = false)
     private LocalDate dateOfBirth;
+
+    private String dobWords;
 
     @Column(nullable = false)
     private String gender;
@@ -39,6 +43,36 @@ public class AdmissionApplication extends BaseEntity {
 
     @Column(nullable = false)
     private String motherName;
+
+    private String motherOccupation;
+
+    private String guardianName;
+
+    private String fatherQualification;
+
+    private String motherQualification;
+
+    private String previousSchool;
+
+    private String previousPercentage;
+
+    private String previousMarks;
+
+    private String nationality = "Indian";
+
+    private String permanentAddress;
+
+    private String presentAddress;
+
+    private String aadharNo;
+
+    private String declarationPlace = "Harpur, Raxaul";
+
+    private LocalDate declarationDate;
+
+    private Boolean declarationAccepted = true;
+
+    private String writtenTestDate;
 
     @Column(nullable = false)
     private String contactPhone;
@@ -244,5 +278,141 @@ public class AdmissionApplication extends BaseEntity {
 
     public void setClassChangeReason(String classChangeReason) {
         this.classChangeReason = classChangeReason;
+    }
+
+    public String getSlNo() {
+        return slNo;
+    }
+
+    public void setSlNo(String slNo) {
+        this.slNo = slNo;
+    }
+
+    public String getDobWords() {
+        return dobWords;
+    }
+
+    public void setDobWords(String dobWords) {
+        this.dobWords = dobWords;
+    }
+
+    public String getMotherOccupation() {
+        return motherOccupation;
+    }
+
+    public void setMotherOccupation(String motherOccupation) {
+        this.motherOccupation = motherOccupation;
+    }
+
+    public String getGuardianName() {
+        return guardianName;
+    }
+
+    public void setGuardianName(String guardianName) {
+        this.guardianName = guardianName;
+    }
+
+    public String getFatherQualification() {
+        return fatherQualification;
+    }
+
+    public void setFatherQualification(String fatherQualification) {
+        this.fatherQualification = fatherQualification;
+    }
+
+    public String getMotherQualification() {
+        return motherQualification;
+    }
+
+    public void setMotherQualification(String motherQualification) {
+        this.motherQualification = motherQualification;
+    }
+
+    public String getPreviousSchool() {
+        return previousSchool;
+    }
+
+    public void setPreviousSchool(String previousSchool) {
+        this.previousSchool = previousSchool;
+    }
+
+    public String getPreviousPercentage() {
+        return previousPercentage;
+    }
+
+    public void setPreviousPercentage(String previousPercentage) {
+        this.previousPercentage = previousPercentage;
+    }
+
+    public String getPreviousMarks() {
+        return previousMarks;
+    }
+
+    public void setPreviousMarks(String previousMarks) {
+        this.previousMarks = previousMarks;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getPermanentAddress() {
+        return permanentAddress;
+    }
+
+    public void setPermanentAddress(String permanentAddress) {
+        this.permanentAddress = permanentAddress;
+    }
+
+    public String getPresentAddress() {
+        return presentAddress;
+    }
+
+    public void setPresentAddress(String presentAddress) {
+        this.presentAddress = presentAddress;
+    }
+
+    public String getAadharNo() {
+        return aadharNo;
+    }
+
+    public void setAadharNo(String aadharNo) {
+        this.aadharNo = aadharNo;
+    }
+
+    public String getDeclarationPlace() {
+        return declarationPlace;
+    }
+
+    public void setDeclarationPlace(String declarationPlace) {
+        this.declarationPlace = declarationPlace;
+    }
+
+    public LocalDate getDeclarationDate() {
+        return declarationDate;
+    }
+
+    public void setDeclarationDate(LocalDate declarationDate) {
+        this.declarationDate = declarationDate;
+    }
+
+    public Boolean getDeclarationAccepted() {
+        return declarationAccepted;
+    }
+
+    public void setDeclarationAccepted(Boolean declarationAccepted) {
+        this.declarationAccepted = declarationAccepted;
+    }
+
+    public String getWrittenTestDate() {
+        return writtenTestDate;
+    }
+
+    public void setWrittenTestDate(String writtenTestDate) {
+        this.writtenTestDate = writtenTestDate;
     }
 }

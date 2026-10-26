@@ -201,7 +201,7 @@ exit /b 1
 
 :jar_ready
 echo       [INFO] Launching Oxford CSMS Docker container...
-docker compose up -d
+docker compose up -d --build
 
 echo       [INFO] Waiting for application to initialize on http://localhost:8080/ ...
 set /a h_attempts=0

@@ -595,54 +595,32 @@ function renderOrUpdateDataTable(id, config) {
 const ROLE_CONFIGS = {
     ADMIN: {
         roleTitle: 'ADMINISTRATOR (SUPER USER)',
-        portalTitle: 'Institution Dashboard',
-        subcaption: 'Oxford International School • Campus Scale: 2,000 Capacity • Super User Access',
-        defaultTab: 'admin-dashboard',
+        portalTitle: 'Oxford International School - Administration',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions & Fee Management',
+        defaultTab: 'admissions',
         menu: [
-            { id: 'admin-dashboard', icon: 'fa-chart-pie', label: 'Executive Dashboard' },
-            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Intake' },
-            { id: 'students', icon: 'fa-users', label: 'Student Directory' },
-            { id: 'employees', icon: 'fa-chalkboard-user', label: 'Faculty & Staff' },
-            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations' },
-            { id: 'leaves', icon: 'fa-calendar-check', label: 'Leave Approvals' },
-            { id: 'transport', icon: 'fa-bus', label: 'Transportation & Routes' },
-            { id: 'timetable', icon: 'fa-calendar-days', label: 'Master Timetable' },
-            { id: 'activities', icon: 'fa-icons', label: 'Clubs & Events' },
-            { id: 'exams', icon: 'fa-award', label: 'Exams & Gradebook' },
-            { id: 'whatsapp', icon: 'fa-brands fa-whatsapp', label: 'WhatsApp Alerts' },
-            { id: 'tickets', icon: 'fa-headset', label: 'Campus Helpdesk' }
+            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Registration' },
+            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     },
     TEACHER: {
-        roleTitle: 'TEACHER & FACULTY PORTAL',
-        portalTitle: 'Faculty Workspace',
-        subcaption: 'Oxford International School • Classroom & Assigned Class Management',
-        defaultTab: 'teacher-dashboard',
+        roleTitle: 'ADMINISTRATOR (SUPER USER)',
+        portalTitle: 'Oxford International School - Administration',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions & Fee Management',
+        defaultTab: 'admissions',
         menu: [
-            { id: 'teacher-dashboard', icon: 'fa-chalkboard', label: 'Faculty Dashboard' },
-            { id: 'teacher-students', icon: 'fa-chalkboard-user', label: 'Assigned Class' },
-            { id: 'teacher-attendance', icon: 'fa-clipboard-user', label: "Today's Attendance" },
-            { id: 'teacher-marks', icon: 'fa-pen-to-square', label: 'Gradebook & Assessment' },
-            { id: 'teacher-timetable', icon: 'fa-calendar-week', label: 'My Teaching Schedule' },
-            { id: 'activities', icon: 'fa-icons', label: 'Clubs & Activities' },
-            { id: 'teacher-leave', icon: 'fa-plane-departure', label: 'Apply Faculty Leave' },
-            { id: 'tickets', icon: 'fa-headset', label: 'Faculty Helpdesk' }
+            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Registration' },
+            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     },
     STUDENT: {
-        roleTitle: 'STUDENT ACADEMIC PORTAL',
-        portalTitle: 'Student Academic Portal',
-        subcaption: 'Oxford International School • Self-Service Portal',
-        defaultTab: 'student-dashboard',
+        roleTitle: 'ADMINISTRATOR (SUPER USER)',
+        portalTitle: 'Oxford International School - Administration',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions & Fee Management',
+        defaultTab: 'admissions',
         menu: [
-            { id: 'student-dashboard', icon: 'fa-graduation-cap', label: 'My Academic Dashboard' },
-            { id: 'student-report-card', icon: 'fa-award', label: 'My Report Card' },
-            { id: 'student-fees', icon: 'fa-file-invoice-dollar', label: 'My Fee Invoices' },
-            { id: 'student-timetable', icon: 'fa-calendar-days', label: 'Class 10A Timetable' },
-            { id: 'student-transit', icon: 'fa-bus', label: 'My Bus Route & Stop' },
-            { id: 'activities', icon: 'fa-icons', label: 'Campus Clubs' },
-            { id: 'student-leave', icon: 'fa-envelope-open-text', label: 'Submit Absence Note' },
-            { id: 'tickets', icon: 'fa-circle-question', label: 'Student Support' }
+            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Registration' },
+            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     }
 };
@@ -864,36 +842,14 @@ function getAuthHeaders() {
 // ==============================================================
 
 function loadTabContent(tabId) {
+    if (tabId !== 'admissions' && tabId !== 'fees') {
+        navigateTo('admissions');
+        return;
+    }
     switch (tabId) {
-        // Admin
-        case 'admin-dashboard': loadAdminDashboard(); break;
         case 'admissions': loadAdmissions(); break;
-        case 'students': loadStudents(); break;
-        case 'employees': loadEmployees(); break;
         case 'fees': loadFees(); break;
-        case 'leaves': loadLeaves(); break;
-        case 'transport': loadTransport(); break;
-        case 'timetable': loadTimetable(); break;
-        case 'activities': loadActivities(); break;
-        case 'exams': loadExams(); break;
-        case 'whatsapp': loadWhatsApp(); break;
-        case 'tickets': loadTickets(); break;
-
-        // Teacher
-        case 'teacher-dashboard': loadTeacherDashboard(); break;
-        case 'teacher-attendance': loadTeacherAttendance(); break;
-        case 'teacher-students': loadTeacherStudents(); break;
-        case 'teacher-marks': loadTeacherMarks(); break;
-        case 'teacher-timetable': loadTeacherTimetable(); break;
-        case 'teacher-leave': loadTeacherLeaves(); break;
-
-        // Student
-        case 'student-dashboard': loadStudentDashboard(); break;
-        case 'student-report-card': loadStudentReportCard(); break;
-        case 'student-fees': loadStudentFees(); break;
-        case 'student-timetable': loadStudentTimetable(); break;
-        case 'student-transit': loadStudentTransit(); break;
-        case 'student-leave': loadStudentLeaves(); break;
+        default: loadAdmissions(); break;
     }
 }
 
@@ -1016,6 +972,7 @@ async function loadApplications() {
                     </td>
                     <td>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button class="btn btn-outline btn-sm" onclick="printAdmissionForm(${app.id})" style="border-color: #1e3a8a; color: #1e3a8a; font-weight: 600;" title="Print Official Admission Form & Written Test Admit Card"><i class="fa-solid fa-print"></i> Print Form</button>
                             <button class="btn btn-outline btn-sm" onclick="openApplicationHistoryModal(${app.id})" style="border-color: #2563eb; color: #2563eb;" title="Interaction history & audit comments">
                                 <i class="fa-solid fa-clock-rotate-left"></i> History
                             </button>
@@ -1353,6 +1310,7 @@ async function loadFees() {
                     </td>
                     <td>
                         ${inv.status !== 'PAID' ? `
+                            <button class="btn btn-outline btn-sm" onclick="printFeeReceipt(${inv.id})" style="border-color: #047857; color: #047857; font-weight: 600; margin-right: 6px;" title="Print Official Fee Receipt"><i class="fa-solid fa-receipt"></i> Print Receipt</button>
                             <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${inv.netPayable - inv.paidAmount})">
                                 Collect
                             </button>
@@ -3459,28 +3417,39 @@ function checkGradeChangeWarning() {
 
 async function handleCreateApplication(event) {
     event.preventDefault();
-    const appliedGrade = document.getElementById('app-applied-grade').value;
     const targetGrade = document.getElementById('app-target-grade').value;
     const assignedSection = document.getElementById('app-assigned-section').value;
-    const classChangeReason = document.getElementById('app-class-change-reason')?.value.trim() || '';
-
-    if (appliedGrade !== targetGrade && !classChangeReason) {
-        showToast('Mandatory Rationale', 'Please provide a pedagogical explanation for recommending a different class.', 'warning');
-        return;
-    }
 
     const payload = {
-        studentName: document.getElementById('app-student-name').value.trim(),
-        dateOfBirth: document.getElementById('app-dob').value,
-        gender: document.getElementById('app-gender').value,
-        appliedGrade: appliedGrade,
-        targetGrade: targetGrade,
-        assignedSection: assignedSection,
-        classChangeReason: classChangeReason || null,
+        slNo: document.getElementById('app-sl-no').value.trim() || null,
+        applicationNumber: document.getElementById('app-reg-no').value.trim() || null,
+        studentName: document.getElementById('app-student-name').value.trim().toUpperCase(),
         fatherName: document.getElementById('app-father-name').value.trim(),
-        motherName: document.getElementById('app-mother-name').value.trim() || 'Parent',
+        motherName: document.getElementById('app-mother-name').value.trim(),
+        guardianName: document.getElementById('app-guardian-name').value.trim() || null,
+        dateOfBirth: document.getElementById('app-dob').value,
+        dobWords: document.getElementById('app-dob-words').value.trim(),
+        gender: document.getElementById('app-gender').value,
+        nationality: document.getElementById('app-nationality').value.trim() || 'Indian',
+        fatherOccupation: document.getElementById('app-father-occupation').value.trim() || null,
+        motherOccupation: document.getElementById('app-mother-occupation').value.trim() || null,
+        fatherQualification: document.getElementById('app-father-qualification').value.trim() || null,
+        motherQualification: document.getElementById('app-mother-qualification').value.trim() || null,
+        previousSchool: document.getElementById('app-previous-school').value.trim() || null,
+        targetGrade: targetGrade,
+        appliedGrade: targetGrade,
+        assignedSection: assignedSection,
+        previousPercentage: document.getElementById('app-previous-percentage').value.trim() || null,
+        previousMarks: document.getElementById('app-previous-marks').value.trim() || null,
+        permanentAddress: document.getElementById('app-permanent-address').value.trim(),
+        presentAddress: document.getElementById('app-present-address').value.trim(),
+        address: document.getElementById('app-present-address').value.trim(),
         contactPhone: document.getElementById('app-contact-phone').value.trim(),
-        address: document.getElementById('app-address').value.trim() || 'Harpur, Raxaul, Bihar',
+        aadharNo: document.getElementById('app-aadhar-no').value.trim(),
+        declarationPlace: document.getElementById('app-declaration-place').value.trim() || 'Harpur, Raxaul',
+        declarationDate: document.getElementById('app-declaration-date').value || null,
+        declarationAccepted: document.getElementById('app-declaration-accepted').checked,
+        writtenTestDate: document.getElementById('app-written-test-date').value.trim() || '05-Nov-2026 at 10:00 AM',
         documentsVerified: document.getElementById('app-doc-verified').checked,
         status: document.getElementById('app-doc-verified').checked ? 'DOCUMENTS_VERIFIED' : 'SUBMITTED',
         active: true
@@ -3496,18 +3465,312 @@ async function handleCreateApplication(event) {
         if (d.success) {
             closeModal('modal-new-application');
             document.getElementById('form-new-application').reset();
-            delete document.getElementById('app-target-grade').dataset.userChanged;
-            checkGradeChangeWarning();
             await loadAdmissions();
-            const appsBtn = document.getElementById('btn-subtab-apps');
-            if (appsBtn) switchSubtab('adm-applications', appsBtn);
             showToast("Application Registered", `Application ${d.data.applicationNumber} created for ${payload.studentName}!`, "success");
+            // Prompt/Open Official Printable Form
+            printAdmissionForm(d.data.id);
         } else {
             showToast("Submission Failed", d.message || "Unknown error", "error");
         }
     } catch (e) {
         showToast("Error", e.message, "error");
     }
+}
+
+// ==============================================================
+// OFFICIAL PRINTABLE ADMISSION FORM & ADMIT SLIP (IMAGE 1)
+// ==============================================================
+async function printAdmissionForm(appId) {
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/admissions/applications/${appId}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        if (!d.success || !d.data) {
+            showToast("Error", "Could not load application record", "error");
+            return;
+        }
+        const app = d.data;
+
+        document.getElementById('pf-sl-no').textContent = app.slNo || ('SL-' + String(app.id).padStart(3, '0'));
+        document.getElementById('pf-reg-no').textContent = app.applicationNumber || ('REG-' + (1000 + app.id));
+        document.getElementById('pf-student-name').textContent = (app.studentName || '').toUpperCase();
+        document.getElementById('pf-father-name').textContent = app.fatherName || '';
+        document.getElementById('pf-mother-name').textContent = app.motherName || '';
+        document.getElementById('pf-guardian-name').textContent = app.guardianName || 'N/A';
+        document.getElementById('pf-dob-figure').textContent = app.dateOfBirth || '';
+        document.getElementById('pf-dob-words').textContent = app.dobWords || convertDateToWords(app.dateOfBirth);
+        document.getElementById('pf-father-occ').textContent = app.fatherOccupation || 'Self-Employed / Business';
+        document.getElementById('pf-mother-occ').textContent = app.motherOccupation || 'Homemaker';
+        document.getElementById('pf-father-qual').textContent = app.fatherQualification || 'Graduate';
+        document.getElementById('pf-mother-qual').textContent = app.motherQualification || 'Intermediate';
+        document.getElementById('pf-prev-school').textContent = app.previousSchool || 'Oxford Preparatory School';
+        document.getElementById('pf-class-req').textContent = app.targetGrade || 'Class 1';
+        document.getElementById('pf-prev-pct').textContent = app.previousPercentage || '85%';
+        document.getElementById('pf-prev-marks').textContent = app.previousMarks || '425 / 500';
+        document.getElementById('pf-nationality').textContent = app.nationality || 'Indian';
+        document.getElementById('pf-perm-addr').textContent = app.permanentAddress || app.address || 'Harpur, East Champaran, Bihar - 845301';
+        document.getElementById('pf-pres-addr').textContent = (app.presentAddress || app.address || 'Harpur, Raxaul, Bihar') + ' • Phone: ' + (app.contactPhone || '');
+        document.getElementById('pf-aadhar-no').textContent = app.aadharNo || 'XXXX - XXXX - 4821';
+        document.getElementById('pf-decl-place').textContent = app.declarationPlace || 'Harpur, Raxaul';
+        document.getElementById('pf-decl-date').textContent = app.declarationDate || app.createdAt ? String(app.createdAt).substring(0, 10) : '26-10-2026';
+
+        // Office Admit Slip (Tear-off)
+        document.getElementById('pf-admit-pupil').textContent = (app.studentName || '').toUpperCase();
+        document.getElementById('pf-admit-father').textContent = app.fatherName || '';
+        document.getElementById('pf-admit-regno').textContent = app.applicationNumber || ('REG-' + (1000 + app.id));
+        document.getElementById('pf-admit-testdate').textContent = app.writtenTestDate || '05-Nov-2026 at 10:00 AM';
+
+        openModal('modal-print-admission-form');
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+function autoFillDobWords(dateStr) {
+    if (!dateStr) return;
+    const words = convertDateToWords(dateStr);
+    const target = document.getElementById('app-dob-words');
+    if (target) target.value = words;
+}
+
+function convertDateToWords(dateStr) {
+    if (!dateStr) return '';
+    try {
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const day = parseInt(parts[2], 10);
+
+        const days = ['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth',
+            'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth',
+            'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];
+
+        const months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        const dayWord = days[day] || String(day);
+        const monthWord = months[month] || String(month);
+        const yearWord = numberToWords(year).replace(' Rupees Only', '');
+
+        return `${dayWord} ${monthWord} ${yearWord}`;
+    } catch (e) {
+        return dateStr;
+    }
+}
+
+// ==============================================================
+// OFFICIAL 14-PARTICULARS FEE INVOICE & RECEIPT (IMAGE 2)
+// ==============================================================
+function calculateInvoiceTotal() {
+    let gross = 0;
+    for (let i = 1; i <= 14; i++) {
+        const val = parseFloat(document.getElementById(`inv-item-${i}`)?.value) || 0;
+        gross += val;
+    }
+
+    const scholarshipType = document.getElementById('inv-scholarship-type')?.value || 'NONE';
+    let discountRate = 0;
+    if (scholarshipType === 'MERIT') discountRate = 0.25;
+    else if (scholarshipType === 'SIBLING') discountRate = 0.15;
+    else if (scholarshipType === 'EWS') discountRate = 0.50;
+    else if (scholarshipType === 'STAFF_WARD') discountRate = 0.75;
+
+    const discountAmount = Math.round(gross * discountRate);
+    const netPayable = Math.max(0, gross - discountAmount);
+
+    const grossEl = document.getElementById('display-inv-gross');
+    const discEl = document.getElementById('display-inv-discount');
+    const netEl = document.getElementById('display-inv-net');
+
+    if (grossEl) grossEl.textContent = `₹ ${gross.toLocaleString()}`;
+    if (discEl) discEl.textContent = `- ₹ ${discountAmount.toLocaleString()}`;
+    if (netEl) netEl.textContent = `₹ ${netPayable.toLocaleString()}`;
+}
+
+async function handleGenerateInvoice(event) {
+    event.preventDefault();
+    const studentId = document.getElementById('inv-student-id').value;
+    const billingPeriod = document.getElementById('inv-billing-period').value.trim() || 'October 2026';
+    const dueDate = document.getElementById('inv-due-date').value || null;
+    const scholarshipType = document.getElementById('inv-scholarship-type').value;
+
+    const admissionFee = parseFloat(document.getElementById('inv-item-1')?.value) || 0;
+    const tuitionFee = parseFloat(document.getElementById('inv-item-2')?.value) || 0;
+    const conveyanceFee = parseFloat(document.getElementById('inv-item-3')?.value) || 0;
+    const smartClassFee = parseFloat(document.getElementById('inv-item-4')?.value) || 0;
+    const computerFee = parseFloat(document.getElementById('inv-item-5')?.value) || 0;
+    const lateFee = parseFloat(document.getElementById('inv-item-6')?.value) || 0;
+    const examFee = parseFloat(document.getElementById('inv-item-7')?.value) || 0;
+    const sportGamesFee = parseFloat(document.getElementById('inv-item-8')?.value) || 0;
+    const medicalFee = parseFloat(document.getElementById('inv-item-9')?.value) || 0;
+    const libraryFee = parseFloat(document.getElementById('inv-item-10')?.value) || 0;
+    const annualDevelopmentFee = parseFloat(document.getElementById('inv-item-11')?.value) || 0;
+    const miscellaneousFee = parseFloat(document.getElementById('inv-item-12')?.value) || 0;
+    const othersFee = parseFloat(document.getElementById('inv-item-13')?.value) || 0;
+    const previousDues = parseFloat(document.getElementById('inv-item-14')?.value) || 0;
+
+    const gross = admissionFee + tuitionFee + conveyanceFee + smartClassFee + computerFee + lateFee +
+                  examFee + sportGamesFee + medicalFee + libraryFee + annualDevelopmentFee +
+                  miscellaneousFee + othersFee + previousDues;
+
+    let discountRate = 0;
+    if (scholarshipType === 'MERIT') discountRate = 0.25;
+    else if (scholarshipType === 'SIBLING') discountRate = 0.15;
+    else if (scholarshipType === 'EWS') discountRate = 0.50;
+    else if (scholarshipType === 'STAFF_WARD') discountRate = 0.75;
+
+    const discountAmount = Math.round(gross * discountRate);
+    const netPayable = Math.max(0, gross - discountAmount);
+
+    const payload = {
+        studentId: studentId,
+        billingPeriod: billingPeriod,
+        billingMonth: billingPeriod,
+        dueDate: dueDate,
+        scholarshipApplied: scholarshipType,
+        discountAmount: discountAmount,
+        grossAmount: gross,
+        netPayable: netPayable,
+        admissionFee: admissionFee,
+        tuitionFee: tuitionFee,
+        conveyanceFee: conveyanceFee,
+        smartClassFee: smartClassFee,
+        computerFee: computerFee,
+        lateFee: lateFee,
+        examFee: examFee,
+        sportGamesFee: sportGamesFee,
+        medicalFee: medicalFee,
+        libraryFee: libraryFee,
+        annualDevelopmentFee: annualDevelopmentFee,
+        miscellaneousFee: miscellaneousFee,
+        othersFee: othersFee,
+        previousDues: previousDues
+    };
+
+    try {
+        const res = await fetch(`${API_BASE}/api/finance/fees/invoices/detailed`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+        if (d.success) {
+            closeModal('modal-generate-invoice');
+            await loadFees();
+            showToast("Invoice & Receipt Issued", `Official Receipt #${d.data.invoiceNumber} generated! Net: ₹${d.data.netPayable}`, "success");
+            printFeeReceipt(d.data.id);
+        } else {
+            showToast("Failed", d.message || "Failed to generate fee invoice", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+async function printFeeReceipt(invoiceId) {
+    try {
+        const res = await fetch(`${API_BASE}/api/finance/fees/invoices/${invoiceId}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        if (!d.success || !d.data) {
+            showToast("Error", "Could not load fee invoice", "error");
+            return;
+        }
+        const inv = d.data;
+
+        document.getElementById('rcpt-no').textContent = inv.invoiceNumber || ('REC-' + inv.id);
+        document.getElementById('rcpt-date').textContent = inv.createdAt ? String(inv.createdAt).substring(0, 10) : '26-10-2026';
+        document.getElementById('rcpt-name').textContent = (inv.studentName || 'Student').toUpperCase();
+        document.getElementById('rcpt-class').textContent = inv.grade || 'N/A';
+        document.getElementById('rcpt-sec').textContent = inv.section || 'A';
+        document.getElementById('rcpt-roll').textContent = inv.rollNo != null ? inv.rollNo : '12';
+        document.getElementById('rcpt-month').textContent = inv.billingMonth || inv.billingPeriod || 'October 2026';
+        document.getElementById('rcpt-term').textContent = inv.billingPeriod || 'Term 1 - 2026';
+
+        const particulars = [
+            inv.admissionFee,
+            inv.tuitionFee || inv.grossAmount || 4500,
+            inv.conveyanceFee,
+            inv.smartClassFee,
+            inv.computerFee,
+            inv.lateFee,
+            inv.examFee,
+            inv.sportGamesFee,
+            inv.medicalFee,
+            inv.libraryFee,
+            inv.annualDevelopmentFee,
+            inv.miscellaneousFee,
+            inv.othersFee,
+            inv.previousDues
+        ];
+
+        let total = 0;
+        for (let i = 1; i <= 14; i++) {
+            const val = parseFloat(particulars[i - 1]) || 0;
+            total += val;
+            const cell = document.getElementById(`rcpt-val-${i}`);
+            if (cell) {
+                cell.textContent = val > 0 ? Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+            }
+        }
+
+        const totalToDisplay = inv.netPayable != null && inv.netPayable > 0 ? inv.netPayable : (total > 0 ? total : inv.grossAmount);
+        document.getElementById('rcpt-val-total').textContent = `Rs. ${Number(totalToDisplay).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        document.getElementById('rcpt-words').textContent = numberToWords(totalToDisplay);
+
+        openModal('modal-print-fee-receipt');
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+function numberToWords(amount) {
+    if (amount == null || isNaN(amount)) return 'Zero Rupees Only';
+    const num = Math.round(Number(amount));
+    if (num === 0) return 'Zero Rupees Only';
+
+    const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+        'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    function inWords(n) {
+        if (n < 20) return a[n];
+        const digit = n % 10;
+        return b[Math.floor(n / 10)] + (digit ? ' ' + a[digit] : '');
+    }
+
+    let str = '';
+    const crore = Math.floor(num / 10000000);
+    const lakh = Math.floor((num % 10000000) / 100000);
+    const thousand = Math.floor((num % 100000) / 1000);
+    const hundred = Math.floor((num % 1000) / 100);
+    const rest = num % 100;
+
+    if (crore > 0) str += inWords(crore) + ' Crore ';
+    if (lakh > 0) str += inWords(lakh) + ' Lakh ';
+    if (thousand > 0) str += inWords(thousand) + ' Thousand ';
+    if (hundred > 0) str += inWords(hundred) + ' Hundred ';
+    if (rest > 0) {
+        if (str !== '') str += 'and ';
+        str += inWords(rest) + ' ';
+    }
+
+    return (str.trim() + ' Rupees Only');
+}
+
+function triggerPrintSlip(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) {
+        window.print();
+        return;
+    }
+    el.classList.add('print-target');
+    window.print();
+    setTimeout(() => {
+        el.classList.remove('print-target');
+    }, 500);
+}
+
+function handleStudentSelectForInvoice(studentId) {
+    calculateInvoiceTotal();
 }
 
 // ==============================================================

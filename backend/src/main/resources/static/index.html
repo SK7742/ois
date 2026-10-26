@@ -52,16 +52,7 @@
                     <div class="demo-title">1-Click Fast Sign-In:</div>
                     <div class="demo-chips">
                         <button type="button" class="chip chip-admin" onclick="quickFill('admin', 'Admin@123')">
-                            <i class="fa-solid fa-shield"></i> Admin (Super User)
-                        </button>
-                        <button type="button" class="chip chip-teacher" onclick="quickFill('teacher.sharma', 'Teacher@123')">
-                            <i class="fa-solid fa-chalkboard-user"></i> Teacher (Faculty Portal)
-                        </button>
-                        <button type="button" class="chip chip-student" onclick="quickFill('student.aarav', 'Student@123')">
-                            <i class="fa-solid fa-user-graduate"></i> Student (Aarav Kumar)
-                        </button>
-                        <button type="button" class="chip chip-mgmt" onclick="quickFill('anil.gupt', 'Anil@123')">
-                            <i class="fa-solid fa-building-columns"></i> Management (Anil Gupt)
+                            <i class="fa-solid fa-shield"></i> Admin (Super User - Admissions & Fees)
                         </button>
                     </div>
                     <p style="font-size: 0.82rem; color: #475569; margin-top: 14px; text-align: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
@@ -1578,154 +1569,321 @@
         </div>
     </div>
 
-    <!-- Modal: New Formal Application -->
+    <!-- Modal: New Formal Application (Matches Image 1: Registration Form for Admission) -->
     <div id="modal-new-application" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
-            <div class="modal-header">
+        <div class="modal-content" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e3a8a, #1e40af); color: #fff; padding: 16px 20px;">
                 <div>
-                    <h3>Submit Formal Student Application</h3>
-                    <small style="color: #64748b;">Oxford International School &bull; Harpur, Raxaul</small>
+                    <h3 style="margin: 0; color: #fff; font-size: 1.25rem;"><i class="fa-solid fa-file-signature"></i> Registration Form for Admission</h3>
+                    <small style="color: #bfdbfe;">Oxford International School &bull; Harpur, Raxaul (Running from Nur. to Vth)</small>
                 </div>
-                <span class="close-btn" onclick="closeModal('modal-new-application')">&times;</span>
+                <span class="close-btn" style="color: #fff; font-size: 1.8rem;" onclick="closeModal('modal-new-application')">&times;</span>
             </div>
-            <form id="form-new-application" onsubmit="handleCreateApplication(event)">
+            <form id="form-new-application" onsubmit="handleCreateApplication(event)" style="padding: 20px;">
+                <!-- Header Meta -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-weight: 700; color: #1e3a8a;">SL. No.</label>
+                        <input type="text" id="app-sl-no" placeholder="e.g. SL-101">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-weight: 700; color: #1e3a8a;">REG. No.</label>
+                        <input type="text" id="app-reg-no" placeholder="Auto-generated if blank (e.g. REG-1001)">
+                    </div>
+                </div>
+
+                <h4 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 16px 0 12px 0;">
+                    <i class="fa-solid fa-user"></i> Student Particulars (Fields 1 - 5)
+                </h4>
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label>Candidate Student Name *</label>
-                        <input type="text" id="app-student-name" required placeholder="e.g. Sameer Verma">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>1. Name of Student (in Block Letters) *</label>
+                        <input type="text" id="app-student-name" required placeholder="e.g. AARAV KUMAR" style="text-transform: uppercase;">
                     </div>
                     <div class="form-group">
-                        <label>Date of Birth *</label>
-                        <input type="date" id="app-dob" required value="2011-04-12">
+                        <label>2. Father's Name *</label>
+                        <input type="text" id="app-father-name" required placeholder="e.g. Anil Kumar">
+                    </div>
+                    <div class="form-group">
+                        <label>3. Mother's Name *</label>
+                        <input type="text" id="app-mother-name" required placeholder="e.g. Sunita Devi">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>4. Guardian's Name (if father is not alive)</label>
+                        <input type="text" id="app-guardian-name" placeholder="Optional if father is alive">
+                    </div>
+                    <div class="form-group">
+                        <label>5. Date of Birth (In Figure) *</label>
+                        <input type="date" id="app-dob" required value="2018-05-15" onchange="autoFillDobWords(this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>5. Date of Birth (In Words) *</label>
+                        <input type="text" id="app-dob-words" required placeholder="e.g. Fifteenth May Two Thousand Eighteen">
                     </div>
                     <div class="form-group">
                         <label>Gender *</label>
                         <select id="app-gender" required>
-                            <option value="Male">Male</option>
+                            <option value="Male" selected>Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Applied Grade (By Parent) *</label>
-                        <select id="app-applied-grade" required onchange="handleAppliedGradeChange()">
-                            <option value="KG">KG</option>
-                            <option value="LKG">LKG</option>
-                            <option value="UKG">UKG</option>
-                            <option value="Class 1">Class 1</option>
-                            <option value="Class 2">Class 2</option>
-                            <option value="Class 3">Class 3</option>
-                            <option value="Class 4">Class 4</option>
-                            <option value="Class 5">Class 5</option>
-                            <option value="Class 6">Class 6</option>
-                            <option value="Class 7">Class 7</option>
-                            <option value="Class 8">Class 8</option>
-                            <option value="Class 9">Class 9</option>
-                            <option value="Class 10" selected>Class 10</option>
-                            <option value="Class 11">Class 11</option>
-                            <option value="Class 12">Class 12</option>
-                        </select>
+                        <label>13. Nationality *</label>
+                        <input type="text" id="app-nationality" required value="Indian">
+                    </div>
+                </div>
+
+                <h4 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 18px 0 12px 0;">
+                    <i class="fa-solid fa-user-tie"></i> Parents' Background & Qualifications (Fields 6 - 9)
+                </h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>6. Father's / Guardian's Occupation</label>
+                        <input type="text" id="app-father-occupation" placeholder="e.g. Business / Government Service">
                     </div>
                     <div class="form-group">
-                        <label>Recommended / Enrolling Class *</label>
+                        <label>7. Mother's Occupation</label>
+                        <input type="text" id="app-mother-occupation" placeholder="e.g. Homemaker / Teacher">
+                    </div>
+                    <div class="form-group">
+                        <label>8. Father's Educational Qualification</label>
+                        <input type="text" id="app-father-qualification" placeholder="e.g. Graduate / B.Com">
+                    </div>
+                    <div class="form-group">
+                        <label>9. Mother's Educational Qualification</label>
+                        <input type="text" id="app-mother-qualification" placeholder="e.g. Intermediate / B.A.">
+                    </div>
+                </div>
+
+                <h4 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 18px 0 12px 0;">
+                    <i class="fa-solid fa-graduation-cap"></i> Academic Details & Required Admission (Fields 10 - 12)
+                </h4>
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>10. Previous School Name where student passed out</label>
+                        <input type="text" id="app-previous-school" placeholder="e.g. Oxford Prep School, Raxaul">
+                    </div>
+                    <div class="form-group">
+                        <label>11. Class in which admission is required *</label>
                         <select id="app-target-grade" required onchange="handleRecommendedGradeChange()">
-                            <option value="KG">KG</option>
+                            <option value="Nur.">Nursery (Nur.)</option>
                             <option value="LKG">LKG</option>
                             <option value="UKG">UKG</option>
-                            <option value="Class 1">Class 1</option>
-                            <option value="Class 2">Class 2</option>
-                            <option value="Class 3">Class 3</option>
-                            <option value="Class 4">Class 4</option>
-                            <option value="Class 5">Class 5</option>
-                            <option value="Class 6">Class 6</option>
+                            <option value="Ist" selected>Class 1 (Ist)</option>
+                            <option value="IInd">Class 2 (IInd)</option>
+                            <option value="IIIrd">Class 3 (IIIrd)</option>
+                            <option value="IVth">Class 4 (IVth)</option>
+                            <option value="Vth">Class 5 (Vth)</option>
+                            <option value="VIth">Class 6 (VIth)</option>
                             <option value="Class 7">Class 7</option>
                             <option value="Class 8">Class 8</option>
                             <option value="Class 9">Class 9</option>
-                            <option value="Class 10" selected>Class 10</option>
-                            <option value="Class 11">Class 11</option>
-                            <option value="Class 12">Class 12</option>
+                            <option value="Class 10">Class 10</option>
                         </select>
+                        <input type="hidden" id="app-applied-grade" value="Ist">
                     </div>
                     <div class="form-group">
-                        <label>Assigned Section *</label>
-                        <select id="app-assigned-section" required>
+                        <label>Assigned Section</label>
+                        <select id="app-assigned-section">
                             <option value="A" selected>Section A</option>
                             <option value="B">Section B</option>
                             <option value="C">Section C</option>
-                            <option value="D">Section D</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Father / Guardian Name *</label>
-                        <input type="text" id="app-father-name" required placeholder="e.g. Ramesh Verma">
+                        <label>12. (a) % of Marks in Previous Class</label>
+                        <input type="text" id="app-previous-percentage" placeholder="e.g. 88.5%">
                     </div>
                     <div class="form-group">
-                        <label>Mother's Name</label>
-                        <input type="text" id="app-mother-name" placeholder="e.g. Sunita Verma">
-                    </div>
-                    <div class="form-group">
-                        <label>Contact Phone *</label>
-                        <input type="text" id="app-contact-phone" required placeholder="+91-9801XXXXXX">
-                    </div>
-                    <div class="form-group">
-                        <label>Residential Address</label>
-                        <input type="text" id="app-address" placeholder="Harpur, Raxaul, Bihar" value="Harpur, Raxaul, Bihar">
+                        <label>12. (b) Marks Obtained in Previous Class</label>
+                        <input type="text" id="app-previous-marks" placeholder="e.g. 442 / 500">
                     </div>
                 </div>
 
-                <!-- Mandatory pedagogical comment box if recommended class != applied class -->
-                <div id="app-class-change-box" style="display: none;" class="pedagogy-alert-box">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem; color: #b45309; margin-top: 2px;"></i>
-                    <div style="flex: 1;">
-                        <strong>Academic Placement Recommendation:</strong>
-                        <p style="margin: 2px 0 6px 0;">The student applied for <span id="text-orig-applied" style="font-weight: 700;">Class 10</span>, but management recommends <span id="text-rec-assigned" style="font-weight: 700; color: #b45309;">Class 9</span>. A pedagogical assessment justification note is <u>mandatory</u>.</p>
-                        <textarea id="app-class-change-reason" placeholder="State reason (e.g., Diagnostic test indicates student needs foundational reinforcement in Math/Science before proceeding to target grade)..." rows="2" style="width: 100%; padding: 8px; border: 1px solid #fde68a; border-radius: 6px; font-size: 0.84rem; background: #ffffff;"></textarea>
+                <h4 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 18px 0 12px 0;">
+                    <i class="fa-solid fa-map-location-dot"></i> Address & Identification (Fields 14 - 16)
+                </h4>
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>14. Permanent Address *</label>
+                        <input type="text" id="app-permanent-address" required placeholder="Village/Town, Post, District, East Champaran, Bihar - 845301" value="Harpur, East Champaran, Bihar - 845301">
+                    </div>
+                    <div class="form-group">
+                        <label>15. Present Address *</label>
+                        <input type="text" id="app-present-address" required placeholder="Current Residential Address" value="Harpur, Raxaul, Bihar - 845301">
+                    </div>
+                    <div class="form-group">
+                        <label>15. Contact No. *</label>
+                        <input type="text" id="app-contact-phone" required placeholder="+91-7870335141">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>16. Father / Mother / Guardian's Aadhar No. *</label>
+                        <input type="text" id="app-aadhar-no" required placeholder="XXXX - XXXX - XXXX">
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 14px;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="app-doc-verified" checked style="width: auto;">
-                        <strong>Birth Certificate & Transfer Credentials Verified</strong>
+                <!-- 17. Declaration -->
+                <div class="declaration-box" style="margin-top: 16px;">
+                    <h4 style="font-weight: 700; color: #1e3a8a;">17. Declaration by Parent / Guardian</h4>
+                    <p style="font-size: 0.82rem; color: #334155; line-height: 1.45; margin: 4px 0 8px 0;">
+                        I hereby declare that the information given by me in the application is true, complete and correct to the best of my knowledge and belief and nothing has been concealed or distorted. In the event of any information being found false or incorrect at any stage, the admission of my child/ward will be cancelled.
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Place</label>
+                            <input type="text" id="app-declaration-place" value="Harpur, Raxaul">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Date</label>
+                            <input type="date" id="app-declaration-date" value="2026-10-26">
+                        </div>
+                    </div>
+                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 8px; cursor: pointer;">
+                        <input type="checkbox" id="app-declaration-accepted" checked style="width: auto;">
+                        <span style="font-size: 0.82rem; font-weight: 600; color: #1e3a8a;">Parent / Guardian Declaration Accepted & Signed</span>
                     </label>
                 </div>
-                <div class="modal-footer">
+
+                <!-- Lower Tear-off Office Section -->
+                <div style="background: #f0fdf4; border: 1.5px dashed #16a34a; border-radius: 6px; padding: 12px; margin-top: 16px;">
+                    <h4 style="color: #166534; margin: 0 0 6px 0; font-size: 0.92rem;">
+                        <i class="fa-solid fa-scissors"></i> FOR OFFICE USE ONLY &bull; Written Test Admit Card Slip
+                    </h4>
+                    <div class="form-grid">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Scheduled Written Test Date & Time</label>
+                            <input type="text" id="app-written-test-date" value="05-Nov-2026 at 10:00 AM">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0; display: flex; align-items: center;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 16px;">
+                                <input type="checkbox" id="app-doc-verified" checked style="width: auto;">
+                                <strong style="font-size: 0.84rem; color: #166534;">Documents & Credentials Verified</strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="margin-top: 20px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('modal-new-application')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="fa-solid fa-check"></i> Submit Admission Registration Form</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Generate Invoice -->
+    <!-- Modal: Generate Detailed Fee Invoice (Matches Image 2: Oxford Fee Receipt) -->
     <div id="modal-generate-invoice" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Issue Student Fee Invoice</h3>
-                <span class="close-btn" onclick="closeModal('modal-generate-invoice')">&times;</span>
+        <div class="modal-content" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #065f46, #047857); color: #fff; padding: 16px 20px;">
+                <div>
+                    <h3 style="margin: 0; color: #fff; font-size: 1.25rem;"><i class="fa-solid fa-file-invoice-dollar"></i> Issue Official Fee Invoice & Receipt</h3>
+                    <small style="color: #a7f3d0;">Oxford International School &bull; Harpur, East Champaran (Nur. to VIth)</small>
+                </div>
+                <span class="close-btn" style="color: #fff; font-size: 1.8rem;" onclick="closeModal('modal-generate-invoice')">&times;</span>
             </div>
-            <form id="form-generate-invoice" onsubmit="handleGenerateInvoice(event)">
-                <div class="form-group">
-                    <label>Select Enrolled Student</label>
-                    <select id="inv-student-id" required></select>
+            <form id="form-generate-invoice" onsubmit="handleGenerateInvoice(event)" style="padding: 20px;">
+                <div class="form-grid" style="margin-bottom: 16px;">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Select Enrolled Student *</label>
+                        <select id="inv-student-id" required onchange="handleStudentSelectForInvoice(this.value)"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Billing Month *</label>
+                        <input type="text" id="inv-billing-period" value="October 2026" required placeholder="e.g. October 2026">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Due Date *</label>
+                        <input type="date" id="inv-due-date" value="2026-11-10" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Billing Term</label>
-                    <input type="text" id="inv-billing-period" value="Term 1 - 2026" required>
+
+                <h4 style="color: #065f46; border-bottom: 2px solid #a7f3d0; padding-bottom: 6px; margin: 16px 0 12px 0;">
+                    <i class="fa-solid fa-list-check"></i> 14 Particulars Fee Breakdown (INR)
+                </h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">1. Admission Fee</label>
+                        <input type="number" id="inv-item-1" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem; font-weight: 700; color: #047857;">2. Tuition Fee *</label>
+                        <input type="number" id="inv-item-2" value="4500" min="0" required oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">3. Conveyance</label>
+                        <input type="number" id="inv-item-3" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">4. Smart Class / A.C./ Electric Fee</label>
+                        <input type="number" id="inv-item-4" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">5. Computer Fee</label>
+                        <input type="number" id="inv-item-5" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">6. Late Fee</label>
+                        <input type="number" id="inv-item-6" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">7. Exam. Fee</label>
+                        <input type="number" id="inv-item-7" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">8. Sport & Games</label>
+                        <input type="number" id="inv-item-8" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">9. Medical</label>
+                        <input type="number" id="inv-item-9" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">10. Library Fee</label>
+                        <input type="number" id="inv-item-10" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">11. Annual Development Fee</label>
+                        <input type="number" id="inv-item-11" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">12. Miscellaneous</label>
+                        <input type="number" id="inv-item-12" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">13. Others</label>
+                        <input type="number" id="inv-item-13" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem;">14. Previous Dues</label>
+                        <input type="number" id="inv-item-14" value="0" min="0" oninput="calculateInvoiceTotal()">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Scholarship or Concession Policy</label>
-                    <select id="inv-scholarship-type">
-                        <option value="NONE">Standard Tuition Rate</option>
-                        <option value="MERIT">Merit Academic Excellence (25% Waiver)</option>
-                        <option value="SIBLING">Sibling Enrollment Concession (15% Waiver)</option>
-                        <option value="EWS">EWS Affirmative Action (50% Concession)</option>
-                        <option value="STAFF_WARD">Oxford Staff Ward Benefit (75% Waiver)</option>
-                    </select>
+
+                <!-- Concession & Total Summary Card -->
+                <div style="background: #ecfdf5; border: 1.5px solid #059669; border-radius: 8px; padding: 16px; margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: center;">
+                    <div>
+                        <label style="font-size: 0.84rem; font-weight: 700; color: #065f46;">Scholarship / Fee Concession Policy</label>
+                        <select id="inv-scholarship-type" onchange="calculateInvoiceTotal()">
+                            <option value="NONE">Standard Tuition Rate</option>
+                            <option value="MERIT">Merit Academic Excellence (25% Waiver)</option>
+                            <option value="SIBLING">Sibling Enrollment Concession (15% Waiver)</option>
+                            <option value="EWS">EWS Affirmative Action (50% Concession)</option>
+                            <option value="STAFF_WARD">Oxford Staff Ward Benefit (75% Waiver)</option>
+                        </select>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.85rem; color: #475569;">Gross Particulars Total: <span style="font-weight: 700; color: #0f172a;" id="display-inv-gross">₹ 4,500</span></div>
+                        <div style="font-size: 0.85rem; color: #059669;">Concession Waiver: <span style="font-weight: 700;" id="display-inv-discount">- ₹ 0</span></div>
+                        <div style="font-size: 1.25rem; font-weight: 800; color: #065f46; margin-top: 4px;">
+                            Net Payable: <span id="display-inv-net">₹ 4,500</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
+
+                <div class="modal-footer" style="margin-top: 20px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('modal-generate-invoice')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Generate Invoice</button>
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="fa-solid fa-receipt"></i> Generate Fee Receipt & Invoice</button>
                 </div>
             </form>
         </div>
@@ -1767,6 +1925,299 @@
                     <button type="submit" class="btn btn-primary">Issue Official Receipt</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: PRINT OFFICIAL ADMISSION REGISTRATION FORM (IMAGE 1)    -->
+    <!-- ============================================================== -->
+    <div id="modal-print-admission-form" class="modal">
+        <div class="modal-content physical-form-modal-content">
+            <div class="modal-header no-print" style="margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="background: #eff6ff; color: #1e3a8a; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.15rem; color: #1e3a8a;">Official Admission Form & Written Test Admit Card</h3>
+                        <small style="color: #64748b;">Official Document Scan Replica &bull; Oxford International School</small>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button type="button" class="btn btn-primary" onclick="triggerPrintSlip('printable-admission-form')">
+                        <i class="fa-solid fa-print"></i> Print Document
+                    </button>
+                    <span class="close-btn" onclick="closeModal('modal-print-admission-form')">&times;</span>
+                </div>
+            </div>
+
+            <!-- Printable Form Body (Matches Image 1) -->
+            <div id="printable-admission-form" class="physical-form-container">
+                <div class="physical-form-header">
+                    <h1 class="school-main-title">OXFORD INTERNATIONAL SCHOOL</h1>
+                    <p class="school-address-line">Raxaul-Adapur Sainik Road, Harpur, East Champaran - 845301</p>
+                    <p class="school-sub-line">An English Medium School (Based on C.B.S.E. Pattern, New Delhi)</p>
+                    <p class="school-sub-line" style="font-weight: 700; color: #1e3a8a;">Running from Nur. to Vth</p>
+                    <p class="school-contact-line"><i class="fa-solid fa-phone"></i> Mob.: 7870335141, 8709292309</p>
+                </div>
+
+                <div class="form-meta-banner">
+                    <div class="form-meta-left">
+                        <div><strong>SL. No.:</strong> <span id="pf-sl-no" style="font-weight: 700; color: #1e3a8a;">SL-001</span></div>
+                        <div><strong>REG. No.:</strong> <span id="pf-reg-no" style="font-weight: 700; color: #1e3a8a;">REG-1001</span></div>
+                    </div>
+                    <div class="photo-affix-box">
+                        <span>Affix Passport size Photograph</span>
+                    </div>
+                </div>
+
+                <div class="form-title-ribbon">
+                    <h3>REGISTRATION FORM FOR ADMISSION</h3>
+                </div>
+
+                <div class="form-numbered-list">
+                    <div class="form-field-row">
+                        <span class="field-num">1.</span>
+                        <span class="field-label">Name of Student (in Block Letters):</span>
+                        <span class="dotted-fill" id="pf-student-name"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">2.</span>
+                        <span class="field-label">Father's Name:</span>
+                        <span class="dotted-fill" id="pf-father-name"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">3.</span>
+                        <span class="field-label">Mother's Name:</span>
+                        <span class="dotted-fill" id="pf-mother-name"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">4.</span>
+                        <span class="field-label">Guardian's Name (if father is not alive):</span>
+                        <span class="dotted-fill" id="pf-guardian-name"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">5.</span>
+                        <span class="field-label">Date of Birth: (In figure):</span>
+                        <span class="dotted-fill" id="pf-dob-figure" style="max-width: 140px;"></span>
+                        <span class="field-label" style="margin-left: 12px;">(In words):</span>
+                        <span class="dotted-fill" id="pf-dob-words"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">6.</span>
+                        <span class="field-label">Father's/Guardian's Occupation:</span>
+                        <span class="dotted-fill" id="pf-father-occ"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">7.</span>
+                        <span class="field-label">Mother's Occupation:</span>
+                        <span class="dotted-fill" id="pf-mother-occ"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">8.</span>
+                        <span class="field-label">Father's Educational Qualification:</span>
+                        <span class="dotted-fill" id="pf-father-qual"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">9.</span>
+                        <span class="field-label">Mother's Educational Qualification:</span>
+                        <span class="dotted-fill" id="pf-mother-qual"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">10.</span>
+                        <span class="field-label">Previous School Name where student passed out:</span>
+                        <span class="dotted-fill" id="pf-prev-school"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">11.</span>
+                        <span class="field-label">Class in which admission is required:</span>
+                        <span class="dotted-fill" id="pf-class-req"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">12.</span>
+                        <span class="field-label">Performance in previous class: (a) % of marks:</span>
+                        <span class="dotted-fill" id="pf-prev-pct" style="max-width: 120px;"></span>
+                        <span class="field-label" style="margin-left: 12px;">(b) Marks Obtained:</span>
+                        <span class="dotted-fill" id="pf-prev-marks"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">13.</span>
+                        <span class="field-label">Nationality:</span>
+                        <span class="dotted-fill" id="pf-nationality">Indian</span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">14.</span>
+                        <span class="field-label">Permanent Address:</span>
+                        <span class="dotted-fill" id="pf-perm-addr"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">15.</span>
+                        <span class="field-label">Present Address & Contact No.:</span>
+                        <span class="dotted-fill" id="pf-pres-addr"></span>
+                    </div>
+                    <div class="form-field-row">
+                        <span class="field-num">16.</span>
+                        <span class="field-label">Father / Mother / Guardian's Aadhar No.:</span>
+                        <span class="dotted-fill" id="pf-aadhar-no"></span>
+                    </div>
+                </div>
+
+                <!-- 17. Declaration -->
+                <div class="declaration-box">
+                    <h4>Declaration :</h4>
+                    <p>
+                        I hereby declare that the information given by me in the application is true, complete and correct to the best of my knowledge and belief and nothing has been concealed or distorted. In the event of any information being found false or incorrect at any stage, the admission of my child/ward will be cancelled.
+                    </p>
+                    <div class="declaration-meta-row">
+                        <div><strong>Place:</strong> <span id="pf-decl-place">Harpur, Raxaul</span></div>
+                        <div><strong>Date:</strong> <span id="pf-decl-date"></span></div>
+                        <div style="text-align: center;">
+                            <div style="height: 24px;"></div>
+                            <div style="border-top: 1px solid #334155; padding-top: 4px; font-weight: 700; min-width: 200px;">
+                                Signature of Parent / Guardian
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perforated Cut Line -->
+                <div class="tear-off-divider">
+                    <span>&#9986; - - - - - - - - - - - - - - - - - - - - - - - - FOR OFFICE USE ONLY - - - - - - - - - - - - - - - - - - - - - - - - &#9986;</span>
+                </div>
+
+                <!-- Lower Written Test Slip (Image 1 Bottom) -->
+                <div class="office-admit-box">
+                    <div style="flex: 1; font-size: 0.9rem; line-height: 1.8;">
+                        <div>Pupil's Name: <strong id="pf-admit-pupil" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 220px;"></strong></div>
+                        <div>Father's Name: <strong id="pf-admit-father" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 220px;"></strong></div>
+                        <div>Reg. No.: <strong id="pf-admit-regno" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 220px;"></strong></div>
+                        <div>is allowed to appear at written test scheduled on <strong id="pf-admit-testdate" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 180px;"></strong></div>
+                    </div>
+                    <div class="photo-affix-box" style="width: 95px; height: 110px;">
+                        <span>Passport size Photograph</span>
+                    </div>
+                </div>
+
+                <div class="office-signatures-grid">
+                    <div>
+                        <div style="height: 32px;"></div>
+                        <div class="sig-holder">Examination Controller</div>
+                    </div>
+                    <div>
+                        <div style="height: 32px;"></div>
+                        <div class="sig-holder">Office-Incharge</div>
+                    </div>
+                    <div>
+                        <div style="height: 32px;"></div>
+                        <div class="sig-holder">Principal Signature & Stamp</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: PRINT OFFICIAL FEE RECEIPT (IMAGE 2)                     -->
+    <!-- ============================================================== -->
+    <div id="modal-print-fee-receipt" class="modal">
+        <div class="modal-content receipt-print-modal-content">
+            <div class="modal-header no-print" style="margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="background: #ecfdf5; color: #047857; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.15rem; color: #047857;">Official Oxford Fee Receipt</h3>
+                        <small style="color: #64748b;">Oxford International School &bull; Harpur, East Champaran</small>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button type="button" class="btn btn-primary" onclick="triggerPrintSlip('printable-fee-receipt')" style="background: #047857; border-color: #047857;">
+                        <i class="fa-solid fa-print"></i> Print Receipt
+                    </button>
+                    <span class="close-btn" onclick="closeModal('modal-print-fee-receipt')">&times;</span>
+                </div>
+            </div>
+
+            <!-- Printable Receipt Body (Matches Image 2) -->
+            <div id="printable-fee-receipt" class="receipt-print-container">
+                <div class="receipt-print-header">
+                    <h1>OXFORD INTERNATIONAL SCHOOL</h1>
+                    <p style="margin: 2px 0; font-size: 0.92rem; font-weight: 600; color: #334155;">Harpur, East Champaran, Pin Code - 845301 (Bihar)</p>
+                    <p style="margin: 2px 0; font-size: 0.86rem; color: #047857; font-weight: 600;"><i class="fa-solid fa-phone"></i> Contact No.: 7870335141, 8709292309</p>
+                    <p style="margin: 2px 0; font-size: 0.82rem; color: #64748b;">(C.B.S.E. Based English Medium School Nur. to VIth)</p>
+                    <div class="receipt-title-badge">FEE RECEIPT</div>
+                </div>
+
+                <div class="receipt-meta-grid">
+                    <div class="receipt-meta-line">
+                        <div><strong>No.:</strong> <span id="rcpt-no" style="font-weight: 700; color: #047857;">REC-1001</span></div>
+                        <div><strong>Date:</strong> <span id="rcpt-date" style="font-weight: 600;">26/10/2026</span></div>
+                    </div>
+                    <div class="receipt-meta-line" style="flex-wrap: wrap;">
+                        <div style="flex: 2; min-width: 200px;"><strong>Name:</strong> <span id="rcpt-name" style="font-weight: 700; text-transform: uppercase;">AARAV KUMAR</span></div>
+                        <div style="flex: 1; min-width: 90px;"><strong>Class:</strong> <span id="rcpt-class" style="font-weight: 600;">Class 10</span></div>
+                        <div style="flex: 0.8; min-width: 70px;"><strong>Sec.:</strong> <span id="rcpt-sec" style="font-weight: 600;">A</span></div>
+                        <div style="flex: 0.8; min-width: 80px;"><strong>Roll No.:</strong> <span id="rcpt-roll" style="font-weight: 600;">12</span></div>
+                    </div>
+                    <div class="receipt-meta-line">
+                        <div><strong>Month:</strong> <span id="rcpt-month" style="font-weight: 700; color: #1e3a8a;">October 2026</span></div>
+                        <div><strong>Billing Term:</strong> <span id="rcpt-term" style="font-weight: 600;">Term 1 - 2026</span></div>
+                    </div>
+                </div>
+
+                <!-- 14 Particulars Table (Exact replica of Image 2) -->
+                <table class="receipt-particulars-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 48px;">SL. NO.</th>
+                            <th>PARTICULARS</th>
+                            <th style="width: 110px;">Rs.</th>
+                            <th style="width: 44px;">P.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="text-align: center;">1.</td><td>Admission Fee</td><td style="text-align: right;" id="rcpt-val-1">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">2.</td><td>Tuition Fee</td><td style="text-align: right; font-weight: 600;" id="rcpt-val-2">4,500.00</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">3.</td><td>Conveyance</td><td style="text-align: right;" id="rcpt-val-3">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">4.</td><td>Smart Class / A.C./ Electric Fee</td><td style="text-align: right;" id="rcpt-val-4">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">5.</td><td>Computer Fee</td><td style="text-align: right;" id="rcpt-val-5">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">6.</td><td>Late Fee</td><td style="text-align: right;" id="rcpt-val-6">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">7.</td><td>Exam. Fee</td><td style="text-align: right;" id="rcpt-val-7">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">8.</td><td>Sport & Games</td><td style="text-align: right;" id="rcpt-val-8">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">9.</td><td>Medical</td><td style="text-align: right;" id="rcpt-val-9">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">10.</td><td>Library Fee</td><td style="text-align: right;" id="rcpt-val-10">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">11.</td><td>Annual Development Fee</td><td style="text-align: right;" id="rcpt-val-11">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">12.</td><td>Miscellaneous</td><td style="text-align: right;" id="rcpt-val-12">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">13.</td><td>Others</td><td style="text-align: right;" id="rcpt-val-13">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">14.</td><td>Previous dues</td><td style="text-align: right;" id="rcpt-val-14">-</td><td style="text-align: center;">00</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="2" style="text-align: right; padding-right: 12px;"><strong>TOTAL:</strong></td>
+                            <td style="text-align: right; color: #047857;"><strong id="rcpt-val-total">Rs. 4,500.00</strong></td>
+                            <td style="text-align: center;">00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="receipt-words-section">
+                    <strong>Received with thanks Rs. (in words):</strong>
+                    <span id="rcpt-words" style="font-weight: 700; color: #047857; margin-left: 6px; text-decoration: underline;">Four Thousand Five Hundred Rupees Only</span>
+                </div>
+
+                <div class="receipt-footer-signatures">
+                    <div class="official-seal-box">
+                        [ Official Institution Seal ]
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="height: 38px;"></div>
+                        <div style="border-top: 1.5px solid #0f172a; padding-top: 4px; font-weight: 700; font-size: 0.86rem; min-width: 220px;">
+                            Sign. of Accountant with Seal
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

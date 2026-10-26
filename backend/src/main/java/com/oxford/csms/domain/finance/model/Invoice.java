@@ -24,8 +24,30 @@ public class Invoice extends BaseEntity {
     @Column(nullable = false)
     private String grade;
 
+    private String section;
+
+    private Integer rollNo;
+
+    private String billingMonth;
+
     @Column(nullable = false)
     private String billingPeriod; // e.g., "Term 1 - 2026", "October 2026"
+
+    // 14 Particulars matching Oxford International School Fee Receipt
+    private BigDecimal admissionFee = BigDecimal.ZERO;
+    private BigDecimal tuitionFee = BigDecimal.ZERO;
+    private BigDecimal conveyanceFee = BigDecimal.ZERO;
+    private BigDecimal smartClassFee = BigDecimal.ZERO; // Smart Class / A.C./ Electric Fee
+    private BigDecimal computerFee = BigDecimal.ZERO;
+    private BigDecimal lateFee = BigDecimal.ZERO;
+    private BigDecimal examFee = BigDecimal.ZERO;
+    private BigDecimal sportGamesFee = BigDecimal.ZERO;
+    private BigDecimal medicalFee = BigDecimal.ZERO;
+    private BigDecimal libraryFee = BigDecimal.ZERO;
+    private BigDecimal annualDevelopmentFee = BigDecimal.ZERO;
+    private BigDecimal miscellaneousFee = BigDecimal.ZERO;
+    private BigDecimal othersFee = BigDecimal.ZERO;
+    private BigDecimal previousDues = BigDecimal.ZERO;
 
     @Column(nullable = false)
     private BigDecimal grossAmount = BigDecimal.ZERO;
@@ -177,5 +199,160 @@ public class Invoice extends BaseEntity {
 
     public void setScholarshipApplied(String scholarshipApplied) {
         this.scholarshipApplied = scholarshipApplied;
+    }
+
+    public BigDecimal calculateGrossFromItems() {
+        BigDecimal total = BigDecimal.ZERO;
+        if (admissionFee != null) total = total.add(admissionFee);
+        if (tuitionFee != null) total = total.add(tuitionFee);
+        if (conveyanceFee != null) total = total.add(conveyanceFee);
+        if (smartClassFee != null) total = total.add(smartClassFee);
+        if (computerFee != null) total = total.add(computerFee);
+        if (lateFee != null) total = total.add(lateFee);
+        if (examFee != null) total = total.add(examFee);
+        if (sportGamesFee != null) total = total.add(sportGamesFee);
+        if (medicalFee != null) total = total.add(medicalFee);
+        if (libraryFee != null) total = total.add(libraryFee);
+        if (annualDevelopmentFee != null) total = total.add(annualDevelopmentFee);
+        if (miscellaneousFee != null) total = total.add(miscellaneousFee);
+        if (othersFee != null) total = total.add(othersFee);
+        if (previousDues != null) total = total.add(previousDues);
+        return total;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public Integer getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(Integer rollNo) {
+        this.rollNo = rollNo;
+    }
+
+    public String getBillingMonth() {
+        return billingMonth;
+    }
+
+    public void setBillingMonth(String billingMonth) {
+        this.billingMonth = billingMonth;
+    }
+
+    public BigDecimal getAdmissionFee() {
+        return admissionFee;
+    }
+
+    public void setAdmissionFee(BigDecimal admissionFee) {
+        this.admissionFee = admissionFee;
+    }
+
+    public BigDecimal getTuitionFee() {
+        return tuitionFee;
+    }
+
+    public void setTuitionFee(BigDecimal tuitionFee) {
+        this.tuitionFee = tuitionFee;
+    }
+
+    public BigDecimal getConveyanceFee() {
+        return conveyanceFee;
+    }
+
+    public void setConveyanceFee(BigDecimal conveyanceFee) {
+        this.conveyanceFee = conveyanceFee;
+    }
+
+    public BigDecimal getSmartClassFee() {
+        return smartClassFee;
+    }
+
+    public void setSmartClassFee(BigDecimal smartClassFee) {
+        this.smartClassFee = smartClassFee;
+    }
+
+    public BigDecimal getComputerFee() {
+        return computerFee;
+    }
+
+    public void setComputerFee(BigDecimal computerFee) {
+        this.computerFee = computerFee;
+    }
+
+    public BigDecimal getLateFee() {
+        return lateFee;
+    }
+
+    public void setLateFee(BigDecimal lateFee) {
+        this.lateFee = lateFee;
+    }
+
+    public BigDecimal getExamFee() {
+        return examFee;
+    }
+
+    public void setExamFee(BigDecimal examFee) {
+        this.examFee = examFee;
+    }
+
+    public BigDecimal getSportGamesFee() {
+        return sportGamesFee;
+    }
+
+    public void setSportGamesFee(BigDecimal sportGamesFee) {
+        this.sportGamesFee = sportGamesFee;
+    }
+
+    public BigDecimal getMedicalFee() {
+        return medicalFee;
+    }
+
+    public void setMedicalFee(BigDecimal medicalFee) {
+        this.medicalFee = medicalFee;
+    }
+
+    public BigDecimal getLibraryFee() {
+        return libraryFee;
+    }
+
+    public void setLibraryFee(BigDecimal libraryFee) {
+        this.libraryFee = libraryFee;
+    }
+
+    public BigDecimal getAnnualDevelopmentFee() {
+        return annualDevelopmentFee;
+    }
+
+    public void setAnnualDevelopmentFee(BigDecimal annualDevelopmentFee) {
+        this.annualDevelopmentFee = annualDevelopmentFee;
+    }
+
+    public BigDecimal getMiscellaneousFee() {
+        return miscellaneousFee;
+    }
+
+    public void setMiscellaneousFee(BigDecimal miscellaneousFee) {
+        this.miscellaneousFee = miscellaneousFee;
+    }
+
+    public BigDecimal getOthersFee() {
+        return othersFee;
+    }
+
+    public void setOthersFee(BigDecimal othersFee) {
+        this.othersFee = othersFee;
+    }
+
+    public BigDecimal getPreviousDues() {
+        return previousDues;
+    }
+
+    public void setPreviousDues(BigDecimal previousDues) {
+        this.previousDues = previousDues;
     }
 }

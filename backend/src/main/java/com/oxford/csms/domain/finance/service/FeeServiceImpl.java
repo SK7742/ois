@@ -92,9 +92,66 @@ public class FeeServiceImpl implements FeeService {
                 due,
                 calcResult.getScholarshipApplied()
         );
+        invoice.setSection(student.getSection());
+        invoice.setRollNo(student.getRollNo());
+        invoice.setBillingMonth(billingPeriod != null ? billingPeriod : "Term 1 - 2026");
+        invoice.setTuitionFee(calcResult.getGrossAmount());
 
         student.setFeeStatus(Student.StudentFeeStatus.PENDING);
         studentRepository.save(student);
+
+        return invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public Invoice createDetailedInvoice(Invoice invoice) {
+        if (invoice.getStudentId() != null) {
+            studentRepository.findById(invoice.getStudentId()).ifPresent(student -> {
+                if (invoice.getStudentName() == null || invoice.getStudentName().isBlank()) {
+                    invoice.setStudentName(student.getFullName());
+                }
+                if (invoice.getAdmissionNo() == null || invoice.getAdmissionNo().isBlank()) {
+                    invoice.setAdmissionNo(student.getAdmissionNo());
+                }
+                if (invoice.getGrade() == null || invoice.getGrade().isBlank()) {
+                    invoice.setGrade(student.getCurrentClass());
+                }
+                if (invoice.getSection() == null || invoice.getSection().isBlank()) {
+                    invoice.setSection(student.getSection());
+                }
+                if (invoice.getRollNo() == null) {
+                    invoice.setRollNo(student.getRollNo());
+                }
+                student.setFeeStatus(Student.StudentFeeStatus.PENDING);
+                studentRepository.save(student);
+            });
+        }
+
+        if (invoice.getInvoiceNumber() == null || invoice.getInvoiceNumber().isBlank()) {
+            invoice.setInvoiceNumber("REC-" + String.format("%04d", invoiceRepository.count() + 101));
+        }
+
+        BigDecimal itemsGross = invoice.calculateGrossFromItems();
+        if (itemsGross.compareTo(BigDecimal.ZERO) > 0) {
+            invoice.setGrossAmount(itemsGross);
+        } else if (invoice.getGrossAmount() == null || invoice.getGrossAmount().compareTo(BigDecimal.ZERO) == 0) {
+            invoice.setGrossAmount(new BigDecimal("4500.00"));
+            invoice.setTuitionFee(new BigDecimal("4500.00"));
+        }
+
+        BigDecimal discount = invoice.getDiscountAmount() != null ? invoice.getDiscountAmount() : BigDecimal.ZERO;
+        invoice.setDiscountAmount(discount);
+        invoice.setNetPayable(invoice.getGrossAmount().subtract(discount).max(BigDecimal.ZERO));
+        if (invoice.getPaidAmount() == null) {
+            invoice.setPaidAmount(BigDecimal.ZERO);
+        }
+        invoice.setStatus(invoice.getPaidAmount().compareTo(invoice.getNetPayable()) >= 0 ? Invoice.InvoiceStatus.PAID : Invoice.InvoiceStatus.PENDING);
+        if (invoice.getDueDate() == null) {
+            invoice.setDueDate(LocalDate.now().plusDays(15));
+        }
+        if (invoice.getBillingPeriod() == null || invoice.getBillingPeriod().isBlank()) {
+            invoice.setBillingPeriod(invoice.getBillingMonth() != null ? invoice.getBillingMonth() : "Current Term");
+        }
 
         return invoiceRepository.save(invoice);
     }

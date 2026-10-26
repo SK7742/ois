@@ -120,11 +120,26 @@ public class AdmissionServiceImpl implements AdmissionService {
     @Override
     public AdmissionApplication submitApplication(AdmissionApplication application) {
         if (application.getApplicationNumber() == null || application.getApplicationNumber().isBlank()) {
-            String generatedCode = "APP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            String generatedCode = "REG-" + (1000 + applicationRepository.count() + 1);
             application.setApplicationNumber(generatedCode);
+        }
+        if (application.getSlNo() == null || application.getSlNo().isBlank()) {
+            application.setSlNo("SL-" + String.format("%03d", applicationRepository.count() + 1));
         }
         if (application.getAppliedGrade() == null || application.getAppliedGrade().isBlank()) {
             application.setAppliedGrade(application.getTargetGrade());
+        }
+        if (application.getDeclarationDate() == null) {
+            application.setDeclarationDate(java.time.LocalDate.now());
+        }
+        if (application.getDeclarationPlace() == null || application.getDeclarationPlace().isBlank()) {
+            application.setDeclarationPlace("Harpur, Raxaul");
+        }
+        if (application.getNationality() == null || application.getNationality().isBlank()) {
+            application.setNationality("Indian");
+        }
+        if (application.getWrittenTestDate() == null || application.getWrittenTestDate().isBlank()) {
+            application.setWrittenTestDate(java.time.LocalDate.now().plusDays(7).toString() + " at 10:00 AM");
         }
         if (application.getStatus() == null) {
             application.setStatus(AdmissionApplication.ApplicationStatus.SUBMITTED);
