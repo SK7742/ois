@@ -3548,92 +3548,96 @@ body {
     background: #fff;
     color: #111827;
     font-family: 'Plus Jakarta Sans', Arial, sans-serif;
-    border: 2px solid #1e3a8a;
-    padding: 24px;
+    border: 1.5px solid #1e3a8a;
+    padding: 10px 16px;
     border-radius: 4px;
     position: relative;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .physical-form-header {
     text-align: center;
-    border-bottom: 2px solid #1e3a8a;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
+    border-bottom: 1.5px solid #1e3a8a;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .physical-form-header .school-main-title {
-    font-size: 1.65rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: #1e3a8a;
     letter-spacing: 0.5px;
     margin: 0;
     font-family: 'Playfair Display', Georgia, serif;
+    line-height: 1.15;
 }
 
 .physical-form-header .school-address-line {
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: #334155;
-    margin: 3px 0;
+    margin: 1px 0;
 }
 
 .physical-form-header .school-sub-line {
-    font-size: 0.82rem;
+    font-size: 0.72rem;
     color: #475569;
-    margin: 2px 0;
+    margin: 1px 0;
 }
 
 .physical-form-header .school-contact-line {
-    font-size: 0.85rem;
+    font-size: 0.74rem;
     font-weight: 600;
     color: #1e40af;
-    margin: 4px 0 0 0;
+    margin: 2px 0 0 0;
 }
 
 .form-meta-banner {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+    align-items: center;
+    margin-bottom: 4px;
 }
 
 .form-meta-left {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-size: 0.95rem;
+    gap: 3px;
+    font-size: 0.85rem;
 }
 
 .photo-affix-box {
-    width: 110px;
-    height: 130px;
+    width: 78px;
+    height: 92px;
     border: 1.5px dashed #64748b;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     color: #64748b;
-    padding: 6px;
+    padding: 3px;
     background: #f8fafc;
+    box-sizing: border-box;
 }
 
 .form-title-ribbon {
     text-align: center;
-    margin: 10px 0 16px 0;
+    margin: 3px 0 6px 0;
 }
 
 .form-title-ribbon h3 {
     display: inline-block;
-    border: 1.5px solid #1e3a8a;
-    padding: 5px 22px;
-    border-radius: 20px;
-    font-size: 1.05rem;
+    border: 1.5px solid #0f172a;
+    padding: 2px 16px;
+    border-radius: 14px;
+    font-size: 0.86rem;
     font-weight: 800;
-    color: #1e3a8a;
-    letter-spacing: 0.8px;
-    background: #eff6ff;
+    color: #0f172a;
+    letter-spacing: 0.6px;
+    background: #f1f5f9;
     margin: 0;
 }
 
@@ -3643,55 +3647,55 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 2.5px;
 }
 
 .form-field-row {
     display: flex;
     align-items: baseline;
-    font-size: 0.88rem;
-    line-height: 1.4;
+    font-size: 0.78rem;
+    line-height: 1.25;
 }
 
 .form-field-row .field-num {
     font-weight: 700;
-    min-width: 26px;
+    min-width: 22px;
 }
 
 .form-field-row .field-label {
     font-weight: 600;
-    margin-right: 6px;
+    margin-right: 4px;
     white-space: nowrap;
 }
 
 .form-field-row .dotted-fill {
     flex: 1;
     border-bottom: 1px dotted #475569;
-    padding: 0 8px;
+    padding: 0 4px;
     font-weight: 600;
     color: #0f172a;
-    min-height: 20px;
+    min-height: 16px;
 }
 
 .declaration-box {
-    margin-top: 16px;
-    padding: 12px;
+    margin-top: 5px;
+    padding: 5px 8px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     background: #fafafa;
 }
 
 .declaration-box h4 {
-    margin: 0 0 6px 0;
-    font-size: 0.9rem;
+    margin: 0 0 2px 0;
+    font-size: 0.8rem;
     color: #1e293b;
 }
 
 .declaration-box p {
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     color: #334155;
-    line-height: 1.5;
-    margin: 0 0 12px 0;
+    line-height: 1.35;
+    margin: 0 0 4px 0;
     text-align: justify;
 }
 
@@ -3699,26 +3703,26 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    font-size: 0.85rem;
-    padding-top: 8px;
+    font-size: 0.76rem;
+    padding-top: 2px;
 }
 
 .tear-off-divider {
-    margin: 20px 0 14px 0;
-    border-top: 1.5px dashed #64748b;
+    margin: 6px 0 4px 0;
+    border-top: 1.5px dashed #475569;
     position: relative;
     text-align: center;
 }
 
 .tear-off-divider span {
     position: relative;
-    top: -11px;
+    top: -8px;
     background: #fff;
-    padding: 0 14px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: #b45309;
-    letter-spacing: 1px;
+    padding: 0 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.5px;
 }
 
 .office-admit-box {
@@ -3726,25 +3730,25 @@ body {
     justify-content: space-between;
     align-items: center;
     border: 1px solid #94a3b8;
-    padding: 14px;
+    padding: 8px;
     border-radius: 4px;
     background: #f8fafc;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
 }
 
 .office-signatures-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
+    gap: 8px;
     text-align: center;
-    margin-top: 24px;
-    padding-top: 8px;
+    margin-top: 6px;
+    padding-top: 2px;
 }
 
 .sig-holder {
     border-top: 1px solid #475569;
-    padding-top: 6px;
-    font-size: 0.8rem;
+    padding-top: 2px;
+    font-size: 0.68rem;
     font-weight: 700;
     color: #1e293b;
 }
@@ -3857,22 +3861,43 @@ body {
 
 /* Print Optimization */
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 4mm 6mm;
+    }
+
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
     body * {
         visibility: hidden !important;
     }
+
     .print-target, .print-target * {
         visibility: visible !important;
     }
+
     .print-target {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
+        position: relative !important;
+        display: block !important;
         width: 100% !important;
-        margin: 0 !important;
-        padding: 10px !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 6px 10px !important;
         box-shadow: none !important;
-        border: 1px solid #333 !important;
+        border: 1.5px solid #1e3a8a !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
     }
+
     .no-print {
         display: none !important;
     }

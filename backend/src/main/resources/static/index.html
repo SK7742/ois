@@ -2114,13 +2114,13 @@
     <!-- ============================================================== -->
     <div id="modal-print-admission-form" class="modal">
         <div class="modal-content physical-form-modal-content">
-            <div class="modal-header no-print" style="margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="modal-header no-print" style="margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="background: #eff6ff; color: #1e3a8a; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <div style="background: #eff6ff; color: #1e3a8a; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
                         <i class="fa-solid fa-print"></i>
                     </div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.15rem; color: #1e3a8a;">Official Admission Form & Written Test Admit Card</h3>
+                        <h3 style="margin: 0; font-size: 1.1rem; color: #1e3a8a;">Official Admission Form & Written Test Admit Card</h3>
                         <small style="color: #64748b;">Official Document Scan Replica &bull; Oxford International School</small>
                     </div>
                 </div>
@@ -2132,14 +2132,20 @@
                 </div>
             </div>
 
-            <!-- Printable Form Body (Matches Image 1) -->
+            <!-- Printable Form Body (Matches Image 1 Exactly) -->
             <div id="printable-admission-form" class="physical-form-container">
                 <div class="physical-form-header">
-                    <h1 class="school-main-title">OXFORD INTERNATIONAL SCHOOL</h1>
-                    <p class="school-address-line">Raxaul-Adapur Sainik Road, Harpur, East Champaran - 845301</p>
-                    <p class="school-sub-line">An English Medium School (Based on C.B.S.E. Pattern, New Delhi)</p>
-                    <p class="school-sub-line" style="font-weight: 700; color: #1e3a8a;">Running from Nur. to Vth</p>
-                    <p class="school-contact-line"><i class="fa-solid fa-phone"></i> Mob.: 7870335141, 8709292309</p>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 14px;">
+                        <div style="width: 48px; height: 48px; border: 1.5px solid #1e3a8a; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #eff6ff; color: #1e3a8a; font-size: 1.3rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div style="text-align: center;">
+                            <h1 class="school-main-title">OXFORD INTERNATIONAL SCHOOL</h1>
+                            <p class="school-address-line">Raxaul-Adapur Sainik Road, Harpur, East Champaran - 845301</p>
+                            <p class="school-sub-line">Based on C.B.S.E. Syllabus &bull; English Medium &bull; Nur. to Vth</p>
+                            <p class="school-contact-line"><i class="fa-solid fa-phone"></i> Mob.: 7870335141, 8709292309</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-meta-banner">
@@ -2148,7 +2154,7 @@
                         <div><strong>REG. No.:</strong> <span id="pf-reg-no" style="font-weight: 700; color: #1e3a8a;">REG-1001</span></div>
                     </div>
                     <div class="photo-affix-box">
-                        <span>Affix Passport size Photograph</span>
+                        <span>Affix Passport size Photo Here</span>
                     </div>
                 </div>
 
@@ -2180,8 +2186,8 @@
                     <div class="form-field-row">
                         <span class="field-num">5.</span>
                         <span class="field-label">Date of Birth: (In figure):</span>
-                        <span class="dotted-fill" id="pf-dob-figure" style="max-width: 140px;"></span>
-                        <span class="field-label" style="margin-left: 12px;">(In words):</span>
+                        <span class="dotted-fill" id="pf-dob-figure" style="max-width: 130px;"></span>
+                        <span class="field-label" style="margin-left: 8px;">(In words):</span>
                         <span class="dotted-fill" id="pf-dob-words"></span>
                     </div>
                     <div class="form-field-row">
@@ -2217,8 +2223,8 @@
                     <div class="form-field-row">
                         <span class="field-num">12.</span>
                         <span class="field-label">Performance in previous class: (a) % of marks:</span>
-                        <span class="dotted-fill" id="pf-prev-pct" style="max-width: 120px;"></span>
-                        <span class="field-label" style="margin-left: 12px;">(b) Marks Obtained:</span>
+                        <span class="dotted-fill" id="pf-prev-pct" style="max-width: 110px;"></span>
+                        <span class="field-label" style="margin-left: 8px;">(b) Marks Obtained:</span>
                         <span class="dotted-fill" id="pf-prev-marks"></span>
                     </div>
                     <div class="form-field-row">
@@ -2243,63 +2249,80 @@
                     </div>
                 </div>
 
-                <!-- 17. Declaration -->
+                <!-- 17. Declaration (Matches Image 1 Text Exactly) -->
                 <div class="declaration-box">
-                    <h4>Declaration :</h4>
-                    <p>
-                        I hereby declare that the information given by me in the application is true, complete and correct to the best of my knowledge and belief and nothing has been concealed or distorted. In the event of any information being found false or incorrect at any stage, the admission of my child/ward will be cancelled.
-                    </p>
-                    <div class="declaration-meta-row">
-                        <div><strong>Place:</strong> <span id="pf-decl-place">Harpur, Raxaul</span></div>
-                        <div><strong>Date:</strong> <span id="pf-decl-date"></span></div>
+                    <div style="font-size: 0.77rem; color: #1e293b; line-height: 1.35; margin-bottom: 4px;">
+                        <strong>17. Declaration :-</strong> I hereby declare that my ward and I will abide by the existing rules and accept the changes which will be done in future and follow to the decision taken by the management.
+                    </div>
+                    <div class="declaration-meta-row" style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.76rem; padding-top: 3px;">
+                        <div>
+                            <div><strong>Place :</strong> <span id="pf-decl-place">Harpur, Raxaul</span></div>
+                            <div style="margin-top: 2px;"><strong>Date :</strong> <span id="pf-decl-date"></span></div>
+                        </div>
                         <div style="text-align: center;">
-                            <div style="height: 24px;"></div>
-                            <div style="border-top: 1px solid #334155; padding-top: 4px; font-weight: 700; min-width: 200px;">
-                                Signature of Parent / Guardian
+                            <div style="height: 16px;"></div>
+                            <div style="border-top: 1px solid #334155; padding-top: 2px; font-weight: 700; min-width: 210px; font-size: 0.75rem;">
+                                Father/Mother/Guardian's Signature
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Perforated Cut Line -->
-                <div class="tear-off-divider">
-                    <span>&#9986; - - - - - - - - - - - - - - - - - - - - - - - - FOR OFFICE USE ONLY - - - - - - - - - - - - - - - - - - - - - - - - &#9986;</span>
+                <div class="tear-off-divider" style="margin: 6px 0 4px 0; border-top: 1.5px dashed #475569; position: relative; text-align: center;">
+                    <span style="position: relative; top: -8px; background: #fff; padding: 0 8px; font-size: 0.72rem; font-weight: 700; color: #475569; letter-spacing: 0.5px;">
+                        &#9986; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - &#9986;
+                    </span>
                 </div>
 
-                <!-- Lower Written Test Slip (Image 1 Bottom) -->
-                <div class="office-admit-box">
-                    <div style="flex: 1; font-size: 0.9rem; line-height: 1.8;">
-                        <div>Pupil's Name: <strong id="pf-admit-pupil" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 220px;"></strong></div>
-                        <div>Father's Name: <strong id="pf-admit-father" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 220px;"></strong></div>
-                        <div>Reg. No.: <strong id="pf-admit-regno" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 220px;"></strong></div>
-                        <div>is allowed to appear at written test scheduled on <strong id="pf-admit-testdate" style="border-bottom: 1px dotted #333; padding: 0 10px; display: inline-block; min-width: 180px;"></strong></div>
+                <!-- Lower Written Test Slip (Image 1 Bottom - Official Admit Card) -->
+                <div class="office-admit-card-container" style="border: 1px solid #1e3a8a; border-radius: 4px; padding: 6px 10px; background: #fafafa; margin-top: 1px;">
+                    <div style="text-align: center; font-weight: 800; font-size: 0.8rem; letter-spacing: 1.2px; text-decoration: underline; color: #0f172a; margin-bottom: 2px;">
+                        FOR OFFICE USE ONLY
                     </div>
-                    <div class="photo-affix-box" style="width: 95px; height: 110px;">
-                        <span>Passport size Photograph</span>
+                    
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 3px;">
+                        <div style="width: 26px; height: 26px; border-radius: 50%; border: 1px solid #1e3a8a; display: flex; align-items: center; justify-content: center; background: #eff6ff; color: #1e3a8a; font-size: 0.78rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.94rem; font-weight: 800; color: #1e3a8a; font-family: 'Playfair Display', Georgia, serif; line-height: 1.1; margin: 0;">OXFORD INTERNATIONAL SCHOOL</div>
+                            <div style="font-size: 0.68rem; font-weight: 600; color: #334155; line-height: 1.1;">Raxaul-Adapur Sainik Road, Harpur, East Champaran-845301</div>
+                            <div style="font-size: 0.63rem; color: #475569; line-height: 1.1;">Based on C.B.S.E. Syllabus &bull; English Medium &bull; Nur. to Vth &bull; Mob.: 7870335141, 8709292309</div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="office-signatures-grid">
-                    <div>
-                        <div style="height: 32px;"></div>
-                        <div class="sig-holder">Examination Controller</div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                        <div style="flex: 1; font-size: 0.76rem; line-height: 1.5;">
+                            <div><strong>SL. No.</strong> <span id="pf-admit-slno" style="border-bottom: 1px dotted #333; padding: 0 6px; font-weight: 700; display: inline-block; min-width: 120px;"></span></div>
+                            <div>Pupil's Name <strong id="pf-admit-pupil" style="border-bottom: 1px dotted #333; padding: 0 6px; display: inline-block; min-width: 200px; font-weight: 700;"></strong></div>
+                            <div>Father's Name <strong id="pf-admit-father" style="border-bottom: 1px dotted #333; padding: 0 6px; display: inline-block; min-width: 200px; font-weight: 700;"></strong></div>
+                            <div>Reg. No. <strong id="pf-admit-regno" style="border-bottom: 1px dotted #333; padding: 0 6px; display: inline-block; min-width: 80px; font-weight: 700;"></strong> is allowed to appear at the written test scheduled to be held on <strong id="pf-admit-testdate" style="border-bottom: 1px dotted #333; padding: 0 6px; display: inline-block; min-width: 140px; font-weight: 700;"></strong></div>
+                        </div>
+                        <div class="photo-affix-box" style="width: 74px; height: 88px; flex-shrink: 0; font-size: 0.6rem; padding: 2px; text-align: center; border: 1.2px dashed #64748b; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: #fff;">
+                            <span>Affix Passport size Photo Here</span>
+                        </div>
                     </div>
-                    <div>
-                        <div style="height: 32px;"></div>
-                        <div class="sig-holder">Office-Incharge</div>
-                    </div>
-                    <div>
-                        <div style="height: 32px;"></div>
-                        <div class="sig-holder">Principal Signature & Stamp</div>
+
+                    <div class="office-signatures-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; margin-top: 6px; padding-top: 2px;">
+                        <div>
+                            <div style="height: 12px;"></div>
+                            <div class="sig-holder" style="border-top: 1px solid #475569; padding-top: 2px; font-size: 0.68rem; font-weight: 700; color: #1e293b;">Examination Controller Signature</div>
+                        </div>
+                        <div>
+                            <div style="height: 12px;"></div>
+                            <div class="sig-holder" style="border-top: 1px solid #475569; padding-top: 2px; font-size: 0.68rem; font-weight: 700; color: #1e293b;">Office-Incharge Signature</div>
+                        </div>
+                        <div>
+                            <div style="height: 12px;"></div>
+                            <div class="sig-holder" style="border-top: 1px solid #475569; padding-top: 2px; font-size: 0.68rem; font-weight: 700; color: #1e293b;">Principal Signature and Stamp</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================== -->
-    <!-- MODAL: PRINT OFFICIAL FEE RECEIPT (IMAGE 2)                     -->
-    <!-- ============================================================== -->
     <div id="modal-print-fee-receipt" class="modal">
         <div class="modal-content receipt-print-modal-content">
             <div class="modal-header no-print" style="margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">

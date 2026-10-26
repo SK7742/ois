@@ -3703,6 +3703,8 @@ async function printAdmissionForm(appId) {
         document.getElementById('pf-decl-date').textContent = app.declarationDate || app.createdAt ? String(app.createdAt).substring(0, 10) : '26-10-2026';
 
         // Office Admit Slip (Tear-off)
+        const admitSlno = document.getElementById('pf-admit-slno');
+        if (admitSlno) admitSlno.textContent = app.slNo || ('SL-' + String(app.id).padStart(3, '0'));
         document.getElementById('pf-admit-pupil').textContent = (app.studentName || '').toUpperCase();
         document.getElementById('pf-admit-father').textContent = app.fatherName || '';
         document.getElementById('pf-admit-regno').textContent = app.applicationNumber || ('REG-' + (1000 + app.id));
@@ -3974,11 +3976,75 @@ function triggerPrintSlip(containerId) {
         window.print();
         return;
     }
-    el.classList.add('print-target');
-    window.print();
+
+    // Try isolated hidden iframe for perfect print rendering
+    let printFrame = document.getElementById('app-print-frame');
+    if (printFrame) {
+        printFrame.remove();
+    }
+    printFrame = document.createElement('iframe');
+    printFrame.id = 'app-print-frame';
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    document.body.appendChild(printFrame);
+
+    const doc = printFrame.contentWindow.document;
+    doc.open();
+    doc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Oxford International School - Admission Form & Admit Card</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+            <link rel="stylesheet" href="styles.css">
+            <style>
+                @page {
+                    size: A4 portrait;
+                    margin: 4mm 6mm;
+                }
+                html, body {
+                    margin: 0;
+                    padding: 0;
+                    background: #fff;
+                    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                .physical-form-container {
+                    border: 1.5px solid #1e3a8a !important;
+                    margin: 0 auto !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+                .no-print {
+                    display: none !important;
+                }
+            </style>
+        </head>
+        <body>
+            ${el.outerHTML}
+        </body>
+        </html>
+    `);
+    doc.close();
+
     setTimeout(() => {
-        el.classList.remove('print-target');
-    }, 500);
+        try {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+        } catch (e) {
+            console.error("Iframe print error, falling back to direct print", e);
+            el.classList.add('print-target');
+            window.print();
+            setTimeout(() => el.classList.remove('print-target'), 500);
+        }
+    }, 450);
 }
 
 function handleStudentSelectForInvoice(studentId) {
