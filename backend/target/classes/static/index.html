@@ -506,12 +506,14 @@
 
                     <!-- Main Student Directory Card with Enhanced Filters -->
                     <div class="card">
-                        <div class="card-header" style="background: #fafafa; border-bottom: 1.5px solid #e2e8f0; padding: 16px 20px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 14px;">
-                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <div class="card-header" style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-bottom: 1.5px solid #e2e8f0; padding: 18px 22px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 16px;">
+                                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
                                     <div>
-                                        <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Academic Class</label>
-                                        <select id="filter-student-class" onchange="loadStudents()" class="form-control" style="font-size: 0.88rem; font-weight: 600; min-width: 150px;">
+                                        <label style="font-size: 0.76rem; font-weight: 700; color: #065f46; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+                                            <i class="fa-solid fa-graduation-cap" style="color: #059669;"></i> Academic Class
+                                        </label>
+                                        <select id="filter-student-class" onchange="loadStudents()" style="min-width: 175px;">
                                             <option value="">All Classes (Nur - 10)</option>
                                             <option value="Nursery">Nursery</option>
                                             <option value="LKG">LKG</option>
@@ -530,17 +532,21 @@
                                     </div>
 
                                     <div>
-                                        <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Transport Option</label>
-                                        <select id="filter-student-transport" onchange="loadStudents()" class="form-control" style="font-size: 0.88rem; font-weight: 600; min-width: 160px;">
+                                        <label style="font-size: 0.76rem; font-weight: 700; color: #0284c7; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+                                            <i class="fa-solid fa-bus" style="color: #0284c7;"></i> Transport Option
+                                        </label>
+                                        <select id="filter-student-transport" onchange="loadStudents()" style="min-width: 180px;">
                                             <option value="">All Transport Modes</option>
-                                            <option value="BUS">School Bus Commuters</option>
-                                            <option value="SELF">Self / Private Transport</option>
+                                            <option value="BUS">🚌 School Bus Commuters</option>
+                                            <option value="SELF">🚶 Self / Private Commute</option>
                                         </select>
                                     </div>
 
                                     <div>
-                                        <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Fee Category</label>
-                                        <select id="filter-student-fee-cat" onchange="loadStudents()" class="form-control" style="font-size: 0.88rem; font-weight: 600; min-width: 170px;">
+                                        <label style="font-size: 0.76rem; font-weight: 700; color: #d97706; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+                                            <i class="fa-solid fa-tags" style="color: #d97706;"></i> Fee Category
+                                        </label>
+                                        <select id="filter-student-fee-cat" onchange="loadStudents()" style="min-width: 190px;">
                                             <option value="">All Fee Structures</option>
                                             <option value="GENERAL">Standard General</option>
                                             <option value="SIBLING_CONCESSION">Sibling Concession</option>
@@ -551,11 +557,13 @@
                                     </div>
                                 </div>
 
-                                <div style="flex: 1; max-width: 320px; min-width: 200px;">
-                                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Quick Pupil Search</label>
+                                <div style="flex: 1; max-width: 320px; min-width: 220px;">
+                                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+                                        <i class="fa-solid fa-magnifying-glass" style="color: #64748b;"></i> Quick Pupil Search
+                                    </label>
                                     <div style="position: relative;">
-                                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 11px; color: #94a3b8; font-size: 0.9rem;"></i>
-                                        <input type="text" id="search-student-input" onkeyup="filterStudentsRealtime()" placeholder="Search name, adm #, roll, phone..." class="form-control" style="padding-left: 36px; font-size: 0.88rem;">
+                                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem; pointer-events: none;"></i>
+                                        <input type="text" id="search-student-input" onkeyup="filterStudentsRealtime()" placeholder="Search name, adm #, roll, phone..." class="form-control" style="padding-left: 38px; height: 42px; font-size: 0.88rem; border-radius: 8px;">
                                     </div>
                                 </div>
                             </div>
