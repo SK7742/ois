@@ -12,18 +12,32 @@ if /i "%1"=="stop" goto :mode_stop
 if /i "%1"=="restart" goto :mode_restart
 if /i "%1"=="status" goto :mode_status
 if /i "%1"=="logs" goto :mode_logs
+if /i "%1"=="superuser" goto :mode_superuser
+if /i "%1"=="admin" goto :mode_superuser
 
 echo ===============================================================================
 echo                OXFORD INTERNATIONAL SCHOOL - CSMS [DOCKER]
 echo ===============================================================================
 echo  Usage:
-echo    start.bat           - Check requirements, auto-start dependencies, and run app
-echo    start.bat stop      - Stop the running Docker container and free port 8080
-echo    start.bat restart   - Restart the Docker container
-echo    start.bat status    - Check system requirements, container, and port 8080
-echo    start.bat logs      - Stream live logs from the container
+echo    start.bat              - Check requirements, auto-start dependencies, and run app
+echo    start.bat superuser    - Configure / reset superuser administrator credentials
+echo    start.bat stop         - Stop the running Docker container and free port 8080
+echo    start.bat restart      - Restart the Docker container
+echo    start.bat status       - Check system requirements, container, and port 8080
+echo    start.bat logs         - Stream live logs from the container
 echo ===============================================================================
 exit /b 1
+
+:mode_superuser
+echo ===============================================================================
+echo        OXFORD INTERNATIONAL SCHOOL - CSMS [CONFIGURE SUPERUSER ADMIN]
+echo ===============================================================================
+if exist "%~dp0configure-superuser.bat" (
+    call "%~dp0configure-superuser.bat" %2 %3 %4 %5 %6 %7 %8 %9
+) else (
+    python "%~dp0configure_superuser.py" %2 %3 %4 %5 %6 %7 %8 %9
+)
+exit /b %ERRORLEVEL%
 
 :mode_stop
 echo ===============================================================================
@@ -222,16 +236,12 @@ echo ===========================================================================
 echo  Application Portal : http://localhost:8080/
 echo  Health Endpoint    : http://localhost:8080/actuator/health
 echo -------------------------------------------------------------------------------
-echo  Lead Architect     : Er. Shivam Kumar (shivam.kumar / Shivam@123)
-echo  Administrator      : Anil Kumar Gupt (admin / Admin@123)
-echo  Teacher Portal     : Dr. Satish Sharma (teacher.sharma / Teacher@123)
-echo  Student Portal     : Aarav Kumar (student.aarav / Student@123)
-echo -------------------------------------------------------------------------------
 echo  Control Commands:
-echo    start.bat stop     - Stop the application and free port 8080
-echo    start.bat restart  - Restart the application
-echo    start.bat logs     - View live container logs
-echo    start.bat status   - View system and container health status
+echo    start.bat superuser - Configure / reset superuser administrator credentials
+echo    start.bat stop      - Stop the application and free port 8080
+echo    start.bat restart   - Restart the application
+echo    start.bat logs      - View live container logs
+echo    start.bat status    - View system and container health status
 echo ===============================================================================
 echo.
 

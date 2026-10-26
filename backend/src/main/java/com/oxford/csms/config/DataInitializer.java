@@ -58,11 +58,24 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(admin);
             log.info("Primary administrator account successfully initialized.");
         } else {
-            // Update admin password to ensure it's Admin@123
+            // Preserve configured administrator credentials; ensure administrative privileges remain intact
             userRepository.findByUsernameIgnoreCase("admin").ifPresent(admin -> {
-                admin.setPassword(passwordEncoder.encode("Admin@123"));
-                admin.setRoles(Set.of(Role.ROLE_ADMIN, Role.ROLE_MANAGEMENT));
-                userRepository.save(admin);
+                boolean needsSave = false;
+                if (admin.getRoles() == null || !admin.getRoles().contains(Role.ROLE_ADMIN) || !admin.getRoles().contains(Role.ROLE_MANAGEMENT)) {
+                    admin.setRoles(Set.of(Role.ROLE_ADMIN, Role.ROLE_MANAGEMENT));
+                    needsSave = true;
+                }
+                if (!admin.isEnabled()) {
+                    admin.setEnabled(true);
+                    needsSave = true;
+                }
+                if (admin.getPassword() == null || admin.getPassword().isBlank()) {
+                    admin.setPassword(passwordEncoder.encode("Admin@123"));
+                    needsSave = true;
+                }
+                if (needsSave) {
+                    userRepository.save(admin);
+                }
             });
         }
 
