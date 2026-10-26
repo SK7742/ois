@@ -438,53 +438,146 @@
 
                 <!-- ADMIN: STUDENTS -->
                 <section id="view-students" class="view-panel">
-                    <div class="card">
-                        <div class="card-header">
+                    <!-- Student Management Header Banner -->
+                    <div class="card" style="margin-bottom: 20px; border-left: 5px solid #2563eb;">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
                             <div>
-                                <h2>Master Student Directory</h2>
-                                <p>Comprehensive student directory with enrollment records, attendance rates, and fee status.</p>
+                                <h2 style="display: flex; align-items: center; gap: 10px; color: #1e3a8a; margin: 0 0 4px 0;">
+                                    <i class="fa-solid fa-user-graduate" style="color: #2563eb;"></i>
+                                    Master Student Registry & Student Profiles
+                                </h2>
+                                <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+                                    Official pupil records for Oxford International School, Harpur. Maintain academic enrollments, fee concession structures, and school bus transit routes.
+                                </p>
                             </div>
-                            <div class="filter-controls">
-                                <select id="filter-student-class" onchange="loadStudents()">
-                                    <option value="">All Classes</option>
-                                    <option value="KG">KG</option>
-                                    <option value="LKG">LKG</option>
-                                    <option value="UKG">UKG</option>
-                                    <option value="Class 1">Class 1</option>
-                                    <option value="Class 2">Class 2</option>
-                                    <option value="Class 3">Class 3</option>
-                                    <option value="Class 4">Class 4</option>
-                                    <option value="Class 5">Class 5</option>
-                                    <option value="Class 6">Class 6</option>
-                                    <option value="Class 7">Class 7</option>
-                                    <option value="Class 8">Class 8</option>
-                                    <option value="Class 9">Class 9</option>
-                                    <option value="Class 10">Class 10</option>
-                                    <option value="Class 11">Class 11</option>
-                                    <option value="Class 12">Class 12</option>
-                                </select>
-                                <button class="btn btn-primary" onclick="openModal('modal-add-student')">
-                                    <i class="fa-solid fa-plus"></i> Add Student
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button class="btn btn-outline" onclick="loadStudents()" style="border-color: #cbd5e1; color: #475569;">
+                                    <i class="fa-solid fa-rotate"></i> Refresh
+                                </button>
+                                <button class="btn btn-primary" onclick="openModal('modal-add-student')" style="background: linear-gradient(135deg, #1e40af, #2563eb); font-weight: 700; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+                                    <i class="fa-solid fa-user-plus"></i> Enroll New Student
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="table-container">
-                                <table id="students-table" class="data-table">
+                    </div>
+
+                    <!-- Financial & Enrollment KPI Summary Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 22px;">
+                        <div class="card" style="padding: 16px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 48px; height: 48px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Total Active Pupils</span>
+                                <div id="std-kpi-total" style="font-size: 1.5rem; font-weight: 800; color: #1e293b;">0</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 16px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 48px; height: 48px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                <i class="fa-solid fa-bus"></i>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">School Transit Opted</span>
+                                <div id="std-kpi-transport" style="font-size: 1.5rem; font-weight: 800; color: #0369a1;">0</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 16px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 48px; height: 48px; border-radius: 10px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                <i class="fa-solid fa-tags"></i>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Fee Concessions</span>
+                                <div id="std-kpi-concessions" style="font-size: 1.5rem; font-weight: 800; color: #b45309;">0</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 16px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 48px; height: 48px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Pending Fee Dues</span>
+                                <div id="std-kpi-dues" style="font-size: 1.5rem; font-weight: 800; color: #b91c1c;">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Student Directory Card with Enhanced Filters -->
+                    <div class="card">
+                        <div class="card-header" style="background: #fafafa; border-bottom: 1.5px solid #e2e8f0; padding: 16px 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 14px;">
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <div>
+                                        <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Academic Class</label>
+                                        <select id="filter-student-class" onchange="loadStudents()" class="form-control" style="font-size: 0.88rem; font-weight: 600; min-width: 150px;">
+                                            <option value="">All Classes (Nur - 10)</option>
+                                            <option value="Nursery">Nursery</option>
+                                            <option value="LKG">LKG</option>
+                                            <option value="UKG">UKG</option>
+                                            <option value="Class 1">Class 1</option>
+                                            <option value="Class 2">Class 2</option>
+                                            <option value="Class 3">Class 3</option>
+                                            <option value="Class 4">Class 4</option>
+                                            <option value="Class 5">Class 5</option>
+                                            <option value="Class 6">Class 6</option>
+                                            <option value="Class 7">Class 7</option>
+                                            <option value="Class 8">Class 8</option>
+                                            <option value="Class 9">Class 9</option>
+                                            <option value="Class 10">Class 10</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Transport Option</label>
+                                        <select id="filter-student-transport" onchange="loadStudents()" class="form-control" style="font-size: 0.88rem; font-weight: 600; min-width: 160px;">
+                                            <option value="">All Transport Modes</option>
+                                            <option value="BUS">School Bus Commuters</option>
+                                            <option value="SELF">Self / Private Transport</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Fee Category</label>
+                                        <select id="filter-student-fee-cat" onchange="loadStudents()" class="form-control" style="font-size: 0.88rem; font-weight: 600; min-width: 170px;">
+                                            <option value="">All Fee Structures</option>
+                                            <option value="GENERAL">Standard General</option>
+                                            <option value="SIBLING_CONCESSION">Sibling Concession</option>
+                                            <option value="STAFF_WARD">Staff Ward</option>
+                                            <option value="MERIT_SCHOLARSHIP">Merit Scholarship</option>
+                                            <option value="CUSTOM">Custom Concession</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 1; max-width: 320px; min-width: 200px;">
+                                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Quick Pupil Search</label>
+                                    <div style="position: relative;">
+                                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 11px; color: #94a3b8; font-size: 0.9rem;"></i>
+                                        <input type="text" id="search-student-input" onkeyup="filterStudentsRealtime()" placeholder="Search name, adm #, roll, phone..." class="form-control" style="padding-left: 36px; font-size: 0.88rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-container" style="overflow-x: auto;">
+                                <table id="students-table" class="data-table" style="min-width: 1050px; width: 100%; margin: 0;">
                                     <thead>
-                                        <tr>
-                                            <th data-sort="admissionNo">Admission #</th>
-                                            <th data-sort="fullName">Student Full Name</th>
-                                            <th data-sort="currentClass">Class & Section</th>
-                                            <th data-sort="rollNo" data-sort-type="number">Roll No</th>
-                                            <th data-sort="guardianPhone">Guardian Phone</th>
-                                            <th data-sort="attendanceRate" data-sort-type="number">Attendance</th>
-                                            <th data-sort="feeStatus">Fee Status</th>
-                                            <th style="width: 130px; text-align: center;">Report Card</th>
+                                        <tr style="background: #f1f5f9; color: #1e293b; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            <th style="width: 130px;">Adm #</th>
+                                            <th style="width: 220px;">Student & Roll</th>
+                                            <th style="width: 130px;">Class & Section</th>
+                                            <th style="width: 170px;">Guardian & Phone</th>
+                                            <th style="width: 210px;">Fee Detail & Concession</th>
+                                            <th style="width: 200px;">Transport Option</th>
+                                            <th style="width: 90px; text-align: center;">Status</th>
+                                            <th style="width: 170px; text-align: center;">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="students-table-body">
-                                        <tr><td colspan="8" class="text-center">Loading student records...</td></tr>
+                                        <tr><td colspan="8" class="text-center" style="padding: 30px; color: #64748b;">Loading registered students...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -2642,72 +2735,453 @@
     </div>
 
     <!-- Modal: Add Student -->
+    <!-- ============================================================== -->
+    <!-- MODAL: ENROLL NEW STUDENT (COMPREHENSIVE RECORD MAINTAINER)     -->
+    <!-- ============================================================== -->
     <div id="modal-add-student" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Enroll New Student</h3>
-                <span class="close-btn" onclick="closeModal('modal-add-student')">&times;</span>
-            </div>
-            <form id="form-add-student" onsubmit="handleCreateStudent(event)">
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" id="std-first-name" required placeholder="e.g. Rahul">
-                </div>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" id="std-last-name" required placeholder="e.g. Verma">
-                </div>
-                <div class="form-group">
-                    <label>Class & Section</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <select id="std-class" required>
-                            <option value="KG">KG</option>
-                            <option value="LKG">LKG</option>
-                            <option value="UKG">UKG</option>
-                            <option value="Class 1">Class 1</option>
-                            <option value="Class 2">Class 2</option>
-                            <option value="Class 3">Class 3</option>
-                            <option value="Class 4">Class 4</option>
-                            <option value="Class 5">Class 5</option>
-                            <option value="Class 6">Class 6</option>
-                            <option value="Class 7">Class 7</option>
-                            <option value="Class 8">Class 8</option>
-                            <option value="Class 9">Class 9</option>
-                            <option value="Class 10" selected>Class 10</option>
-                            <option value="Class 11">Class 11</option>
-                            <option value="Class 12">Class 12</option>
-                        </select>
-                        <select id="std-section" required>
-                            <option value="A" selected>Section A</option>
-                            <option value="B">Section B</option>
-                            <option value="C">Section C</option>
-                            <option value="D">Section D</option>
-                        </select>
+        <div class="modal-content" style="max-width: 840px; width: 95%; max-height: 92vh; overflow-y: auto; border-radius: 12px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="background: rgba(255,255,255,0.2); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.2rem; color: #fff;">Enroll New Student</h3>
+                        <small style="opacity: 0.9;">Maintain Academic Record, Fee Concession & Transport Option</small>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Roll Number</label>
-                    <input type="number" id="std-roll-no" required placeholder="e.g. 18">
+                <span class="close-btn" onclick="closeModal('modal-add-student')" style="color: #fff; opacity: 0.85;">&times;</span>
+            </div>
+
+            <form id="form-add-student" onsubmit="handleCreateStudent(event)" style="padding: 20px;">
+                <!-- Section 1: Academic & Personal Info -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <h4 style="color: #1e3a8a; font-size: 0.95rem; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-graduation-cap"></i> 1. Academic & Personal Identification
+                    </h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Student First Name *</label>
+                            <input type="text" id="std-first-name" required placeholder="e.g. Aarav" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Student Last Name *</label>
+                            <input type="text" id="std-last-name" required placeholder="e.g. Kumar" class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Academic Class *</label>
+                            <select id="std-class" required class="form-control">
+                                <option value="Nursery">Nursery</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="Class 1">Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                                <option value="Class 9">Class 9</option>
+                                <option value="Class 10" selected>Class 10</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Section *</label>
+                            <select id="std-section" required class="form-control">
+                                <option value="A" selected>Section A</option>
+                                <option value="B">Section B</option>
+                                <option value="C">Section C</option>
+                                <option value="D">Section D</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Roll Number</label>
+                            <input type="number" id="std-roll-no" placeholder="e.g. 1" min="1" class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Date of Birth</label>
+                            <input type="date" id="std-dob" value="2016-08-15" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Gender</label>
+                            <select id="std-gender" class="form-control">
+                                <option value="Male" selected>Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Blood Group</label>
+                            <select id="std-blood-group" class="form-control">
+                                <option value="B+" selected>B+</option>
+                                <option value="A+">A+</option>
+                                <option value="O+">O+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="B-">B-</option>
+                                <option value="A-">A-</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Aadhar Number</label>
+                            <input type="text" id="std-aadhar" placeholder="XXXX - XXXX - XXXX" class="form-control">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Guardian Name</label>
-                    <input type="text" id="std-guardian-name" required placeholder="e.g. Ramesh Verma">
+
+                <!-- Section 2: Parent & Residential Info -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <h4 style="color: #1e3a8a; font-size: 0.95rem; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-house-user"></i> 2. Parent & Contact Details
+                    </h4>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Guardian / Father's Name *</label>
+                            <input type="text" id="std-guardian-name" required placeholder="e.g. Rajesh Kumar" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Primary Mobile / WhatsApp *</label>
+                            <input type="text" id="std-guardian-phone" required placeholder="+91-9801XXXXXX" class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Guardian Email (Optional)</label>
+                            <input type="email" id="std-guardian-email" placeholder="parent@example.com" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Residential Address *</label>
+                            <input type="text" id="std-address" required placeholder="Village / Ward, Harpur, Raxaul, East Champaran" class="form-control">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Guardian Mobile Phone</label>
-                    <input type="text" id="std-guardian-phone" required placeholder="+91-9801XXXXXX">
+
+                <!-- Section 3: Fee Detail & Concession Structure -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #047857; font-size: 0.95rem; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> 3. Fee Detail & Concession Policy
+                    </h4>
+
+                    <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Fee Category / Concession Scheme *</label>
+                            <select id="std-fee-category" onchange="autoFillFeeConcession('add')" class="form-control" style="font-weight: 600;">
+                                <option value="GENERAL" selected>GENERAL (Standard Institutional Rate)</option>
+                                <option value="SIBLING_CONCESSION">SIBLING CONCESSION (25% Standard Off)</option>
+                                <option value="STAFF_WARD">STAFF WARD (50% Concession)</option>
+                                <option value="MERIT_SCHOLARSHIP">MERIT SCHOLARSHIP (100% Tuition Waiver)</option>
+                                <option value="CUSTOM">CUSTOM CONCESSION</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Concession Discount %</label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <input type="number" id="std-concession-pct" value="0" min="0" max="100" step="1" class="form-control" style="font-weight: 700;">
+                                <span style="font-weight: 700; color: #475569;">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Fixed Monthly Discount (₹)</label>
+                            <input type="number" id="std-concession-amount" value="0" min="0" step="50" class="form-control" placeholder="e.g. 500">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Concession Reason / Reference Note</label>
+                            <input type="text" id="std-concession-reason" placeholder="e.g. Approved by Management for 2nd sibling" class="form-control">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Residential Address (Raxaul / Champaran)</label>
-                    <input type="text" id="std-address" required placeholder="e.g. Main Road, Harpur, Raxaul">
+
+                <!-- Section 4: Transportation Option -->
+                <div style="margin-bottom: 20px; background: #f0fdfa; padding: 14px; border-radius: 8px; border: 1px solid #ccfbf1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #0f766e; font-size: 0.95rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-bus"></i> 4. School Transportation Option
+                        </h4>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #0f766e; font-size: 0.88rem;">
+                            <input type="checkbox" id="std-transport-opted" onchange="toggleAddTransportFields()" style="width: 18px; height: 18px;">
+                            Avail School Bus Transport
+                        </label>
+                    </div>
+
+                    <div id="add-student-transport-details" style="display: none; padding-top: 10px; border-top: 1px dashed #99f6e4;">
+                        <div style="display: grid; grid-template-columns: 1.5fr 1.2fr 1fr; gap: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 600; font-size: 0.84rem; color: #115e59;">Assigned Bus Route *</label>
+                                <select id="std-bus-route" class="form-control" style="font-weight: 600;">
+                                    <option value="Route 1: Raxaul Station - Harpur Main Road">Route 1: Raxaul Station - Harpur Main Road</option>
+                                    <option value="Route 2: Adapur - Sainik Road - Harpur Campus">Route 2: Adapur - Sainik Road - Harpur Campus</option>
+                                    <option value="Route 3: Sugauli Border Road - Harpur Campus">Route 3: Sugauli Border Road - Harpur Campus</option>
+                                    <option value="Route 4: Ramgarhwa Chowk - Harpur Campus">Route 4: Ramgarhwa Chowk - Harpur Campus</option>
+                                    <option value="Custom Route">Custom Campus Route</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 600; font-size: 0.84rem; color: #115e59;">Pickup / Drop Stop Point *</label>
+                                <input type="text" id="std-pickup-stop" placeholder="e.g. Harpur Chowk / Station" class="form-control">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 600; font-size: 0.84rem; color: #115e59;">Monthly Bus Fare (₹)</label>
+                                <input type="number" id="std-transport-fare" value="800" min="0" step="50" class="form-control" style="font-weight: 700;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
+
+                <div class="modal-footer" style="padding: 14px 0 0 0; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-student')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Enroll to Active Register</button>
+                    <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #1e40af, #2563eb); font-weight: 700;">
+                        <i class="fa-solid fa-check-circle"></i> Complete Student Enrollment
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: EDIT STUDENT RECORD (FEE DETAILS, TRANSPORT, PROFILE)    -->
+    <!-- ============================================================== -->
+    <div id="modal-edit-student" class="modal">
+        <div class="modal-content" style="max-width: 840px; width: 95%; max-height: 92vh; overflow-y: auto; border-radius: 12px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="background: rgba(255,255,255,0.2); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.2rem; color: #fff;">Update Student Record</h3>
+                        <small style="opacity: 0.9;">Modify Academic Particulars, Fee Concession & Transport Option</small>
+                    </div>
+                </div>
+                <span class="close-btn" onclick="closeModal('modal-edit-student')" style="color: #fff; opacity: 0.85;">&times;</span>
+            </div>
+
+            <form id="form-edit-student" onsubmit="handleUpdateStudent(event)" style="padding: 20px;">
+                <input type="hidden" id="edit-std-id">
+
+                <!-- Header Admission Tag -->
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
+                    <div>
+                        <span style="font-size: 0.76rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Official Admission #</span>
+                        <div id="edit-std-admission-no" style="font-size: 1.1rem; font-weight: 800; color: #1e3a8a;">-</div>
+                    </div>
+                    <div>
+                        <label style="font-weight: 600; font-size: 0.84rem; color: #334155; margin-right: 8px;">Enrollment Status:</label>
+                        <select id="edit-std-active" class="form-control" style="display: inline-block; width: auto; font-weight: 700;">
+                            <option value="true">Active Enrolled</option>
+                            <option value="false">Inactive / Left School</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 1: Academic & Personal Info -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <h4 style="color: #1e3a8a; font-size: 0.95rem; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-graduation-cap"></i> 1. Academic & Personal Identification
+                    </h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Student First Name *</label>
+                            <input type="text" id="edit-std-first-name" required class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Student Last Name *</label>
+                            <input type="text" id="edit-std-last-name" required class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Academic Class *</label>
+                            <select id="edit-std-class" required class="form-control">
+                                <option value="Nursery">Nursery</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="Class 1">Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                                <option value="Class 9">Class 9</option>
+                                <option value="Class 10">Class 10</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Section *</label>
+                            <select id="edit-std-section" required class="form-control">
+                                <option value="A">Section A</option>
+                                <option value="B">Section B</option>
+                                <option value="C">Section C</option>
+                                <option value="D">Section D</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Roll Number</label>
+                            <input type="number" id="edit-std-roll-no" min="1" class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Date of Birth</label>
+                            <input type="date" id="edit-std-dob" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Gender</label>
+                            <select id="edit-std-gender" class="form-control">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Blood Group</label>
+                            <select id="edit-std-blood-group" class="form-control">
+                                <option value="B+">B+</option>
+                                <option value="A+">A+</option>
+                                <option value="O+">O+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="B-">B-</option>
+                                <option value="A-">A-</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Aadhar Number</label>
+                            <input type="text" id="edit-std-aadhar" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Parent & Residential Info -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <h4 style="color: #1e3a8a; font-size: 0.95rem; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-house-user"></i> 2. Parent & Contact Details
+                    </h4>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Guardian / Father's Name *</label>
+                            <input type="text" id="edit-std-guardian-name" required class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Primary Mobile / WhatsApp *</label>
+                            <input type="text" id="edit-std-guardian-phone" required class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Guardian Email</label>
+                            <input type="email" id="edit-std-guardian-email" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Residential Address *</label>
+                            <input type="text" id="edit-std-address" required class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Fee Detail & Concession Structure -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #047857; font-size: 0.95rem; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> 3. Fee Detail & Concession Policy
+                    </h4>
+
+                    <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Fee Category / Concession Scheme *</label>
+                            <select id="edit-std-fee-category" onchange="autoFillFeeConcession('edit')" class="form-control" style="font-weight: 600;">
+                                <option value="GENERAL">GENERAL (Standard Institutional Rate)</option>
+                                <option value="SIBLING_CONCESSION">SIBLING CONCESSION (25% Standard Off)</option>
+                                <option value="STAFF_WARD">STAFF WARD (50% Concession)</option>
+                                <option value="MERIT_SCHOLARSHIP">MERIT SCHOLARSHIP (100% Tuition Waiver)</option>
+                                <option value="CUSTOM">CUSTOM CONCESSION</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Concession Discount %</label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <input type="number" id="edit-std-concession-pct" min="0" max="100" step="1" class="form-control" style="font-weight: 700;">
+                                <span style="font-weight: 700; color: #475569;">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Fixed Monthly Discount (₹)</label>
+                            <input type="number" id="edit-std-concession-amount" min="0" step="50" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; font-size: 0.84rem; color: #334155;">Concession Reason / Reference Note</label>
+                            <input type="text" id="edit-std-concession-reason" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Transportation Option -->
+                <div style="margin-bottom: 20px; background: #f0fdfa; padding: 14px; border-radius: 8px; border: 1px solid #ccfbf1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #0f766e; font-size: 0.95rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-bus"></i> 4. School Transportation Option
+                        </h4>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #0f766e; font-size: 0.88rem;">
+                            <input type="checkbox" id="edit-std-transport-opted" onchange="toggleEditTransportFields()" style="width: 18px; height: 18px;">
+                            Avail School Bus Transport
+                        </label>
+                    </div>
+
+                    <div id="edit-student-transport-details" style="display: none; padding-top: 10px; border-top: 1px dashed #99f6e4;">
+                        <div style="display: grid; grid-template-columns: 1.5fr 1.2fr 1fr; gap: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 600; font-size: 0.84rem; color: #115e59;">Assigned Bus Route *</label>
+                                <select id="edit-std-bus-route" class="form-control" style="font-weight: 600;">
+                                    <option value="Route 1: Raxaul Station - Harpur Main Road">Route 1: Raxaul Station - Harpur Main Road</option>
+                                    <option value="Route 2: Adapur - Sainik Road - Harpur Campus">Route 2: Adapur - Sainik Road - Harpur Campus</option>
+                                    <option value="Route 3: Sugauli Border Road - Harpur Campus">Route 3: Sugauli Border Road - Harpur Campus</option>
+                                    <option value="Route 4: Ramgarhwa Chowk - Harpur Campus">Route 4: Ramgarhwa Chowk - Harpur Campus</option>
+                                    <option value="Custom Route">Custom Campus Route</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 600; font-size: 0.84rem; color: #115e59;">Pickup / Drop Stop Point *</label>
+                                <input type="text" id="edit-std-pickup-stop" class="form-control">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 600; font-size: 0.84rem; color: #115e59;">Monthly Bus Fare (₹)</label>
+                                <input type="number" id="edit-std-transport-fare" min="0" step="50" class="form-control" style="font-weight: 700;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="padding: 14px 0 0 0; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-edit-student')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #0f172a, #1e293b); font-weight: 700;">
+                        <i class="fa-solid fa-save"></i> Save Student Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- ============================================================== -->
     <!-- ============================================================== -->

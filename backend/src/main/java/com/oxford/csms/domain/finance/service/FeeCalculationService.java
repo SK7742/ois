@@ -4,6 +4,7 @@ import com.oxford.csms.domain.admin.model.Student;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -20,19 +21,34 @@ public class FeeCalculationService {
             grossAmount = BigDecimal.ZERO;
         }
 
-        if (scholarshipType == null || scholarshipType.isBlank() || "NONE".equalsIgnoreCase(scholarshipType)) {
-            return new FeeCalculationResult(grossAmount, BigDecimal.ZERO, grossAmount, "None");
-        }
-
-        for (ScholarshipStrategy strategy : scholarshipStrategies) {
-            if (strategy.supports(scholarshipType)) {
-                BigDecimal discount = strategy.calculateDiscount(grossAmount, student);
-                BigDecimal net = grossAmount.subtract(discount).max(BigDecimal.ZERO);
-                return new FeeCalculationResult(grossAmount, discount, net, strategy.getStrategyName());
+        if (scholarshipType != null && !scholarshipType.isBlank() && !"NONE".equalsIgnoreCase(scholarshipType)) {
+            for (ScholarshipStrategy strategy : scholarshipStrategies) {
+                if (strategy.supports(scholarshipType)) {
+                    BigDecimal discount = strategy.calculateDiscount(grossAmount, student);
+                    BigDecimal net = grossAmount.subtract(discount).max(BigDecimal.ZERO);
+                    return new FeeCalculationResult(grossAmount, discount, net, strategy.getStrategyName());
+                }
             }
         }
 
-        return new FeeCalculationResult(grossAmount, BigDecimal.ZERO, grossAmount, "Standard Rate");
+        // Check if student has individual fee concession configured
+        if (student != null) {
+            if (student.getConcessionPercentage() != null && student.getConcessionPercentage() > 0) {
+                BigDecimal pct = BigDecimal.valueOf(student.getConcessionPercentage())
+                        .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+                BigDecimal discount = grossAmount.multiply(pct).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal net = grossAmount.subtract(discount).max(BigDecimal.ZERO);
+                String reason = student.getFeeCategory() + (student.getConcessionReason() != null && !student.getConcessionReason().isBlank() ? " (" + student.getConcessionReason() + ")" : " Concession");
+                return new FeeCalculationResult(grossAmount, discount, net, reason);
+            } else if (student.getConcessionAmount() != null && student.getConcessionAmount().compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal discount = student.getConcessionAmount().min(grossAmount);
+                BigDecimal net = grossAmount.subtract(discount).max(BigDecimal.ZERO);
+                String reason = student.getFeeCategory() + (student.getConcessionReason() != null && !student.getConcessionReason().isBlank() ? " (" + student.getConcessionReason() + ")" : " Concession");
+                return new FeeCalculationResult(grossAmount, discount, net, reason);
+            }
+        }
+
+        return new FeeCalculationResult(grossAmount, BigDecimal.ZERO, grossAmount, "None");
     }
 
     public static class FeeCalculationResult {

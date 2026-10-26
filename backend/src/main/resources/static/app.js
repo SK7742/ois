@@ -596,10 +596,11 @@ const ROLE_CONFIGS = {
     ADMIN: {
         roleTitle: 'ADMINISTRATOR (SUPER USER)',
         portalTitle: 'Oxford International School - Administration',
-        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions & Fee Management',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions, Student Records & Fee Management',
         defaultTab: 'admissions',
         menu: [
-            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Registration' },
+            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Intake' },
+            { id: 'students', icon: 'fa-user-graduate', label: 'Student Management' },
             { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     },
@@ -842,12 +843,13 @@ function getAuthHeaders() {
 // ==============================================================
 
 function loadTabContent(tabId) {
-    if (tabId !== 'admissions' && tabId !== 'fees') {
+    if (tabId !== 'admissions' && tabId !== 'fees' && tabId !== 'students') {
         navigateTo('admissions');
         return;
     }
     switch (tabId) {
         case 'admissions': loadAdmissions(); break;
+        case 'students': loadStudents(); break;
         case 'fees': loadFees(); break;
         default: loadAdmissions(); break;
     }
@@ -1110,68 +1112,431 @@ async function toggleApplicationActive(applicationId, currentlyActive) {
     }
 }
 
+// ==============================================================
+// 4B. STUDENT MANAGEMENT MODULE (FEE DETAILS, TRANSPORT, RECORDS)
+// ==============================================================
+
+let currentStudentsList = [];
+
 async function loadStudents() {
     const grade = document.getElementById('filter-student-class')?.value;
+    const transportFilter = document.getElementById('filter-student-transport')?.value;
+    const feeCatFilter = document.getElementById('filter-student-fee-cat')?.value;
+
     let url = `${API_BASE}/api/admin/students`;
     if (grade) url += `?grade=${encodeURIComponent(grade)}`;
 
     try {
         const res = await fetch(url, { headers: getAuthHeaders() });
         const d = await res.json();
-        const students = d.data || [];
+        let students = d.data || [];
 
-        renderOrUpdateDataTable('admin-students', {
-            tbodyId: 'students-table-body',
-            tableId: 'students-table',
-            data: students,
-            defaultSortKey: 'admissionNo',
-            searchFields: ['admissionNo', 'firstName', 'lastName', 'fullName', 'currentClass', 'section', 'guardianPhone', 'rollNo'],
-            filters: [
-                {
-                    id: 'feeStatus',
-                    label: 'All Fee Statuses',
-                    options: [
-                        { value: '', label: 'All Fee Statuses' },
-                        { value: 'CLEARED', label: 'Cleared' },
-                        { value: 'OVERDUE', label: 'Overdue' }
-                    ],
-                    match: (s, val) => !val || s.feeStatus === val
-                },
-                {
-                    id: 'grade',
-                    label: 'All Classes',
-                    key: 'currentClass',
-                    options: 'auto'
-                }
-            ],
-            renderRow: (s) => `
-                <tr>
-                    <td><strong>${escapeHtml(s.admissionNo)}</strong></td>
-                    <td><strong>${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)}</strong><br><small class="text-secondary">${escapeHtml(s.gender || '')}</small></td>
-                    <td><span class="badge badge-primary">${escapeHtml(s.currentClass)} - ${escapeHtml(s.section)}</span></td>
-                    <td>#${escapeHtml(s.rollNo || '-')}</td>
-                    <td>${escapeHtml(s.guardianPhone || '')}</td>
-                    <td><strong>${s.attendanceRate || 95}%</strong></td>
-                    <td><span class="badge ${s.feeStatus === 'CLEARED' ? 'badge-success' : 'badge-danger'}">${escapeHtml(s.feeStatus)}</span></td>
-                    <td>
-                        <button class="btn btn-outline btn-sm" onclick="generateSampleReportCard(${s.id})">
-                            <i class="fa-solid fa-file-pdf"></i> Report Card
-                        </button>
-                    </td>
-                </tr>
-            `
-        });
+        // Save raw list for realtime client searching
+        currentStudentsList = students;
 
-        const invSelect = document.getElementById('inv-student-id');
-        if (invSelect && students.length > 0) {
-            invSelect.innerHTML = students.map(s => `
-                <option value="${s.id}">${escapeHtml(s.fullName || (s.firstName + ' ' + s.lastName))} (${escapeHtml(s.admissionNo)}) - ${escapeHtml(s.currentClass)}</option>
-            `).join('');
+        // Apply transport filter
+        if (transportFilter === 'BUS') {
+            students = students.filter(s => s.transportOpted === true);
+        } else if (transportFilter === 'SELF') {
+            students = students.filter(s => !s.transportOpted);
         }
+
+        // Apply fee category filter
+        if (feeCatFilter) {
+            students = students.filter(s => s.feeCategory === feeCatFilter);
+        }
+
+        // Calculate KPIs
+        const totalPupils = currentStudentsList.filter(s => s.active !== false).length;
+        const busPupils = currentStudentsList.filter(s => s.active !== false && s.transportOpted).length;
+        const concessionPupils = currentStudentsList.filter(s => s.active !== false && (s.concessionPercentage > 0 || (s.concessionAmount && s.concessionAmount > 0) || (s.feeCategory && s.feeCategory !== 'GENERAL'))).length;
+        const pendingDuesPupils = currentStudentsList.filter(s => s.active !== false && s.feeStatus && s.feeStatus !== 'CLEARED').length;
+
+        const kpiTotal = document.getElementById('std-kpi-total');
+        if (kpiTotal) kpiTotal.textContent = totalPupils;
+        const kpiTrans = document.getElementById('std-kpi-transport');
+        if (kpiTrans) kpiTrans.textContent = busPupils;
+        const kpiConc = document.getElementById('std-kpi-concessions');
+        if (kpiConc) kpiConc.textContent = concessionPupils;
+        const kpiDues = document.getElementById('std-kpi-dues');
+        if (kpiDues) kpiDues.textContent = pendingDuesPupils;
+
+        renderStudentsTableRows(students);
     } catch (e) {
-        console.error("Student load error:", e);
+        console.error("Error loading students:", e);
+        const tbody = document.getElementById('students-table-body');
+        if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="color: #dc2626; padding: 20px;">Failed to load student registry: ${escapeHtml(e.message)}</td></tr>`;
     }
 }
+
+function filterStudentsRealtime() {
+    const query = (document.getElementById('search-student-input')?.value || '').trim().toLowerCase();
+    if (!query) {
+        renderStudentsTableRows(currentStudentsList);
+        return;
+    }
+    const filtered = currentStudentsList.filter(s => {
+        const full = `${s.firstName || ''} ${s.lastName || ''} ${s.fullName || ''}`.toLowerCase();
+        const adm = (s.admissionNo || '').toLowerCase();
+        const phone = (s.guardianPhone || '').toLowerCase();
+        const roll = String(s.rollNo || '');
+        const cls = (s.currentClass || '').toLowerCase();
+        const route = (s.busRouteName || '').toLowerCase();
+        return full.includes(query) || adm.includes(query) || phone.includes(query) || roll === query || cls.includes(query) || route.includes(query);
+    });
+    renderStudentsTableRows(filtered);
+}
+
+function renderStudentsTableRows(students) {
+    const tbody = document.getElementById('students-table-body');
+    if (!tbody) return;
+
+    if (!students || students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="padding: 36px 20px; color: #64748b;">
+            <i class="fa-solid fa-user-slash" style="font-size: 1.8rem; margin-bottom: 8px; color: #94a3b8; display: block;"></i>
+            No student records found matching the active criteria. Click <strong>Enroll New Student</strong> to add a student.
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = students.map(s => {
+        const fullName = escapeHtml(s.fullName || `${s.firstName || ''} ${s.lastName || ''}`.trim());
+        const admNo = escapeHtml(s.admissionNo || ('OIS-2026-' + s.id));
+        const cls = escapeHtml(s.currentClass || 'Class 10');
+        const sec = escapeHtml(s.section || 'A');
+        const guardian = escapeHtml(s.guardianName || 'Parent / Guardian');
+        const phone = escapeHtml(s.guardianPhone || '');
+        const aadhar = s.aadharNo ? `<div style="font-size: 0.72rem; color: #475569;"><i class="fa-solid fa-id-card"></i> ${escapeHtml(s.aadharNo)}</div>` : '';
+
+        // Fee detail & concession presentation
+        const feeCat = escapeHtml(s.feeCategory || 'GENERAL');
+        let concessionBadge = '';
+        if (s.concessionPercentage && s.concessionPercentage > 0) {
+            concessionBadge = `<span class="badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;"><i class="fa-solid fa-tag"></i> ${s.concessionPercentage}% Concession</span>`;
+        } else if (s.concessionAmount && s.concessionAmount > 0) {
+            concessionBadge = `<span class="badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;"><i class="fa-solid fa-tag"></i> ₹${Number(s.concessionAmount).toLocaleString()} Off</span>`;
+        }
+        const reasonText = s.concessionReason ? `<div style="font-size: 0.72rem; color: #64748b; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(s.concessionReason)}">${escapeHtml(s.concessionReason)}</div>` : '';
+
+        // Transport Option presentation
+        let transportHtml = '';
+        if (s.transportOpted) {
+            transportHtml = `
+                <div style="background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 6px; padding: 4px 8px; font-size: 0.78rem;">
+                    <div style="font-weight: 700; color: #0f766e;"><i class="fa-solid fa-bus"></i> ${escapeHtml(s.busRouteName || 'School Bus')}</div>
+                    <div style="color: #134e4a; font-size: 0.72rem; display: flex; justify-content: space-between; gap: 4px;">
+                        <span>Stop: <strong>${escapeHtml(s.pickupDropPoint || 'Campus')}</strong></span>
+                        <strong style="color: #0d9488;">₹${Number(s.transportFeeMonthly || 0).toLocaleString()}/mo</strong>
+                    </div>
+                </div>
+            `;
+        } else {
+            transportHtml = `
+                <span class="badge" style="background: #f8fafc; color: #64748b; border: 1px solid #cbd5e1; font-size: 0.76rem;">
+                    <i class="fa-solid fa-person-walking"></i> Self / No Bus
+                </span>
+            `;
+        }
+
+        const activeStatus = s.active !== false
+            ? `<span class="badge badge-success" style="font-size: 0.74rem;"><i class="fa-solid fa-check-circle"></i> Active</span>`
+            : `<span class="badge badge-secondary" style="font-size: 0.74rem;">Inactive</span>`;
+
+        return `
+            <tr>
+                <td>
+                    <span class="badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-family: monospace; font-size: 0.84rem; font-weight: 700;">
+                        ${admNo}
+                    </span>
+                </td>
+                <td>
+                    <div style="font-weight: 700; color: #1e293b; font-size: 0.92rem;">${fullName}</div>
+                    <div style="font-size: 0.76rem; color: #64748b;">
+                        Roll: <strong>#${s.rollNo || '-'}</strong> &bull; ${escapeHtml(s.gender || 'Pupil')} &bull; DOB: ${s.dateOfBirth || '-'}
+                    </div>
+                    ${aadhar}
+                </td>
+                <td>
+                    <span class="badge" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 700; font-size: 0.82rem;">
+                        ${cls} - ${sec}
+                    </span>
+                </td>
+                <td>
+                    <div style="font-weight: 600; color: #334155; font-size: 0.86rem;">${guardian}</div>
+                    ${phone ? `<a href="tel:${phone}" style="color: #047857; text-decoration: none; font-size: 0.82rem; font-weight: 600;"><i class="fa-solid fa-phone"></i> ${phone}</a>` : '<span style="color:#94a3b8; font-size:0.8rem;">No phone</span>'}
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span class="badge" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-weight: 700; font-size: 0.74rem;">${feeCat}</span>
+                        ${concessionBadge}
+                    </div>
+                    ${reasonText}
+                    <div style="margin-top: 4px;">
+                        <button class="btn btn-outline btn-xs" onclick="openStudentFeeHistoryModal(${s.id})" style="border-color: #059669; color: #059669; padding: 2px 8px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Fee Ledger
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    ${transportHtml}
+                </td>
+                <td style="text-align: center;">
+                    ${activeStatus}
+                </td>
+                <td style="text-align: center;">
+                    <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+                        <button class="btn btn-outline btn-sm" onclick="openEditStudentModal(${s.id})" title="Edit Student Record" style="border-color: #2563eb; color: #2563eb; padding: 4px 8px;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openInvoiceForStudent(${s.id}, '${cls}')" title="Generate Fee Invoice" style="border-color: #059669; color: #059669; padding: 4px 8px;">
+                            <i class="fa-solid fa-plus"></i> Inv
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="handleDeleteStudent(${s.id}, '${escapeHtml(fullName)}')" title="Deactivate Student" style="border-color: #ef4444; color: #ef4444; padding: 4px 8px;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function toggleAddTransportFields() {
+    const chk = document.getElementById('std-transport-opted');
+    const box = document.getElementById('add-student-transport-details');
+    if (box) box.style.display = chk && chk.checked ? 'block' : 'none';
+}
+
+function toggleEditTransportFields() {
+    const chk = document.getElementById('edit-std-transport-opted');
+    const box = document.getElementById('edit-student-transport-details');
+    if (box) box.style.display = chk && chk.checked ? 'block' : 'none';
+}
+
+function autoFillFeeConcession(modalType) {
+    const catSelect = document.getElementById(modalType === 'add' ? 'std-fee-category' : 'edit-std-fee-category');
+    const pctInput = document.getElementById(modalType === 'add' ? 'std-concession-pct' : 'edit-std-concession-pct');
+    const reasonInput = document.getElementById(modalType === 'add' ? 'std-concession-reason' : 'edit-std-concession-reason');
+    if (!catSelect || !pctInput) return;
+
+    const val = catSelect.value;
+    if (val === 'SIBLING_CONCESSION') {
+        pctInput.value = 25;
+        if (reasonInput && !reasonInput.value) reasonInput.value = "Sibling concession discount (2nd ward)";
+    } else if (val === 'STAFF_WARD') {
+        pctInput.value = 50;
+        if (reasonInput && !reasonInput.value) reasonInput.value = "Oxford International School staff ward discount";
+    } else if (val === 'MERIT_SCHOLARSHIP') {
+        pctInput.value = 100;
+        if (reasonInput && !reasonInput.value) reasonInput.value = "Academic distinction scholarship 100% waiver";
+    } else if (val === 'GENERAL') {
+        pctInput.value = 0;
+    }
+}
+
+async function handleCreateStudent(event) {
+    event.preventDefault();
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+        const transportOpted = document.getElementById('std-transport-opted')?.checked || false;
+        const payload = {
+            admissionNo: `OIS-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+            firstName: document.getElementById('std-first-name').value.trim(),
+            lastName: document.getElementById('std-last-name').value.trim(),
+            currentClass: document.getElementById('std-class').value,
+            section: document.getElementById('std-section').value,
+            rollNo: parseInt(document.getElementById('std-roll-no').value, 10) || 1,
+            dateOfBirth: document.getElementById('std-dob')?.value || '2016-08-15',
+            gender: document.getElementById('std-gender')?.value || 'Male',
+            bloodGroup: document.getElementById('std-blood-group')?.value || 'B+',
+            aadharNo: document.getElementById('std-aadhar')?.value.trim() || null,
+            guardianName: document.getElementById('std-guardian-name').value.trim(),
+            guardianPhone: document.getElementById('std-guardian-phone').value.trim(),
+            guardianEmail: document.getElementById('std-guardian-email')?.value.trim() || null,
+            residentialAddress: document.getElementById('std-address').value.trim(),
+            feeCategory: document.getElementById('std-fee-category')?.value || 'GENERAL',
+            concessionPercentage: parseFloat(document.getElementById('std-concession-pct')?.value || 0),
+            concessionAmount: parseFloat(document.getElementById('std-concession-amount')?.value || 0),
+            concessionReason: document.getElementById('std-concession-reason')?.value.trim() || null,
+            transportOpted: transportOpted,
+            busRouteName: transportOpted ? document.getElementById('std-bus-route')?.value : null,
+            pickupDropPoint: transportOpted ? document.getElementById('std-pickup-stop')?.value.trim() : null,
+            transportFeeMonthly: transportOpted ? parseFloat(document.getElementById('std-transport-fare')?.value || 800) : 0,
+            active: true
+        };
+
+        const res = await fetch(`${API_BASE}/api/admin/students`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const d = await res.json();
+        if (d.success) {
+            showToast("Success", `Pupil ${payload.firstName} ${payload.lastName} enrolled successfully (Adm: ${d.data.admissionNo})`, "success");
+            closeModal('modal-add-student');
+            document.getElementById('form-add-student').reset();
+            toggleAddTransportFields();
+            loadStudents();
+        } else {
+            showToast("Error", d.message || "Failed to enroll student", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+    }
+}
+
+async function openEditStudentModal(studentId) {
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        if (!d.success || !d.data) {
+            showToast("Error", "Could not load student record", "error");
+            return;
+        }
+
+        const s = d.data;
+        document.getElementById('edit-std-id').value = s.id;
+        document.getElementById('edit-std-admission-no').textContent = s.admissionNo || ('OIS-2026-' + s.id);
+        document.getElementById('edit-std-active').value = String(s.active !== false);
+
+        document.getElementById('edit-std-first-name').value = s.firstName || '';
+        document.getElementById('edit-std-last-name').value = s.lastName || '';
+        document.getElementById('edit-std-class').value = s.currentClass || 'Class 10';
+        document.getElementById('edit-std-section').value = s.section || 'A';
+        document.getElementById('edit-std-roll-no').value = s.rollNo || '';
+
+        document.getElementById('edit-std-dob').value = s.dateOfBirth || '';
+        document.getElementById('edit-std-gender').value = s.gender || 'Male';
+        document.getElementById('edit-std-blood-group').value = s.bloodGroup || 'B+';
+        document.getElementById('edit-std-aadhar').value = s.aadharNo || '';
+
+        document.getElementById('edit-std-guardian-name').value = s.guardianName || '';
+        document.getElementById('edit-std-guardian-phone').value = s.guardianPhone || '';
+        document.getElementById('edit-std-guardian-email').value = s.guardianEmail || '';
+        document.getElementById('edit-std-address').value = s.residentialAddress || '';
+
+        document.getElementById('edit-std-fee-category').value = s.feeCategory || 'GENERAL';
+        document.getElementById('edit-std-concession-pct').value = s.concessionPercentage || 0;
+        document.getElementById('edit-std-concession-amount').value = s.concessionAmount || 0;
+        document.getElementById('edit-std-concession-reason').value = s.concessionReason || '';
+
+        const transportChk = document.getElementById('edit-std-transport-opted');
+        if (transportChk) {
+            transportChk.checked = Boolean(s.transportOpted);
+            toggleEditTransportFields();
+        }
+        if (s.busRouteName) document.getElementById('edit-std-bus-route').value = s.busRouteName;
+        document.getElementById('edit-std-pickup-stop').value = s.pickupDropPoint || '';
+        document.getElementById('edit-std-transport-fare').value = s.transportFeeMonthly || 800;
+
+        openModal('modal-edit-student');
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+async function handleUpdateStudent(event) {
+    event.preventDefault();
+    const studentId = document.getElementById('edit-std-id').value;
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+        const transportOpted = document.getElementById('edit-std-transport-opted')?.checked || false;
+        const payload = {
+            firstName: document.getElementById('edit-std-first-name').value.trim(),
+            lastName: document.getElementById('edit-std-last-name').value.trim(),
+            currentClass: document.getElementById('edit-std-class').value,
+            section: document.getElementById('edit-std-section').value,
+            rollNo: parseInt(document.getElementById('edit-std-roll-no').value, 10) || 1,
+            dateOfBirth: document.getElementById('edit-std-dob')?.value || null,
+            gender: document.getElementById('edit-std-gender')?.value || 'Male',
+            bloodGroup: document.getElementById('edit-std-blood-group')?.value || 'B+',
+            aadharNo: document.getElementById('edit-std-aadhar')?.value.trim() || null,
+            guardianName: document.getElementById('edit-std-guardian-name').value.trim(),
+            guardianPhone: document.getElementById('edit-std-guardian-phone').value.trim(),
+            guardianEmail: document.getElementById('edit-std-guardian-email')?.value.trim() || null,
+            residentialAddress: document.getElementById('edit-std-address').value.trim(),
+            feeCategory: document.getElementById('edit-std-fee-category')?.value || 'GENERAL',
+            concessionPercentage: parseFloat(document.getElementById('edit-std-concession-pct')?.value || 0),
+            concessionAmount: parseFloat(document.getElementById('edit-std-concession-amount')?.value || 0),
+            concessionReason: document.getElementById('edit-std-concession-reason')?.value.trim() || null,
+            transportOpted: transportOpted,
+            busRouteName: transportOpted ? document.getElementById('edit-std-bus-route')?.value : null,
+            pickupDropPoint: transportOpted ? document.getElementById('edit-std-pickup-stop')?.value.trim() : null,
+            transportFeeMonthly: transportOpted ? parseFloat(document.getElementById('edit-std-transport-fare')?.value || 800) : 0,
+            active: document.getElementById('edit-std-active').value === 'true'
+        };
+
+        const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const d = await res.json();
+        if (d.success) {
+            showToast("Success", "Student record updated successfully!", "success");
+            closeModal('modal-edit-student');
+            loadStudents();
+        } else {
+            showToast("Error", d.message || "Failed to update student", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+    }
+}
+
+async function handleDeleteStudent(studentId, studentName) {
+    const confirmed = await appConfirm(
+        "Confirm Deactivation",
+        `Are you sure you want to deactivate student ${studentName}? This pupil will be marked inactive in the registry.`
+    );
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        const d = await res.json();
+        if (d.success) {
+            showToast("Success", "Student record deactivated", "success");
+            loadStudents();
+        } else {
+            showToast("Error", d.message || "Could not deactivate student", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+function openInvoiceForStudent(studentId, currentClass) {
+    navigateTo('fees');
+    setTimeout(() => {
+        const classSelect = document.getElementById('fee-class-filter');
+        if (classSelect && currentClass) {
+            classSelect.value = currentClass;
+            loadClassStudentsForFee();
+        }
+        setTimeout(() => {
+            const studentSelect = document.getElementById('invoice-student-id');
+            if (studentSelect) {
+                studentSelect.value = studentId;
+                handleStudentSelectForInvoice(studentId);
+            }
+            openModal('modal-generate-invoice');
+        }, 300);
+    }, 200);
+}
+
 async function loadEmployees() {
     try {
         const res = await fetch(`${API_BASE}/api/admin/employees`, { headers: getAuthHeaders() });
@@ -3459,44 +3824,6 @@ async function loadStudentTimetable() {
 // ==============================================================
 // 7. FORM SUBMISSIONS & MODAL HANDLERS (PERSISTENT DATA)
 // ==============================================================
-
-async function handleCreateStudent(event) {
-    event.preventDefault();
-    const payload = {
-        admissionNo: `OIS-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-        firstName: document.getElementById('std-first-name').value.trim(),
-        lastName: document.getElementById('std-last-name').value.trim(),
-        currentClass: document.getElementById('std-class').value,
-        section: document.getElementById('std-section').value,
-        rollNo: parseInt(document.getElementById('std-roll-no').value) || 1,
-        guardianName: document.getElementById('std-guardian-name').value.trim(),
-        guardianPhone: document.getElementById('std-guardian-phone').value.trim(),
-        residentialAddress: document.getElementById('std-address').value.trim(),
-        dateOfBirth: '2011-06-15',
-        gender: 'Male',
-        attendanceRate: 95.0,
-        feeStatus: 'CLEARED'
-    };
-
-    try {
-        const res = await fetch(`${API_BASE}/api/admin/students`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(payload)
-        });
-        const d = await res.json();
-        if (d.success) {
-            closeModal('modal-add-student');
-            document.getElementById('form-add-student').reset();
-            showToast("Student Enrolled", `Assigned Admission No: ${d.data.admissionNo} (${d.data.currentClass} ${d.data.section})`, "success");
-            loadStudents();
-        } else {
-            showToast("Enrollment Failed", d.message, "error");
-        }
-    } catch (e) {
-        showToast("Server Error", e.message, "error");
-    }
-}
 
 async function handleCreateInquiry(event) {
     event.preventDefault();

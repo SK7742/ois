@@ -595,54 +595,33 @@ function renderOrUpdateDataTable(id, config) {
 const ROLE_CONFIGS = {
     ADMIN: {
         roleTitle: 'ADMINISTRATOR (SUPER USER)',
-        portalTitle: 'Institution Dashboard',
-        subcaption: 'Oxford International School • Campus Scale: 2,000 Capacity • Super User Access',
-        defaultTab: 'admin-dashboard',
+        portalTitle: 'Oxford International School - Administration',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions, Student Records & Fee Management',
+        defaultTab: 'admissions',
         menu: [
-            { id: 'admin-dashboard', icon: 'fa-chart-pie', label: 'Executive Dashboard' },
             { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Intake' },
-            { id: 'students', icon: 'fa-users', label: 'Student Directory' },
-            { id: 'employees', icon: 'fa-chalkboard-user', label: 'Faculty & Staff' },
-            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations' },
-            { id: 'leaves', icon: 'fa-calendar-check', label: 'Leave Approvals' },
-            { id: 'transport', icon: 'fa-bus', label: 'Transportation & Routes' },
-            { id: 'timetable', icon: 'fa-calendar-days', label: 'Master Timetable' },
-            { id: 'activities', icon: 'fa-icons', label: 'Clubs & Events' },
-            { id: 'exams', icon: 'fa-award', label: 'Exams & Gradebook' },
-            { id: 'whatsapp', icon: 'fa-brands fa-whatsapp', label: 'WhatsApp Alerts' },
-            { id: 'tickets', icon: 'fa-headset', label: 'Campus Helpdesk' }
+            { id: 'students', icon: 'fa-user-graduate', label: 'Student Management' },
+            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     },
     TEACHER: {
-        roleTitle: 'TEACHER & FACULTY PORTAL',
-        portalTitle: 'Faculty Workspace',
-        subcaption: 'Oxford International School • Classroom & Assigned Class Management',
-        defaultTab: 'teacher-dashboard',
+        roleTitle: 'ADMINISTRATOR (SUPER USER)',
+        portalTitle: 'Oxford International School - Administration',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions & Fee Management',
+        defaultTab: 'admissions',
         menu: [
-            { id: 'teacher-dashboard', icon: 'fa-chalkboard', label: 'Faculty Dashboard' },
-            { id: 'teacher-students', icon: 'fa-chalkboard-user', label: 'Assigned Class' },
-            { id: 'teacher-attendance', icon: 'fa-clipboard-user', label: "Today's Attendance" },
-            { id: 'teacher-marks', icon: 'fa-pen-to-square', label: 'Gradebook & Assessment' },
-            { id: 'teacher-timetable', icon: 'fa-calendar-week', label: 'My Teaching Schedule' },
-            { id: 'activities', icon: 'fa-icons', label: 'Clubs & Activities' },
-            { id: 'teacher-leave', icon: 'fa-plane-departure', label: 'Apply Faculty Leave' },
-            { id: 'tickets', icon: 'fa-headset', label: 'Faculty Helpdesk' }
+            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Registration' },
+            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     },
     STUDENT: {
-        roleTitle: 'STUDENT ACADEMIC PORTAL',
-        portalTitle: 'Student Academic Portal',
-        subcaption: 'Oxford International School • Self-Service Portal',
-        defaultTab: 'student-dashboard',
+        roleTitle: 'ADMINISTRATOR (SUPER USER)',
+        portalTitle: 'Oxford International School - Administration',
+        subcaption: 'Harpur, Raxaul, East Champaran, Bihar • Admissions & Fee Management',
+        defaultTab: 'admissions',
         menu: [
-            { id: 'student-dashboard', icon: 'fa-graduation-cap', label: 'My Academic Dashboard' },
-            { id: 'student-report-card', icon: 'fa-award', label: 'My Report Card' },
-            { id: 'student-fees', icon: 'fa-file-invoice-dollar', label: 'My Fee Invoices' },
-            { id: 'student-timetable', icon: 'fa-calendar-days', label: 'Class 10A Timetable' },
-            { id: 'student-transit', icon: 'fa-bus', label: 'My Bus Route & Stop' },
-            { id: 'activities', icon: 'fa-icons', label: 'Campus Clubs' },
-            { id: 'student-leave', icon: 'fa-envelope-open-text', label: 'Submit Absence Note' },
-            { id: 'tickets', icon: 'fa-circle-question', label: 'Student Support' }
+            { id: 'admissions', icon: 'fa-user-plus', label: 'Admissions & Registration' },
+            { id: 'fees', icon: 'fa-file-invoice-dollar', label: 'Fee Operations & Receipts' }
         ]
     }
 };
@@ -864,36 +843,15 @@ function getAuthHeaders() {
 // ==============================================================
 
 function loadTabContent(tabId) {
+    if (tabId !== 'admissions' && tabId !== 'fees' && tabId !== 'students') {
+        navigateTo('admissions');
+        return;
+    }
     switch (tabId) {
-        // Admin
-        case 'admin-dashboard': loadAdminDashboard(); break;
         case 'admissions': loadAdmissions(); break;
         case 'students': loadStudents(); break;
-        case 'employees': loadEmployees(); break;
         case 'fees': loadFees(); break;
-        case 'leaves': loadLeaves(); break;
-        case 'transport': loadTransport(); break;
-        case 'timetable': loadTimetable(); break;
-        case 'activities': loadActivities(); break;
-        case 'exams': loadExams(); break;
-        case 'whatsapp': loadWhatsApp(); break;
-        case 'tickets': loadTickets(); break;
-
-        // Teacher
-        case 'teacher-dashboard': loadTeacherDashboard(); break;
-        case 'teacher-attendance': loadTeacherAttendance(); break;
-        case 'teacher-students': loadTeacherStudents(); break;
-        case 'teacher-marks': loadTeacherMarks(); break;
-        case 'teacher-timetable': loadTeacherTimetable(); break;
-        case 'teacher-leave': loadTeacherLeaves(); break;
-
-        // Student
-        case 'student-dashboard': loadStudentDashboard(); break;
-        case 'student-report-card': loadStudentReportCard(); break;
-        case 'student-fees': loadStudentFees(); break;
-        case 'student-timetable': loadStudentTimetable(); break;
-        case 'student-transit': loadStudentTransit(); break;
-        case 'student-leave': loadStudentLeaves(); break;
+        default: loadAdmissions(); break;
     }
 }
 
@@ -1016,6 +974,7 @@ async function loadApplications() {
                     </td>
                     <td>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button class="btn btn-outline btn-sm" onclick="printAdmissionForm(${app.id})" style="border-color: #1e3a8a; color: #1e3a8a; font-weight: 600;" title="Print Official Admission Form & Written Test Admit Card"><i class="fa-solid fa-print"></i> Print Form</button>
                             <button class="btn btn-outline btn-sm" onclick="openApplicationHistoryModal(${app.id})" style="border-color: #2563eb; color: #2563eb;" title="Interaction history & audit comments">
                                 <i class="fa-solid fa-clock-rotate-left"></i> History
                             </button>
@@ -1153,68 +1112,431 @@ async function toggleApplicationActive(applicationId, currentlyActive) {
     }
 }
 
+// ==============================================================
+// 4B. STUDENT MANAGEMENT MODULE (FEE DETAILS, TRANSPORT, RECORDS)
+// ==============================================================
+
+let currentStudentsList = [];
+
 async function loadStudents() {
     const grade = document.getElementById('filter-student-class')?.value;
+    const transportFilter = document.getElementById('filter-student-transport')?.value;
+    const feeCatFilter = document.getElementById('filter-student-fee-cat')?.value;
+
     let url = `${API_BASE}/api/admin/students`;
     if (grade) url += `?grade=${encodeURIComponent(grade)}`;
 
     try {
         const res = await fetch(url, { headers: getAuthHeaders() });
         const d = await res.json();
-        const students = d.data || [];
+        let students = d.data || [];
 
-        renderOrUpdateDataTable('admin-students', {
-            tbodyId: 'students-table-body',
-            tableId: 'students-table',
-            data: students,
-            defaultSortKey: 'admissionNo',
-            searchFields: ['admissionNo', 'firstName', 'lastName', 'fullName', 'currentClass', 'section', 'guardianPhone', 'rollNo'],
-            filters: [
-                {
-                    id: 'feeStatus',
-                    label: 'All Fee Statuses',
-                    options: [
-                        { value: '', label: 'All Fee Statuses' },
-                        { value: 'CLEARED', label: 'Cleared' },
-                        { value: 'OVERDUE', label: 'Overdue' }
-                    ],
-                    match: (s, val) => !val || s.feeStatus === val
-                },
-                {
-                    id: 'grade',
-                    label: 'All Classes',
-                    key: 'currentClass',
-                    options: 'auto'
-                }
-            ],
-            renderRow: (s) => `
-                <tr>
-                    <td><strong>${escapeHtml(s.admissionNo)}</strong></td>
-                    <td><strong>${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)}</strong><br><small class="text-secondary">${escapeHtml(s.gender || '')}</small></td>
-                    <td><span class="badge badge-primary">${escapeHtml(s.currentClass)} - ${escapeHtml(s.section)}</span></td>
-                    <td>#${escapeHtml(s.rollNo || '-')}</td>
-                    <td>${escapeHtml(s.guardianPhone || '')}</td>
-                    <td><strong>${s.attendanceRate || 95}%</strong></td>
-                    <td><span class="badge ${s.feeStatus === 'CLEARED' ? 'badge-success' : 'badge-danger'}">${escapeHtml(s.feeStatus)}</span></td>
-                    <td>
-                        <button class="btn btn-outline btn-sm" onclick="generateSampleReportCard(${s.id})">
-                            <i class="fa-solid fa-file-pdf"></i> Report Card
-                        </button>
-                    </td>
-                </tr>
-            `
-        });
+        // Save raw list for realtime client searching
+        currentStudentsList = students;
 
-        const invSelect = document.getElementById('inv-student-id');
-        if (invSelect && students.length > 0) {
-            invSelect.innerHTML = students.map(s => `
-                <option value="${s.id}">${escapeHtml(s.fullName || (s.firstName + ' ' + s.lastName))} (${escapeHtml(s.admissionNo)}) - ${escapeHtml(s.currentClass)}</option>
-            `).join('');
+        // Apply transport filter
+        if (transportFilter === 'BUS') {
+            students = students.filter(s => s.transportOpted === true);
+        } else if (transportFilter === 'SELF') {
+            students = students.filter(s => !s.transportOpted);
         }
+
+        // Apply fee category filter
+        if (feeCatFilter) {
+            students = students.filter(s => s.feeCategory === feeCatFilter);
+        }
+
+        // Calculate KPIs
+        const totalPupils = currentStudentsList.filter(s => s.active !== false).length;
+        const busPupils = currentStudentsList.filter(s => s.active !== false && s.transportOpted).length;
+        const concessionPupils = currentStudentsList.filter(s => s.active !== false && (s.concessionPercentage > 0 || (s.concessionAmount && s.concessionAmount > 0) || (s.feeCategory && s.feeCategory !== 'GENERAL'))).length;
+        const pendingDuesPupils = currentStudentsList.filter(s => s.active !== false && s.feeStatus && s.feeStatus !== 'CLEARED').length;
+
+        const kpiTotal = document.getElementById('std-kpi-total');
+        if (kpiTotal) kpiTotal.textContent = totalPupils;
+        const kpiTrans = document.getElementById('std-kpi-transport');
+        if (kpiTrans) kpiTrans.textContent = busPupils;
+        const kpiConc = document.getElementById('std-kpi-concessions');
+        if (kpiConc) kpiConc.textContent = concessionPupils;
+        const kpiDues = document.getElementById('std-kpi-dues');
+        if (kpiDues) kpiDues.textContent = pendingDuesPupils;
+
+        renderStudentsTableRows(students);
     } catch (e) {
-        console.error("Student load error:", e);
+        console.error("Error loading students:", e);
+        const tbody = document.getElementById('students-table-body');
+        if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="color: #dc2626; padding: 20px;">Failed to load student registry: ${escapeHtml(e.message)}</td></tr>`;
     }
 }
+
+function filterStudentsRealtime() {
+    const query = (document.getElementById('search-student-input')?.value || '').trim().toLowerCase();
+    if (!query) {
+        renderStudentsTableRows(currentStudentsList);
+        return;
+    }
+    const filtered = currentStudentsList.filter(s => {
+        const full = `${s.firstName || ''} ${s.lastName || ''} ${s.fullName || ''}`.toLowerCase();
+        const adm = (s.admissionNo || '').toLowerCase();
+        const phone = (s.guardianPhone || '').toLowerCase();
+        const roll = String(s.rollNo || '');
+        const cls = (s.currentClass || '').toLowerCase();
+        const route = (s.busRouteName || '').toLowerCase();
+        return full.includes(query) || adm.includes(query) || phone.includes(query) || roll === query || cls.includes(query) || route.includes(query);
+    });
+    renderStudentsTableRows(filtered);
+}
+
+function renderStudentsTableRows(students) {
+    const tbody = document.getElementById('students-table-body');
+    if (!tbody) return;
+
+    if (!students || students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="padding: 36px 20px; color: #64748b;">
+            <i class="fa-solid fa-user-slash" style="font-size: 1.8rem; margin-bottom: 8px; color: #94a3b8; display: block;"></i>
+            No student records found matching the active criteria. Click <strong>Enroll New Student</strong> to add a student.
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = students.map(s => {
+        const fullName = escapeHtml(s.fullName || `${s.firstName || ''} ${s.lastName || ''}`.trim());
+        const admNo = escapeHtml(s.admissionNo || ('OIS-2026-' + s.id));
+        const cls = escapeHtml(s.currentClass || 'Class 10');
+        const sec = escapeHtml(s.section || 'A');
+        const guardian = escapeHtml(s.guardianName || 'Parent / Guardian');
+        const phone = escapeHtml(s.guardianPhone || '');
+        const aadhar = s.aadharNo ? `<div style="font-size: 0.72rem; color: #475569;"><i class="fa-solid fa-id-card"></i> ${escapeHtml(s.aadharNo)}</div>` : '';
+
+        // Fee detail & concession presentation
+        const feeCat = escapeHtml(s.feeCategory || 'GENERAL');
+        let concessionBadge = '';
+        if (s.concessionPercentage && s.concessionPercentage > 0) {
+            concessionBadge = `<span class="badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;"><i class="fa-solid fa-tag"></i> ${s.concessionPercentage}% Concession</span>`;
+        } else if (s.concessionAmount && s.concessionAmount > 0) {
+            concessionBadge = `<span class="badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;"><i class="fa-solid fa-tag"></i> ₹${Number(s.concessionAmount).toLocaleString()} Off</span>`;
+        }
+        const reasonText = s.concessionReason ? `<div style="font-size: 0.72rem; color: #64748b; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(s.concessionReason)}">${escapeHtml(s.concessionReason)}</div>` : '';
+
+        // Transport Option presentation
+        let transportHtml = '';
+        if (s.transportOpted) {
+            transportHtml = `
+                <div style="background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 6px; padding: 4px 8px; font-size: 0.78rem;">
+                    <div style="font-weight: 700; color: #0f766e;"><i class="fa-solid fa-bus"></i> ${escapeHtml(s.busRouteName || 'School Bus')}</div>
+                    <div style="color: #134e4a; font-size: 0.72rem; display: flex; justify-content: space-between; gap: 4px;">
+                        <span>Stop: <strong>${escapeHtml(s.pickupDropPoint || 'Campus')}</strong></span>
+                        <strong style="color: #0d9488;">₹${Number(s.transportFeeMonthly || 0).toLocaleString()}/mo</strong>
+                    </div>
+                </div>
+            `;
+        } else {
+            transportHtml = `
+                <span class="badge" style="background: #f8fafc; color: #64748b; border: 1px solid #cbd5e1; font-size: 0.76rem;">
+                    <i class="fa-solid fa-person-walking"></i> Self / No Bus
+                </span>
+            `;
+        }
+
+        const activeStatus = s.active !== false
+            ? `<span class="badge badge-success" style="font-size: 0.74rem;"><i class="fa-solid fa-check-circle"></i> Active</span>`
+            : `<span class="badge badge-secondary" style="font-size: 0.74rem;">Inactive</span>`;
+
+        return `
+            <tr>
+                <td>
+                    <span class="badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-family: monospace; font-size: 0.84rem; font-weight: 700;">
+                        ${admNo}
+                    </span>
+                </td>
+                <td>
+                    <div style="font-weight: 700; color: #1e293b; font-size: 0.92rem;">${fullName}</div>
+                    <div style="font-size: 0.76rem; color: #64748b;">
+                        Roll: <strong>#${s.rollNo || '-'}</strong> &bull; ${escapeHtml(s.gender || 'Pupil')} &bull; DOB: ${s.dateOfBirth || '-'}
+                    </div>
+                    ${aadhar}
+                </td>
+                <td>
+                    <span class="badge" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 700; font-size: 0.82rem;">
+                        ${cls} - ${sec}
+                    </span>
+                </td>
+                <td>
+                    <div style="font-weight: 600; color: #334155; font-size: 0.86rem;">${guardian}</div>
+                    ${phone ? `<a href="tel:${phone}" style="color: #047857; text-decoration: none; font-size: 0.82rem; font-weight: 600;"><i class="fa-solid fa-phone"></i> ${phone}</a>` : '<span style="color:#94a3b8; font-size:0.8rem;">No phone</span>'}
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span class="badge" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-weight: 700; font-size: 0.74rem;">${feeCat}</span>
+                        ${concessionBadge}
+                    </div>
+                    ${reasonText}
+                    <div style="margin-top: 4px;">
+                        <button class="btn btn-outline btn-xs" onclick="openStudentFeeHistoryModal(${s.id})" style="border-color: #059669; color: #059669; padding: 2px 8px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Fee Ledger
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    ${transportHtml}
+                </td>
+                <td style="text-align: center;">
+                    ${activeStatus}
+                </td>
+                <td style="text-align: center;">
+                    <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+                        <button class="btn btn-outline btn-sm" onclick="openEditStudentModal(${s.id})" title="Edit Student Record" style="border-color: #2563eb; color: #2563eb; padding: 4px 8px;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openInvoiceForStudent(${s.id}, '${cls}')" title="Generate Fee Invoice" style="border-color: #059669; color: #059669; padding: 4px 8px;">
+                            <i class="fa-solid fa-plus"></i> Inv
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="handleDeleteStudent(${s.id}, '${escapeHtml(fullName)}')" title="Deactivate Student" style="border-color: #ef4444; color: #ef4444; padding: 4px 8px;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function toggleAddTransportFields() {
+    const chk = document.getElementById('std-transport-opted');
+    const box = document.getElementById('add-student-transport-details');
+    if (box) box.style.display = chk && chk.checked ? 'block' : 'none';
+}
+
+function toggleEditTransportFields() {
+    const chk = document.getElementById('edit-std-transport-opted');
+    const box = document.getElementById('edit-student-transport-details');
+    if (box) box.style.display = chk && chk.checked ? 'block' : 'none';
+}
+
+function autoFillFeeConcession(modalType) {
+    const catSelect = document.getElementById(modalType === 'add' ? 'std-fee-category' : 'edit-std-fee-category');
+    const pctInput = document.getElementById(modalType === 'add' ? 'std-concession-pct' : 'edit-std-concession-pct');
+    const reasonInput = document.getElementById(modalType === 'add' ? 'std-concession-reason' : 'edit-std-concession-reason');
+    if (!catSelect || !pctInput) return;
+
+    const val = catSelect.value;
+    if (val === 'SIBLING_CONCESSION') {
+        pctInput.value = 25;
+        if (reasonInput && !reasonInput.value) reasonInput.value = "Sibling concession discount (2nd ward)";
+    } else if (val === 'STAFF_WARD') {
+        pctInput.value = 50;
+        if (reasonInput && !reasonInput.value) reasonInput.value = "Oxford International School staff ward discount";
+    } else if (val === 'MERIT_SCHOLARSHIP') {
+        pctInput.value = 100;
+        if (reasonInput && !reasonInput.value) reasonInput.value = "Academic distinction scholarship 100% waiver";
+    } else if (val === 'GENERAL') {
+        pctInput.value = 0;
+    }
+}
+
+async function handleCreateStudent(event) {
+    event.preventDefault();
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+        const transportOpted = document.getElementById('std-transport-opted')?.checked || false;
+        const payload = {
+            admissionNo: `OIS-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+            firstName: document.getElementById('std-first-name').value.trim(),
+            lastName: document.getElementById('std-last-name').value.trim(),
+            currentClass: document.getElementById('std-class').value,
+            section: document.getElementById('std-section').value,
+            rollNo: parseInt(document.getElementById('std-roll-no').value, 10) || 1,
+            dateOfBirth: document.getElementById('std-dob')?.value || '2016-08-15',
+            gender: document.getElementById('std-gender')?.value || 'Male',
+            bloodGroup: document.getElementById('std-blood-group')?.value || 'B+',
+            aadharNo: document.getElementById('std-aadhar')?.value.trim() || null,
+            guardianName: document.getElementById('std-guardian-name').value.trim(),
+            guardianPhone: document.getElementById('std-guardian-phone').value.trim(),
+            guardianEmail: document.getElementById('std-guardian-email')?.value.trim() || null,
+            residentialAddress: document.getElementById('std-address').value.trim(),
+            feeCategory: document.getElementById('std-fee-category')?.value || 'GENERAL',
+            concessionPercentage: parseFloat(document.getElementById('std-concession-pct')?.value || 0),
+            concessionAmount: parseFloat(document.getElementById('std-concession-amount')?.value || 0),
+            concessionReason: document.getElementById('std-concession-reason')?.value.trim() || null,
+            transportOpted: transportOpted,
+            busRouteName: transportOpted ? document.getElementById('std-bus-route')?.value : null,
+            pickupDropPoint: transportOpted ? document.getElementById('std-pickup-stop')?.value.trim() : null,
+            transportFeeMonthly: transportOpted ? parseFloat(document.getElementById('std-transport-fare')?.value || 800) : 0,
+            active: true
+        };
+
+        const res = await fetch(`${API_BASE}/api/admin/students`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const d = await res.json();
+        if (d.success) {
+            showToast("Success", `Pupil ${payload.firstName} ${payload.lastName} enrolled successfully (Adm: ${d.data.admissionNo})`, "success");
+            closeModal('modal-add-student');
+            document.getElementById('form-add-student').reset();
+            toggleAddTransportFields();
+            loadStudents();
+        } else {
+            showToast("Error", d.message || "Failed to enroll student", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+    }
+}
+
+async function openEditStudentModal(studentId) {
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        if (!d.success || !d.data) {
+            showToast("Error", "Could not load student record", "error");
+            return;
+        }
+
+        const s = d.data;
+        document.getElementById('edit-std-id').value = s.id;
+        document.getElementById('edit-std-admission-no').textContent = s.admissionNo || ('OIS-2026-' + s.id);
+        document.getElementById('edit-std-active').value = String(s.active !== false);
+
+        document.getElementById('edit-std-first-name').value = s.firstName || '';
+        document.getElementById('edit-std-last-name').value = s.lastName || '';
+        document.getElementById('edit-std-class').value = s.currentClass || 'Class 10';
+        document.getElementById('edit-std-section').value = s.section || 'A';
+        document.getElementById('edit-std-roll-no').value = s.rollNo || '';
+
+        document.getElementById('edit-std-dob').value = s.dateOfBirth || '';
+        document.getElementById('edit-std-gender').value = s.gender || 'Male';
+        document.getElementById('edit-std-blood-group').value = s.bloodGroup || 'B+';
+        document.getElementById('edit-std-aadhar').value = s.aadharNo || '';
+
+        document.getElementById('edit-std-guardian-name').value = s.guardianName || '';
+        document.getElementById('edit-std-guardian-phone').value = s.guardianPhone || '';
+        document.getElementById('edit-std-guardian-email').value = s.guardianEmail || '';
+        document.getElementById('edit-std-address').value = s.residentialAddress || '';
+
+        document.getElementById('edit-std-fee-category').value = s.feeCategory || 'GENERAL';
+        document.getElementById('edit-std-concession-pct').value = s.concessionPercentage || 0;
+        document.getElementById('edit-std-concession-amount').value = s.concessionAmount || 0;
+        document.getElementById('edit-std-concession-reason').value = s.concessionReason || '';
+
+        const transportChk = document.getElementById('edit-std-transport-opted');
+        if (transportChk) {
+            transportChk.checked = Boolean(s.transportOpted);
+            toggleEditTransportFields();
+        }
+        if (s.busRouteName) document.getElementById('edit-std-bus-route').value = s.busRouteName;
+        document.getElementById('edit-std-pickup-stop').value = s.pickupDropPoint || '';
+        document.getElementById('edit-std-transport-fare').value = s.transportFeeMonthly || 800;
+
+        openModal('modal-edit-student');
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+async function handleUpdateStudent(event) {
+    event.preventDefault();
+    const studentId = document.getElementById('edit-std-id').value;
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+        const transportOpted = document.getElementById('edit-std-transport-opted')?.checked || false;
+        const payload = {
+            firstName: document.getElementById('edit-std-first-name').value.trim(),
+            lastName: document.getElementById('edit-std-last-name').value.trim(),
+            currentClass: document.getElementById('edit-std-class').value,
+            section: document.getElementById('edit-std-section').value,
+            rollNo: parseInt(document.getElementById('edit-std-roll-no').value, 10) || 1,
+            dateOfBirth: document.getElementById('edit-std-dob')?.value || null,
+            gender: document.getElementById('edit-std-gender')?.value || 'Male',
+            bloodGroup: document.getElementById('edit-std-blood-group')?.value || 'B+',
+            aadharNo: document.getElementById('edit-std-aadhar')?.value.trim() || null,
+            guardianName: document.getElementById('edit-std-guardian-name').value.trim(),
+            guardianPhone: document.getElementById('edit-std-guardian-phone').value.trim(),
+            guardianEmail: document.getElementById('edit-std-guardian-email')?.value.trim() || null,
+            residentialAddress: document.getElementById('edit-std-address').value.trim(),
+            feeCategory: document.getElementById('edit-std-fee-category')?.value || 'GENERAL',
+            concessionPercentage: parseFloat(document.getElementById('edit-std-concession-pct')?.value || 0),
+            concessionAmount: parseFloat(document.getElementById('edit-std-concession-amount')?.value || 0),
+            concessionReason: document.getElementById('edit-std-concession-reason')?.value.trim() || null,
+            transportOpted: transportOpted,
+            busRouteName: transportOpted ? document.getElementById('edit-std-bus-route')?.value : null,
+            pickupDropPoint: transportOpted ? document.getElementById('edit-std-pickup-stop')?.value.trim() : null,
+            transportFeeMonthly: transportOpted ? parseFloat(document.getElementById('edit-std-transport-fare')?.value || 800) : 0,
+            active: document.getElementById('edit-std-active').value === 'true'
+        };
+
+        const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const d = await res.json();
+        if (d.success) {
+            showToast("Success", "Student record updated successfully!", "success");
+            closeModal('modal-edit-student');
+            loadStudents();
+        } else {
+            showToast("Error", d.message || "Failed to update student", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+    }
+}
+
+async function handleDeleteStudent(studentId, studentName) {
+    const confirmed = await appConfirm(
+        "Confirm Deactivation",
+        `Are you sure you want to deactivate student ${studentName}? This pupil will be marked inactive in the registry.`
+    );
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/students/${studentId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        const d = await res.json();
+        if (d.success) {
+            showToast("Success", "Student record deactivated", "success");
+            loadStudents();
+        } else {
+            showToast("Error", d.message || "Could not deactivate student", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+function openInvoiceForStudent(studentId, currentClass) {
+    navigateTo('fees');
+    setTimeout(() => {
+        const classSelect = document.getElementById('fee-class-filter');
+        if (classSelect && currentClass) {
+            classSelect.value = currentClass;
+            loadClassStudentsForFee();
+        }
+        setTimeout(() => {
+            const studentSelect = document.getElementById('invoice-student-id');
+            if (studentSelect) {
+                studentSelect.value = studentId;
+                handleStudentSelectForInvoice(studentId);
+            }
+            openModal('modal-generate-invoice');
+        }, 300);
+    }, 200);
+}
+
 async function loadEmployees() {
     try {
         const res = await fetch(`${API_BASE}/api/admin/employees`, { headers: getAuthHeaders() });
@@ -1293,7 +1615,9 @@ async function loadEmployees() {
     }
 }
 async function loadFees() {
+    ensureInvoiceStudentsLoaded();
     try {
+        loadStudentsForFeeClass();
         const resSummary = await fetch(`${API_BASE}/api/finance/fees/summary`, { headers: getAuthHeaders() });
         const dSummary = await resSummary.json();
         if (dSummary.data) {
@@ -1351,12 +1675,17 @@ async function loadFees() {
                             ${escapeHtml(inv.status)}
                         </span>
                     </td>
-                    <td>
-                        ${inv.status !== 'PAID' ? `
-                            <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${inv.netPayable - inv.paidAmount})">
-                                Collect
+                    <td style="white-space: nowrap;">
+                        <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-start; flex-wrap: nowrap;">
+                            <button class="btn btn-outline btn-sm" onclick="printFeeReceipt(${inv.id})" style="border-color: #047857; color: #047857; font-weight: 600; padding: 4px 8px; font-size: 0.78rem; white-space: nowrap;" title="Print Official Fee Receipt">
+                                <i class="fa-solid fa-receipt"></i> Print Receipt
                             </button>
-                        ` : `<span class="text-success"><i class="fa-solid fa-check"></i> Cleared</span>`}
+                            ${inv.status !== 'PAID' ? `
+                                <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${inv.netPayable - inv.paidAmount})" style="padding: 4px 10px; font-size: 0.78rem; white-space: nowrap;">
+                                    <i class="fa-solid fa-money-bill-wave"></i> Collect
+                                </button>
+                            ` : `<span class="badge badge-success" style="font-size: 0.75rem; padding: 4px 8px; white-space: nowrap;"><i class="fa-solid fa-check"></i> Cleared</span>`}
+                        </div>
                     </td>
                 </tr>
             `
@@ -1365,9 +1694,74 @@ async function loadFees() {
         console.error("Fee load error:", e);
     }
 }
+let allEnrolledStudentsCache = [];
+let currentLockedInvoiceStudentId = null;
+
+async function ensureInvoiceStudentsLoaded() {
+    const select = document.getElementById('inv-student-id');
+    if (!select) return;
+    if (allEnrolledStudentsCache.length === 0) {
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/students`, { headers: getAuthHeaders() });
+            const d = await res.json();
+            allEnrolledStudentsCache = d.data || [];
+        } catch (e) {
+            console.error("Failed to load enrolled students:", e);
+        }
+    }
+    if (allEnrolledStudentsCache.length > 0) {
+        const currentVal = select.value;
+        select.innerHTML = '<option value="">-- Choose Enrolled Student --</option>' + 
+            allEnrolledStudentsCache.map(s => {
+                const name = s.fullName || (s.firstName + ' ' + (s.lastName || '')).trim();
+                const rollText = s.rollNo != null ? `(Roll #${s.rollNo})` : '';
+                return `<option value="${s.id}">${escapeHtml(name)} (${escapeHtml(s.admissionNo)}) - ${escapeHtml(s.currentClass)} Sec ${escapeHtml(s.section || 'A')} ${rollText}</option>`;
+            }).join('');
+        if (currentVal) {
+            select.value = currentVal;
+        }
+    }
+}
+
+async function openSingleInvoiceModal(studentId = null) {
+    await ensureInvoiceStudentsLoaded();
+    const select = document.getElementById('inv-student-id');
+    const badge = document.getElementById('inv-student-lock-badge');
+    const helpText = document.getElementById('inv-student-help-text');
+
+    if (studentId) {
+        currentLockedInvoiceStudentId = studentId;
+        if (select) {
+            select.value = studentId;
+            select.disabled = true;
+            select.style.backgroundColor = '#f1f5f9';
+            select.style.cursor = 'not-allowed';
+        }
+        if (badge) badge.style.display = 'inline-flex';
+        if (helpText) helpText.innerHTML = '<i class="fa-solid fa-lock" style="color: #047857;"></i> <strong>Locked:</strong> Generating official fee invoice for the pre-selected student.';
+    } else {
+        currentLockedInvoiceStudentId = null;
+        if (select) {
+            select.disabled = false;
+            select.style.backgroundColor = '#ffffff';
+            select.style.cursor = '';
+            select.value = '';
+        }
+        if (badge) badge.style.display = 'none';
+        if (helpText) helpText.textContent = 'Choose the student for whom this fee receipt / invoice is being generated.';
+    }
+
+    calculateInvoiceTotal();
+    openModal('modal-generate-invoice');
+}
+
 async function handleGenerateInvoice(event) {
     event.preventDefault();
-    const studentId = document.getElementById('inv-student-id').value;
+    const studentId = currentLockedInvoiceStudentId || document.getElementById('inv-student-id').value;
+    if (!studentId) {
+        showToast("Select Student", "Please select an enrolled student to issue invoice", "warning");
+        return;
+    }
     const billingPeriod = document.getElementById('inv-billing-period').value;
     const scholarshipType = document.getElementById('inv-scholarship-type').value;
 
@@ -1384,53 +1778,171 @@ async function handleGenerateInvoice(event) {
     }
 }
 
-async function bulkGenerateClass10() {
-    const confirmed = await appConfirm("Generate Bulk Invoices", "Generate Term 1 fee invoices for all Class 10 students?", "Generate Invoices");
+async function bulkGenerateAllStudents() {
+    const confirmed = await appConfirm(
+        "Generate Bulk Invoices for All Students",
+        "Are you sure you want to generate Term 1 fee invoices for ALL enrolled students across all classes simultaneously?",
+        "Generate Invoices for All Students"
+    );
     if (!confirmed) return;
     try {
         const res = await fetch(`${API_BASE}/api/finance/fees/invoices/generate-bulk`, {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ grade: 'Class 10', billingPeriod: 'Term 1 - 2026' })
+            body: JSON.stringify({ grade: 'ALL', billingPeriod: 'Term 1 - 2026' })
         });
         const d = await res.json();
-        showToast("Invoices Generated", `Term invoices issued for ${d.data.invoicesGenerated} students.`, "success");
+        showToast("Invoices Generated", `Bulk invoices successfully generated for ${d.data.invoicesGenerated} students across all school classes.`, "success");
         loadFees();
     } catch (e) {
         showToast("Generation Error", e.message, "error");
     }
 }
 
+// Backward-compatibility alias
+async function bulkGenerateClass10() {
+    return bulkGenerateAllStudents();
+}
+
 function openPaymentModal(invoiceId, invoiceNumber, balance) {
-    document.getElementById('pay-invoice-id').value = invoiceId;
-    document.getElementById('pay-invoice-num').value = invoiceNumber;
-    document.getElementById('pay-amount').value = balance;
+    const balNum = parseFloat(balance) || 0;
+    const invIdEl = document.getElementById('pay-invoice-id');
+    const invNumEl = document.getElementById('pay-invoice-num');
+    const rawBalEl = document.getElementById('pay-invoice-raw-balance');
+    const origBalEl = document.getElementById('pay-invoice-original-balance');
+
+    if (invIdEl) invIdEl.value = invoiceId;
+    if (invNumEl) {
+        if ('value' in invNumEl) invNumEl.value = invoiceNumber || ('INV-' + invoiceId);
+        invNumEl.textContent = invoiceNumber || ('INV-' + invoiceId);
+    }
+    if (rawBalEl) rawBalEl.value = balNum;
+    if (origBalEl) origBalEl.textContent = `₹ ${Math.round(balNum).toLocaleString()}`;
+    
+    // Reset discount fields
+    const discInput = document.getElementById('pay-discount-amount');
+    const reasonInput = document.getElementById('pay-discount-reason');
+    if (discInput) discInput.value = '';
+    if (reasonInput) {
+        reasonInput.value = '';
+        reasonInput.required = false;
+        reasonInput.style.borderColor = '#cbd5e1';
+    }
+    const tag = document.getElementById('pay-discount-reason-tag');
+    const asterisk = document.getElementById('pay-reason-asterisk');
+    if (tag) tag.style.display = 'none';
+    if (asterisk) asterisk.style.display = 'none';
+
+    const payAmtInput = document.getElementById('pay-amount');
+    if (payAmtInput) payAmtInput.value = balNum > 0 ? balNum : 0;
+    
+    const netDueLabel = document.getElementById('pay-net-due-label');
+    if (netDueLabel) netDueLabel.textContent = `Net Due: ₹ ${Math.round(balNum).toLocaleString()}`;
+    
+    const remarksInput = document.getElementById('pay-remarks');
+    if (remarksInput) remarksInput.value = '';
+    
+    const refInput = document.getElementById('pay-ref');
+    if (refInput) refInput.value = 'CASH-' + Date.now().toString().slice(-6);
+
     openModal('modal-pay-invoice');
+}
+
+function recalculateCollectionTotals() {
+    const rawBal = parseFloat(document.getElementById('pay-invoice-raw-balance')?.value) || 0;
+    const discVal = parseFloat(document.getElementById('pay-discount-amount')?.value) || 0;
+    const reasonInput = document.getElementById('pay-discount-reason');
+    const tag = document.getElementById('pay-discount-reason-tag');
+    const asterisk = document.getElementById('pay-reason-asterisk');
+
+    if (discVal > 0) {
+        if (reasonInput) {
+            reasonInput.required = true;
+            reasonInput.style.borderColor = '#dc2626';
+        }
+        if (tag) tag.style.display = 'inline-block';
+        if (asterisk) asterisk.style.display = 'inline';
+    } else {
+        if (reasonInput) {
+            reasonInput.required = false;
+            reasonInput.style.borderColor = '#cbd5e1';
+        }
+        if (tag) tag.style.display = 'none';
+        if (asterisk) asterisk.style.display = 'none';
+    }
+
+    const netDue = Math.max(0, rawBal - discVal);
+    const netDueLabel = document.getElementById('pay-net-due-label');
+    if (netDueLabel) {
+        netDueLabel.textContent = `Net Due: ₹ ${Math.round(netDue).toLocaleString()}`;
+    }
+
+    const payAmountInput = document.getElementById('pay-amount');
+    if (payAmountInput) {
+        payAmountInput.value = netDue;
+    }
 }
 
 async function handlePayInvoice(event) {
     event.preventDefault();
     const invoiceId = document.getElementById('pay-invoice-id').value;
-    const amount = document.getElementById('pay-amount').value;
+    const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
     const paymentMethod = document.getElementById('pay-method').value;
-    const transactionReference = document.getElementById('pay-ref').value;
+    const transactionReference = (document.getElementById('pay-ref')?.value || '').trim();
+    const remarks = (document.getElementById('pay-remarks')?.value || '').trim();
+    const discountAmount = parseFloat(document.getElementById('pay-discount-amount')?.value) || 0;
+    const discountReason = (document.getElementById('pay-discount-reason')?.value || '').trim();
 
-    const res = await fetch(`${API_BASE}/api/finance/fees/invoices/${invoiceId}/pay`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-            amount,
-            paymentMethod,
-            transactionReference,
+    // Validate mandatory discount reason
+    if (discountAmount > 0 && !discountReason) {
+        showToast("Reason Required", "Please provide a mandatory reason for granting the discount / concession.", "warning");
+        const reasonInput = document.getElementById('pay-discount-reason');
+        if (reasonInput) {
+            reasonInput.focus();
+            reasonInput.style.borderColor = '#dc2626';
+        }
+        return;
+    }
+
+    try {
+        const payload = {
+            amount: amount,
+            paymentMethod: paymentMethod,
+            transactionReference: transactionReference || ('TXN-' + Date.now()),
             recordedBy: 'Accounts Counter',
-            remarks: 'Oxford International School Fee Clearance'
-        })
-    });
-    const d = await res.json();
-    if (d.success) {
-        closeModal('modal-pay-invoice');
-        loadFees();
-        showToast("Payment Confirmed", `Receipt #${d.data.receiptNumber} recorded for ₹${d.data.amountPaid}`, "success");
+            remarks: remarks || 'Oxford International School Fee Clearance',
+            discountAmount: discountAmount,
+            discountReason: discountReason
+        };
+
+        const res = await fetch(`${API_BASE}/api/finance/fees/invoices/${invoiceId}/pay`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const d = await res.json();
+        if (d.success) {
+            closeModal('modal-pay-invoice');
+            showToast("Fee Collected", `Official payment receipt #${d.data.receiptNumber} recorded for ₹${d.data.amountPaid}`, "success");
+            
+            // Refresh ledger modal if open
+            if (currentFeeHistoryStudent) {
+                openStudentFeeHistory(currentFeeHistoryStudent.id);
+            }
+            loadFees();
+            loadStudentsForFeeClass();
+
+            // Prompt print official receipt
+            setTimeout(() => {
+                printFeeReceipt(invoiceId);
+            }, 300);
+        } else {
+            showToast("Payment Failed", d.message || "Failed to record payment", "error");
+        }
+    } catch (e) {
+        console.error("Payment error:", e);
+        showToast("Error", e.message, "error");
     }
 }
 
@@ -3313,44 +3825,6 @@ async function loadStudentTimetable() {
 // 7. FORM SUBMISSIONS & MODAL HANDLERS (PERSISTENT DATA)
 // ==============================================================
 
-async function handleCreateStudent(event) {
-    event.preventDefault();
-    const payload = {
-        admissionNo: `OIS-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-        firstName: document.getElementById('std-first-name').value.trim(),
-        lastName: document.getElementById('std-last-name').value.trim(),
-        currentClass: document.getElementById('std-class').value,
-        section: document.getElementById('std-section').value,
-        rollNo: parseInt(document.getElementById('std-roll-no').value) || 1,
-        guardianName: document.getElementById('std-guardian-name').value.trim(),
-        guardianPhone: document.getElementById('std-guardian-phone').value.trim(),
-        residentialAddress: document.getElementById('std-address').value.trim(),
-        dateOfBirth: '2011-06-15',
-        gender: 'Male',
-        attendanceRate: 95.0,
-        feeStatus: 'CLEARED'
-    };
-
-    try {
-        const res = await fetch(`${API_BASE}/api/admin/students`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(payload)
-        });
-        const d = await res.json();
-        if (d.success) {
-            closeModal('modal-add-student');
-            document.getElementById('form-add-student').reset();
-            showToast("Student Enrolled", `Assigned Admission No: ${d.data.admissionNo} (${d.data.currentClass} ${d.data.section})`, "success");
-            loadStudents();
-        } else {
-            showToast("Enrollment Failed", d.message, "error");
-        }
-    } catch (e) {
-        showToast("Server Error", e.message, "error");
-    }
-}
-
 async function handleCreateInquiry(event) {
     event.preventDefault();
     const candidateName = document.getElementById('inq-candidate-name').value.trim();
@@ -3459,28 +3933,39 @@ function checkGradeChangeWarning() {
 
 async function handleCreateApplication(event) {
     event.preventDefault();
-    const appliedGrade = document.getElementById('app-applied-grade').value;
     const targetGrade = document.getElementById('app-target-grade').value;
     const assignedSection = document.getElementById('app-assigned-section').value;
-    const classChangeReason = document.getElementById('app-class-change-reason')?.value.trim() || '';
-
-    if (appliedGrade !== targetGrade && !classChangeReason) {
-        showToast('Mandatory Rationale', 'Please provide a pedagogical explanation for recommending a different class.', 'warning');
-        return;
-    }
 
     const payload = {
-        studentName: document.getElementById('app-student-name').value.trim(),
-        dateOfBirth: document.getElementById('app-dob').value,
-        gender: document.getElementById('app-gender').value,
-        appliedGrade: appliedGrade,
-        targetGrade: targetGrade,
-        assignedSection: assignedSection,
-        classChangeReason: classChangeReason || null,
+        slNo: document.getElementById('app-sl-no').value.trim() || null,
+        applicationNumber: document.getElementById('app-reg-no').value.trim() || null,
+        studentName: document.getElementById('app-student-name').value.trim().toUpperCase(),
         fatherName: document.getElementById('app-father-name').value.trim(),
-        motherName: document.getElementById('app-mother-name').value.trim() || 'Parent',
+        motherName: document.getElementById('app-mother-name').value.trim(),
+        guardianName: document.getElementById('app-guardian-name').value.trim() || null,
+        dateOfBirth: document.getElementById('app-dob').value,
+        dobWords: document.getElementById('app-dob-words').value.trim(),
+        gender: document.getElementById('app-gender').value,
+        nationality: document.getElementById('app-nationality').value.trim() || 'Indian',
+        fatherOccupation: document.getElementById('app-father-occupation').value.trim() || null,
+        motherOccupation: document.getElementById('app-mother-occupation').value.trim() || null,
+        fatherQualification: document.getElementById('app-father-qualification').value.trim() || null,
+        motherQualification: document.getElementById('app-mother-qualification').value.trim() || null,
+        previousSchool: document.getElementById('app-previous-school').value.trim() || null,
+        targetGrade: targetGrade,
+        appliedGrade: targetGrade,
+        assignedSection: assignedSection,
+        previousPercentage: document.getElementById('app-previous-percentage').value.trim() || null,
+        previousMarks: document.getElementById('app-previous-marks').value.trim() || null,
+        permanentAddress: document.getElementById('app-permanent-address').value.trim(),
+        presentAddress: document.getElementById('app-present-address').value.trim(),
+        address: document.getElementById('app-present-address').value.trim(),
         contactPhone: document.getElementById('app-contact-phone').value.trim(),
-        address: document.getElementById('app-address').value.trim() || 'Harpur, Raxaul, Bihar',
+        aadharNo: document.getElementById('app-aadhar-no').value.trim(),
+        declarationPlace: document.getElementById('app-declaration-place').value.trim() || 'Harpur, Raxaul',
+        declarationDate: document.getElementById('app-declaration-date').value || null,
+        declarationAccepted: document.getElementById('app-declaration-accepted').checked,
+        writtenTestDate: document.getElementById('app-written-test-date').value.trim() || '05-Nov-2026 at 10:00 AM',
         documentsVerified: document.getElementById('app-doc-verified').checked,
         status: document.getElementById('app-doc-verified').checked ? 'DOCUMENTS_VERIFIED' : 'SUBMITTED',
         active: true
@@ -3496,18 +3981,401 @@ async function handleCreateApplication(event) {
         if (d.success) {
             closeModal('modal-new-application');
             document.getElementById('form-new-application').reset();
-            delete document.getElementById('app-target-grade').dataset.userChanged;
-            checkGradeChangeWarning();
             await loadAdmissions();
-            const appsBtn = document.getElementById('btn-subtab-apps');
-            if (appsBtn) switchSubtab('adm-applications', appsBtn);
             showToast("Application Registered", `Application ${d.data.applicationNumber} created for ${payload.studentName}!`, "success");
+            // Prompt/Open Official Printable Form
+            printAdmissionForm(d.data.id);
         } else {
             showToast("Submission Failed", d.message || "Unknown error", "error");
         }
     } catch (e) {
         showToast("Error", e.message, "error");
     }
+}
+
+// ==============================================================
+// OFFICIAL PRINTABLE ADMISSION FORM & ADMIT SLIP (IMAGE 1)
+// ==============================================================
+async function printAdmissionForm(appId) {
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/admissions/applications/${appId}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        if (!d.success || !d.data) {
+            showToast("Error", "Could not load application record", "error");
+            return;
+        }
+        const app = d.data;
+
+        document.getElementById('pf-sl-no').textContent = app.slNo || ('SL-' + String(app.id).padStart(3, '0'));
+        document.getElementById('pf-reg-no').textContent = app.applicationNumber || ('REG-' + (1000 + app.id));
+        document.getElementById('pf-student-name').textContent = (app.studentName || '').toUpperCase();
+        document.getElementById('pf-father-name').textContent = app.fatherName || '';
+        document.getElementById('pf-mother-name').textContent = app.motherName || '';
+        document.getElementById('pf-guardian-name').textContent = app.guardianName || 'N/A';
+        document.getElementById('pf-dob-figure').textContent = app.dateOfBirth || '';
+        document.getElementById('pf-dob-words').textContent = app.dobWords || convertDateToWords(app.dateOfBirth);
+        document.getElementById('pf-father-occ').textContent = app.fatherOccupation || 'Self-Employed / Business';
+        document.getElementById('pf-mother-occ').textContent = app.motherOccupation || 'Homemaker';
+        document.getElementById('pf-father-qual').textContent = app.fatherQualification || 'Graduate';
+        document.getElementById('pf-mother-qual').textContent = app.motherQualification || 'Intermediate';
+        document.getElementById('pf-prev-school').textContent = app.previousSchool || 'Oxford Preparatory School';
+        document.getElementById('pf-class-req').textContent = app.targetGrade || 'Class 1';
+        document.getElementById('pf-prev-pct').textContent = app.previousPercentage || '85%';
+        document.getElementById('pf-prev-marks').textContent = app.previousMarks || '425 / 500';
+        document.getElementById('pf-nationality').textContent = app.nationality || 'Indian';
+        document.getElementById('pf-perm-addr').textContent = app.permanentAddress || app.address || 'Harpur, East Champaran, Bihar - 845301';
+        document.getElementById('pf-pres-addr').textContent = (app.presentAddress || app.address || 'Harpur, Raxaul, Bihar') + ' • Phone: ' + (app.contactPhone || '');
+        document.getElementById('pf-aadhar-no').textContent = app.aadharNo || 'XXXX - XXXX - 4821';
+        document.getElementById('pf-decl-place').textContent = app.declarationPlace || 'Harpur, Raxaul';
+        document.getElementById('pf-decl-date').textContent = app.declarationDate || app.createdAt ? String(app.createdAt).substring(0, 10) : '26-10-2026';
+
+        // Office Admit Slip (Tear-off)
+        const admitSlno = document.getElementById('pf-admit-slno');
+        if (admitSlno) admitSlno.textContent = app.slNo || ('SL-' + String(app.id).padStart(3, '0'));
+        document.getElementById('pf-admit-pupil').textContent = (app.studentName || '').toUpperCase();
+        document.getElementById('pf-admit-father').textContent = app.fatherName || '';
+        document.getElementById('pf-admit-regno').textContent = app.applicationNumber || ('REG-' + (1000 + app.id));
+        document.getElementById('pf-admit-testdate').textContent = app.writtenTestDate || '05-Nov-2026 at 10:00 AM';
+
+        openModal('modal-print-admission-form');
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+function autoFillDobWords(dateStr) {
+    if (!dateStr) return;
+    const words = convertDateToWords(dateStr);
+    const target = document.getElementById('app-dob-words');
+    if (target) target.value = words;
+}
+
+function convertDateToWords(dateStr) {
+    if (!dateStr) return '';
+    try {
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const day = parseInt(parts[2], 10);
+
+        const days = ['', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth',
+            'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth',
+            'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];
+
+        const months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        const dayWord = days[day] || String(day);
+        const monthWord = months[month] || String(month);
+        const yearWord = numberToWords(year).replace(' Rupees Only', '');
+
+        return `${dayWord} ${monthWord} ${yearWord}`;
+    } catch (e) {
+        return dateStr;
+    }
+}
+
+// ==============================================================
+// OFFICIAL 14-PARTICULARS FEE INVOICE & RECEIPT (IMAGE 2)
+// ==============================================================
+function calculateInvoiceTotal() {
+    let gross = 0;
+    for (let i = 1; i <= 14; i++) {
+        const val = parseFloat(document.getElementById(`inv-item-${i}`)?.value) || 0;
+        gross += val;
+    }
+
+    const scholarshipType = document.getElementById('inv-scholarship-type')?.value || 'NONE';
+    let discountRate = 0;
+    if (scholarshipType === 'MERIT') discountRate = 0.25;
+    else if (scholarshipType === 'SIBLING') discountRate = 0.15;
+    else if (scholarshipType === 'EWS') discountRate = 0.50;
+    else if (scholarshipType === 'STAFF_WARD') discountRate = 0.75;
+
+    const discountAmount = Math.round(gross * discountRate);
+    const netPayable = Math.max(0, gross - discountAmount);
+
+    const grossEl = document.getElementById('display-inv-gross');
+    const discEl = document.getElementById('display-inv-discount');
+    const netEl = document.getElementById('display-inv-net');
+
+    if (grossEl) grossEl.textContent = `₹ ${gross.toLocaleString()}`;
+    if (discEl) discEl.textContent = `- ₹ ${discountAmount.toLocaleString()}`;
+    if (netEl) netEl.textContent = `₹ ${netPayable.toLocaleString()}`;
+}
+
+async function handleGenerateInvoice(event) {
+    event.preventDefault();
+    const studentId = document.getElementById('inv-student-id').value;
+    const billingPeriod = document.getElementById('inv-billing-period').value.trim() || 'October 2026';
+    const dueDate = document.getElementById('inv-due-date').value || null;
+    const scholarshipType = document.getElementById('inv-scholarship-type').value;
+
+    const admissionFee = parseFloat(document.getElementById('inv-item-1')?.value) || 0;
+    const tuitionFee = parseFloat(document.getElementById('inv-item-2')?.value) || 0;
+    const conveyanceFee = parseFloat(document.getElementById('inv-item-3')?.value) || 0;
+    const smartClassFee = parseFloat(document.getElementById('inv-item-4')?.value) || 0;
+    const computerFee = parseFloat(document.getElementById('inv-item-5')?.value) || 0;
+    const lateFee = parseFloat(document.getElementById('inv-item-6')?.value) || 0;
+    const examFee = parseFloat(document.getElementById('inv-item-7')?.value) || 0;
+    const sportGamesFee = parseFloat(document.getElementById('inv-item-8')?.value) || 0;
+    const medicalFee = parseFloat(document.getElementById('inv-item-9')?.value) || 0;
+    const libraryFee = parseFloat(document.getElementById('inv-item-10')?.value) || 0;
+    const annualDevelopmentFee = parseFloat(document.getElementById('inv-item-11')?.value) || 0;
+    const miscellaneousFee = parseFloat(document.getElementById('inv-item-12')?.value) || 0;
+    const othersFee = parseFloat(document.getElementById('inv-item-13')?.value) || 0;
+    const previousDues = parseFloat(document.getElementById('inv-item-14')?.value) || 0;
+
+    const gross = admissionFee + tuitionFee + conveyanceFee + smartClassFee + computerFee + lateFee +
+                  examFee + sportGamesFee + medicalFee + libraryFee + annualDevelopmentFee +
+                  miscellaneousFee + othersFee + previousDues;
+
+    let discountRate = 0;
+    if (scholarshipType === 'MERIT') discountRate = 0.25;
+    else if (scholarshipType === 'SIBLING') discountRate = 0.15;
+    else if (scholarshipType === 'EWS') discountRate = 0.50;
+    else if (scholarshipType === 'STAFF_WARD') discountRate = 0.75;
+
+    const discountAmount = Math.round(gross * discountRate);
+    const netPayable = Math.max(0, gross - discountAmount);
+
+    const payload = {
+        studentId: studentId,
+        billingPeriod: billingPeriod,
+        billingMonth: billingPeriod,
+        dueDate: dueDate,
+        scholarshipApplied: scholarshipType,
+        discountAmount: discountAmount,
+        grossAmount: gross,
+        netPayable: netPayable,
+        admissionFee: admissionFee,
+        tuitionFee: tuitionFee,
+        conveyanceFee: conveyanceFee,
+        smartClassFee: smartClassFee,
+        computerFee: computerFee,
+        lateFee: lateFee,
+        examFee: examFee,
+        sportGamesFee: sportGamesFee,
+        medicalFee: medicalFee,
+        libraryFee: libraryFee,
+        annualDevelopmentFee: annualDevelopmentFee,
+        miscellaneousFee: miscellaneousFee,
+        othersFee: othersFee,
+        previousDues: previousDues
+    };
+
+    try {
+        const res = await fetch(`${API_BASE}/api/finance/fees/invoices/detailed`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+        if (d.success) {
+            closeModal('modal-generate-invoice');
+            await loadFees();
+            showToast("Invoice & Receipt Issued", `Official Receipt #${d.data.invoiceNumber} generated! Net: ₹${d.data.netPayable}`, "success");
+            printFeeReceipt(d.data.id);
+        } else {
+            showToast("Failed", d.message || "Failed to generate fee invoice", "error");
+        }
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+
+async function printFeeReceipt(invoiceId) {
+    try {
+        const res = await fetch(`${API_BASE}/api/finance/fees/invoices/${invoiceId}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        if (!d.success || !d.data) {
+            showToast("Error", "Could not load fee invoice", "error");
+            return;
+        }
+        const inv = d.data;
+
+        document.getElementById('rcpt-no').textContent = inv.invoiceNumber || ('REC-' + inv.id);
+        document.getElementById('rcpt-date').textContent = inv.createdAt ? String(inv.createdAt).substring(0, 10) : '26-10-2026';
+        document.getElementById('rcpt-name').textContent = (inv.studentName || 'Student').toUpperCase();
+        document.getElementById('rcpt-class').textContent = inv.grade || 'N/A';
+        document.getElementById('rcpt-sec').textContent = inv.section || 'A';
+        document.getElementById('rcpt-roll').textContent = inv.rollNo != null ? inv.rollNo : '12';
+        document.getElementById('rcpt-month').textContent = inv.billingMonth || inv.billingPeriod || 'October 2026';
+        document.getElementById('rcpt-term').textContent = inv.billingPeriod || 'Term 1 - 2026';
+
+        const particulars = [
+            inv.admissionFee,
+            inv.tuitionFee || inv.grossAmount || 4500,
+            inv.conveyanceFee,
+            inv.smartClassFee,
+            inv.computerFee,
+            inv.lateFee,
+            inv.examFee,
+            inv.sportGamesFee,
+            inv.medicalFee,
+            inv.libraryFee,
+            inv.annualDevelopmentFee,
+            inv.miscellaneousFee,
+            inv.othersFee,
+            inv.previousDues
+        ];
+
+        let sumGross = 0;
+        for (let i = 0; i < 14; i++) {
+            sumGross += (parseFloat(particulars[i]) || 0);
+        }
+
+        const discountTotal = parseFloat(inv.discountAmount) || 0;
+        const grossTotal = parseFloat(inv.grossAmount) || sumGross;
+        const netTotal = parseFloat(inv.netPayable) || Math.max(0, grossTotal - discountTotal);
+
+        // Populate each of the 14 rows: Gross, Discount, Net
+        for (let i = 1; i <= 14; i++) {
+            const grossVal = parseFloat(particulars[i - 1]) || 0;
+            // Attribute discount primarily to Tuition Fee (row 2) or proportional
+            let itemDisc = 0;
+            if (discountTotal > 0 && i === 2) {
+                itemDisc = Math.min(grossVal, discountTotal);
+            }
+            const itemNet = Math.max(0, grossVal - itemDisc);
+
+            const valCell = document.getElementById(`rcpt-val-${i}`);
+            const discCell = document.getElementById(`rcpt-disc-${i}`);
+            const netCell = document.getElementById(`rcpt-net-${i}`);
+
+            if (valCell) valCell.textContent = grossVal > 0 ? Number(grossVal).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+            if (discCell) discCell.textContent = itemDisc > 0 ? ('- ' + Number(itemDisc).toLocaleString('en-IN', { minimumFractionDigits: 2 })) : '-';
+            if (netCell) netCell.textContent = grossVal > 0 ? Number(itemNet).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+        }
+
+        const grossTotalEl = document.getElementById('rcpt-val-gross-total');
+        const discTotalEl = document.getElementById('rcpt-val-disc-total');
+        const netTotalEl = document.getElementById('rcpt-val-total');
+
+        if (grossTotalEl) grossTotalEl.textContent = `Rs. ${Number(grossTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        if (discTotalEl) discTotalEl.textContent = discountTotal > 0 ? `- Rs. ${Number(discountTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'Rs. 0.00';
+        if (netTotalEl) netTotalEl.textContent = `Rs. ${Number(netTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+        document.getElementById('rcpt-words').textContent = numberToWords(netTotal);
+
+        openModal('modal-print-fee-receipt');
+    } catch (e) {
+        showToast("Error", e.message, "error");
+    }
+}
+function numberToWords(amount) {
+    if (amount == null || isNaN(amount)) return 'Zero Rupees Only';
+    const num = Math.round(Number(amount));
+    if (num === 0) return 'Zero Rupees Only';
+
+    const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+        'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    function inWords(n) {
+        if (n < 20) return a[n];
+        const digit = n % 10;
+        return b[Math.floor(n / 10)] + (digit ? ' ' + a[digit] : '');
+    }
+
+    let str = '';
+    const crore = Math.floor(num / 10000000);
+    const lakh = Math.floor((num % 10000000) / 100000);
+    const thousand = Math.floor((num % 100000) / 1000);
+    const hundred = Math.floor((num % 1000) / 100);
+    const rest = num % 100;
+
+    if (crore > 0) str += inWords(crore) + ' Crore ';
+    if (lakh > 0) str += inWords(lakh) + ' Lakh ';
+    if (thousand > 0) str += inWords(thousand) + ' Thousand ';
+    if (hundred > 0) str += inWords(hundred) + ' Hundred ';
+    if (rest > 0) {
+        if (str !== '') str += 'and ';
+        str += inWords(rest) + ' ';
+    }
+
+    return (str.trim() + ' Rupees Only');
+}
+
+function triggerPrintSlip(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) {
+        window.print();
+        return;
+    }
+
+    // Try isolated hidden iframe for perfect print rendering
+    let printFrame = document.getElementById('app-print-frame');
+    if (printFrame) {
+        printFrame.remove();
+    }
+    printFrame = document.createElement('iframe');
+    printFrame.id = 'app-print-frame';
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    document.body.appendChild(printFrame);
+
+    const doc = printFrame.contentWindow.document;
+    doc.open();
+    doc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Oxford International School - Admission Form & Admit Card</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+            <link rel="stylesheet" href="styles.css">
+            <style>
+                @page {
+                    size: A4 portrait;
+                    margin: 4mm 6mm;
+                }
+                html, body {
+                    margin: 0;
+                    padding: 0;
+                    background: #fff;
+                    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                .physical-form-container {
+                    border: 1.5px solid #1e3a8a !important;
+                    margin: 0 auto !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+                .no-print {
+                    display: none !important;
+                }
+            </style>
+        </head>
+        <body>
+            ${el.outerHTML}
+        </body>
+        </html>
+    `);
+    doc.close();
+
+    setTimeout(() => {
+        try {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+        } catch (e) {
+            console.error("Iframe print error, falling back to direct print", e);
+            el.classList.add('print-target');
+            window.print();
+            setTimeout(() => el.classList.remove('print-target'), 500);
+        }
+    }, 450);
+}
+
+function handleStudentSelectForInvoice(studentId) {
+    calculateInvoiceTotal();
 }
 
 // ==============================================================
@@ -3974,10 +4842,369 @@ function switchSubtab(subtabId, btn) {
     }
 }
 
+let modalZIndexCounter = 1050;
+const activeModalStack = [];
+
 function openModal(modalId) {
-    document.getElementById(modalId).classList.add('active');
+    const el = document.getElementById(modalId);
+    if (!el) return;
+
+    modalZIndexCounter += 10;
+    el.style.zIndex = modalZIndexCounter;
+    el.classList.add('active');
+
+    if (!activeModalStack.includes(modalId)) {
+        activeModalStack.push(modalId);
+    }
+
+    // Auto-focus first input after animation
+    setTimeout(() => {
+        const input = el.querySelector('input:not([type=hidden]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button.btn-primary');
+        if (input) input.focus();
+    }, 100);
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('active');
+    const el = document.getElementById(modalId);
+    if (!el) return;
+
+    el.classList.remove('active');
+    el.style.zIndex = '';
+
+    const idx = activeModalStack.indexOf(modalId);
+    if (idx !== -1) activeModalStack.splice(idx, 1);
+}
+
+// Global escape key handler to close top-most active modal
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && activeModalStack.length > 0) {
+        const topModal = activeModalStack[activeModalStack.length - 1];
+        closeModal(topModal);
+    }
+});
+
+
+// ==============================================================
+// CLASS-WISE STUDENT DIRECTORY & FEE TRANSACTION HISTORY
+// ==============================================================
+
+let currentClassStudentsCache = [];
+let currentFeeHistoryStudent = null;
+let currentRosterStatusFilter = 'ALL';
+let currentSelectedFeeClass = 'Class 10';
+
+function switchFeeSubtab(tabName, btnEl) {
+    document.querySelectorAll('#view-fees .fee-nav-btn').forEach(btn => btn.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const rosterTab = document.getElementById('subtab-fee-class-roster');
+    const invoicesTab = document.getElementById('subtab-fee-all-invoices');
+
+    if (tabName === 'class-roster') {
+        if (rosterTab) rosterTab.style.display = 'block';
+        if (invoicesTab) invoicesTab.style.display = 'none';
+        loadStudentsForFeeClass(currentSelectedFeeClass);
+    } else {
+        if (rosterTab) rosterTab.style.display = 'none';
+        if (invoicesTab) invoicesTab.style.display = 'block';
+    }
+}
+
+function selectFeeClassChip(grade, btnEl) {
+    currentSelectedFeeClass = grade;
+    document.querySelectorAll('.class-pill').forEach(p => p.classList.remove('active'));
+    if (btnEl) {
+        btnEl.classList.add('active');
+    } else {
+        const matching = document.querySelector(`.class-pill[data-class="${grade}"]`);
+        if (matching) matching.classList.add('active');
+    }
+
+    const selectEl = document.getElementById('select-fee-class');
+    if (selectEl) selectEl.value = grade;
+
+    // Reset search and status filter on class change
+    const searchInput = document.getElementById('search-class-student');
+    if (searchInput) searchInput.value = '';
+    currentRosterStatusFilter = 'ALL';
+    document.querySelectorAll('.status-chip').forEach(c => c.classList.remove('active'));
+    const allChip = document.getElementById('filter-chip-all');
+    if (allChip) allChip.classList.add('active');
+
+    loadStudentsForFeeClass(grade);
+}
+
+function filterByFeeStatus(status, chipEl) {
+    currentRosterStatusFilter = status;
+    document.querySelectorAll('.status-chip').forEach(c => c.classList.remove('active'));
+    if (chipEl) chipEl.classList.add('active');
+    applyCombinedRosterFilter();
+}
+
+function filterClassStudentRows(query) {
+    applyCombinedRosterFilter();
+}
+
+function applyCombinedRosterFilter() {
+    const q = (document.getElementById('search-class-student')?.value || '').toLowerCase().trim();
+    let filtered = currentClassStudentsCache;
+
+    if (currentRosterStatusFilter === 'CLEARED') {
+        filtered = filtered.filter(s => s.feeStatus === 'CLEARED');
+    } else if (currentRosterStatusFilter === 'PENDING') {
+        filtered = filtered.filter(s => s.feeStatus !== 'CLEARED');
+    }
+
+    if (q) {
+        filtered = filtered.filter(s => {
+            const name = ((s.firstName || '') + ' ' + (s.lastName || '')).toLowerCase();
+            const adm = (s.admissionNo || '').toLowerCase();
+            const roll = String(s.rollNo != null ? s.rollNo : '');
+            const parent = (s.guardianName || '').toLowerCase();
+            return name.includes(q) || adm.includes(q) || roll.includes(q) || parent.includes(q);
+        });
+    }
+
+    renderClassStudentsTable(filtered, false);
+}
+
+async function loadStudentsForFeeClass(grade) {
+    const selectedGrade = grade || currentSelectedFeeClass || 'Class 10';
+    currentSelectedFeeClass = selectedGrade;
+
+    // Ensure corresponding chip is active
+    document.querySelectorAll('.class-pill').forEach(p => {
+        if (p.getAttribute('data-class') === selectedGrade) {
+            p.classList.add('active');
+        } else {
+            p.classList.remove('active');
+        }
+    });
+
+    const tbody = document.getElementById('class-students-table-body');
+    if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="padding: 28px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color: #047857; margin-bottom: 8px;"></i><br>Loading enrolled students for <strong>${escapeHtml(selectedGrade)}</strong>...</td></tr>`;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/students?grade=${encodeURIComponent(selectedGrade)}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        const students = d.data || [];
+        currentClassStudentsCache = students;
+
+        renderClassStudentsTable(students, true);
+    } catch (e) {
+        console.error("Class students load error:", e);
+        if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger" style="padding: 24px;">Failed to load class students: ${escapeHtml(e.message)}</td></tr>`;
+    }
+}
+
+function renderClassStudentsTable(students, updateStats = true) {
+    const tbody = document.getElementById('class-students-table-body');
+    if (!tbody) return;
+
+    let clearedCount = 0;
+    let pendingCount = 0;
+
+    currentClassStudentsCache.forEach(s => {
+        if (s.feeStatus === 'CLEARED') clearedCount++; else pendingCount++;
+    });
+
+    if (updateStats) {
+        updateClassRosterKpis(currentClassStudentsCache.length, clearedCount, pendingCount);
+    }
+
+    if (students.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center" style="padding: 32px 16px; color: #64748b;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2rem; color: #cbd5e1; margin-bottom: 10px;"></i>
+                    <div style="font-weight: 600; font-size: 1rem; color: #334155;">No student records match the selected criteria</div>
+                    <div style="font-size: 0.85rem; margin-top: 4px;">Try selecting another class or clearing your search filter.</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = students.map(s => {
+        const fullName = `${s.firstName || ''} ${s.lastName || ''}`.trim();
+        const isCleared = (s.feeStatus === 'CLEARED');
+        const initial = (s.firstName || 'S')[0].toUpperCase();
+
+        return `
+            <tr class="student-row-interactive" onclick="openStudentFeeHistory(${s.id})" title="Click anywhere on row to view fee ledger for ${escapeHtml(fullName)}">
+                <td style="text-align: center; font-weight: 800; color: #047857;">
+                    ${s.rollNo != null ? ('#' + s.rollNo) : '-'}
+                </td>
+                <td>
+                    <code style="font-weight: 700; color: #1e3a8a; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">${escapeHtml(s.admissionNo)}</code>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="student-avatar-badge">
+                            ${escapeHtml(initial)}
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem;">${escapeHtml(fullName)}</div>
+                            <small style="color: #64748b; font-size: 0.76rem;"><i class="fa-solid fa-arrow-pointer"></i> Click row for transaction history</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="font-weight: 600; color: #334155;">${escapeHtml(s.guardianName || 'Guardian')}</div>
+                    <small style="color: #64748b;"><i class="fa-solid fa-phone" style="font-size: 0.72rem;"></i> ${escapeHtml(s.guardianPhone || 'N/A')}</small>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-secondary" style="font-weight: 700; padding: 3px 8px;">${escapeHtml(s.section || 'A')}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge ${isCleared ? 'badge-success' : 'badge-warning'}" style="font-weight: 700; padding: 4px 10px; font-size: 0.78rem;">
+                        ${isCleared ? '<i class="fa-solid fa-circle-check"></i> CLEARED' : '<i class="fa-solid fa-clock"></i> PENDING DUES'}
+                    </span>
+                </td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                    <div class="action-btn-group">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openStudentFeeHistory(${s.id})" style="background: #047857; border-color: #047857; color: white; padding: 5px 12px; font-weight: 600;" title="View Complete Fee Ledger & Transaction History">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Fee Ledger
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="quickIssueInvoiceForStudent(${s.id})" style="padding: 5px 10px; font-weight: 600; color: #0f172a; border-color: #cbd5e1;" title="Issue New Fee Invoice for this Student">
+                            <i class="fa-solid fa-file-circle-plus"></i> Invoice
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function quickIssueInvoiceForStudent(studentId) {
+    openSingleInvoiceModal(studentId);
+}
+
+function updateClassRosterKpis(total, cleared, pending) {
+    const kpiTotal = document.getElementById('kpi-roster-total');
+    const kpiCleared = document.getElementById('kpi-roster-cleared');
+    const kpiPending = document.getElementById('kpi-roster-pending');
+    if (kpiTotal) kpiTotal.textContent = `${total} Students`;
+    if (kpiCleared) kpiCleared.textContent = `${cleared} Cleared`;
+    if (kpiPending) kpiPending.textContent = `${pending} Pending Dues`;
+}
+
+async function openStudentFeeHistory(studentId) {
+    try {
+        // 1. Fetch Student Details
+        const resStudent = await fetch(`${API_BASE}/api/admin/students/${studentId}`, { headers: getAuthHeaders() });
+        const dStudent = await resStudent.json();
+        if (!dStudent.success || !dStudent.data) {
+            showToast("Error", "Student details could not be loaded", "error");
+            return;
+        }
+        const student = dStudent.data;
+        currentFeeHistoryStudent = student;
+
+        const fullName = `${student.firstName || ''} ${student.lastName || ''}`.trim();
+        document.getElementById('sfh-student-name').textContent = fullName;
+        document.getElementById('sfh-admission-no').textContent = student.admissionNo || 'N/A';
+        document.getElementById('sfh-class').textContent = student.currentClass || 'Class 10';
+        document.getElementById('sfh-section').textContent = student.section || 'A';
+        document.getElementById('sfh-roll').textContent = student.rollNo != null ? student.rollNo : '-';
+        document.getElementById('sfh-father-name').textContent = student.guardianName || 'Guardian';
+        document.getElementById('sfh-phone').textContent = student.guardianPhone || 'N/A';
+
+        const isCleared = (student.feeStatus === 'CLEARED');
+        const badgeEl = document.getElementById('sfh-fee-badge');
+        if (badgeEl) {
+            badgeEl.className = `badge ${isCleared ? 'badge-success' : 'badge-warning'}`;
+            badgeEl.innerHTML = isCleared ? '<i class="fa-solid fa-circle-check"></i> CLEARED' : '<i class="fa-solid fa-triangle-exclamation"></i> PENDING DUES';
+        }
+
+        // 2. Fetch Invoices for this Student
+        const resInvoices = await fetch(`${API_BASE}/api/finance/fees/invoices?studentId=${studentId}`, { headers: getAuthHeaders() });
+        const dInvoices = await resInvoices.json();
+        const invoices = dInvoices.data || [];
+
+        let totalBilled = 0;
+        let totalPaid = 0;
+        let totalDiscount = 0;
+
+        invoices.forEach(inv => {
+            totalBilled += parseFloat(inv.grossAmount) || 0;
+            totalDiscount += parseFloat(inv.discountAmount) || 0;
+            totalPaid += parseFloat(inv.paidAmount) || 0;
+        });
+
+        const totalNet = Math.max(0, totalBilled - totalDiscount);
+        const balanceDue = Math.max(0, totalNet - totalPaid);
+
+        document.getElementById('sfh-total-billed').textContent = `₹ ${Math.round(totalBilled).toLocaleString()}`;
+        document.getElementById('sfh-total-paid').textContent = `₹ ${Math.round(totalPaid).toLocaleString()}`;
+        document.getElementById('sfh-total-discount').textContent = `₹ ${Math.round(totalDiscount).toLocaleString()}`;
+        document.getElementById('sfh-balance-due').textContent = `₹ ${Math.round(balanceDue).toLocaleString()}`;
+        document.getElementById('sfh-invoices-count').textContent = `${invoices.length} Invoices`;
+
+        const tbody = document.getElementById('sfh-invoices-tbody');
+        if (invoices.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="text-center" style="padding: 28px; color: #64748b;">
+                        <i class="fa-solid fa-file-circle-xmark" style="font-size: 1.8rem; color: #cbd5e1; margin-bottom: 8px;"></i>
+                        <div>No fee records or invoices have been issued for ${escapeHtml(fullName)} yet.</div>
+                        <button class="btn btn-primary btn-sm" onclick="issueInvoiceForCurrentStudent()" style="margin-top: 10px;">
+                            <i class="fa-solid fa-file-invoice"></i> Issue First Invoice
+                        </button>
+                    </td>
+                </tr>
+            `;
+        } else {
+            tbody.innerHTML = invoices.map(inv => {
+                const gross = parseFloat(inv.grossAmount) || 0;
+                const disc = parseFloat(inv.discountAmount) || 0;
+                const net = parseFloat(inv.netPayable) || (gross - disc);
+                const paid = parseFloat(inv.paidAmount) || 0;
+                const balance = Math.max(0, net - paid);
+                const isPaid = (inv.status === 'PAID');
+
+                return `
+                    <tr>
+                        <td><code>${escapeHtml(inv.invoiceNumber)}</code></td>
+                        <td><strong>${escapeHtml(inv.billingPeriod || inv.billingMonth || 'Current Term')}</strong></td>
+                        <td style="text-align: right;">₹ ${Math.round(gross).toLocaleString()}</td>
+                        <td style="text-align: right; color: #047857;">${disc > 0 ? ('- ₹ ' + Math.round(disc).toLocaleString()) : '-'}</td>
+                        <td style="text-align: right; font-weight: 700; color: #0f172a;">₹ ${Math.round(net).toLocaleString()}</td>
+                        <td style="text-align: right; color: #059669;">₹ ${Math.round(paid).toLocaleString()}</td>
+                        <td style="text-align: right; font-weight: 700; color: ${balance > 0 ? '#dc2626' : '#059669'};">₹ ${Math.round(balance).toLocaleString()}</td>
+                        <td style="text-align: center;">
+                            <span class="badge ${isPaid ? 'badge-success' : (inv.status === 'PARTIALLY_PAID' ? 'badge-warning' : 'badge-danger')}">
+                                ${escapeHtml(inv.status)}
+                            </span>
+                        </td>
+                        <td style="white-space: nowrap; text-align: center;">
+                            <div style="display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: nowrap;">
+                                <button class="btn btn-outline btn-sm" onclick="printFeeReceipt(${inv.id})" style="border-color: #047857; color: #047857; font-weight: 600; padding: 4px 8px; font-size: 0.78rem; white-space: nowrap;" title="Print Official Oxford Fee Receipt">
+                                    <i class="fa-solid fa-receipt"></i> Print Receipt
+                                </button>
+                                ${!isPaid ? `
+                                    <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${balance})" style="padding: 4px 10px; font-size: 0.78rem; white-space: nowrap;">
+                                        <i class="fa-solid fa-money-bill-wave"></i> Collect
+                                    </button>
+                                ` : `<span class="badge badge-success" style="font-size: 0.75rem; padding: 4px 8px; white-space: nowrap;"><i class="fa-solid fa-check"></i> Cleared</span>`}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        openModal('modal-student-fee-history');
+    } catch (e) {
+        console.error("Student fee history error:", e);
+        showToast("Error", e.message, "error");
+    }
+}
+
+function issueInvoiceForCurrentStudent() {
+    if (!currentFeeHistoryStudent) return;
+    closeModal('modal-student-fee-history');
+    openSingleInvoiceModal(currentFeeHistoryStudent.id);
 }

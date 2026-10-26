@@ -2,6 +2,7 @@ package com.oxford.csms.domain.admin.model;
 
 import com.oxford.csms.common.BaseEntity;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -52,6 +53,29 @@ public class Student extends BaseEntity {
     private StudentFeeStatus feeStatus = StudentFeeStatus.CLEARED;
 
     private boolean active = true;
+
+    // --- Transportation Option ---
+    private Boolean transportOpted = false;
+
+    private String busRouteName;
+
+    private String pickupDropPoint;
+
+    private BigDecimal transportFeeMonthly = BigDecimal.ZERO;
+
+    // --- Fee Detail & Concession ---
+    private String feeCategory = "GENERAL";
+
+    private Double concessionPercentage = 0.0;
+
+    private BigDecimal concessionAmount = BigDecimal.ZERO;
+
+    private String concessionReason;
+
+    // --- Additional Identity Info ---
+    private String aadharNo;
+
+    private String emergencyContact;
 
     public enum StudentFeeStatus {
         CLEARED, PENDING, OVERDUE
@@ -113,7 +137,7 @@ public class Student extends BaseEntity {
     }
 
     public String getFullName() {
-        return firstName + " " + lastName;
+        return (firstName != null ? firstName : "") + (lastName != null && !lastName.isBlank() ? " " + lastName : "");
     }
 
     public LocalDate getDateOfBirth() {
@@ -226,5 +250,88 @@ public class Student extends BaseEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    // --- Transportation Option Getters & Setters ---
+    public Boolean getTransportOpted() {
+        return transportOpted != null && transportOpted;
+    }
+
+    public void setTransportOpted(Boolean transportOpted) {
+        this.transportOpted = transportOpted;
+    }
+
+    public String getBusRouteName() {
+        return busRouteName;
+    }
+
+    public void setBusRouteName(String busRouteName) {
+        this.busRouteName = busRouteName;
+    }
+
+    public String getPickupDropPoint() {
+        return pickupDropPoint;
+    }
+
+    public void setPickupDropPoint(String pickupDropPoint) {
+        this.pickupDropPoint = pickupDropPoint;
+    }
+
+    public BigDecimal getTransportFeeMonthly() {
+        return transportFeeMonthly != null ? transportFeeMonthly : BigDecimal.ZERO;
+    }
+
+    public void setTransportFeeMonthly(BigDecimal transportFeeMonthly) {
+        this.transportFeeMonthly = transportFeeMonthly;
+    }
+
+    // --- Fee Detail & Concession Getters & Setters ---
+    public String getFeeCategory() {
+        return feeCategory != null ? feeCategory : "GENERAL";
+    }
+
+    public void setFeeCategory(String feeCategory) {
+        this.feeCategory = feeCategory;
+    }
+
+    public Double getConcessionPercentage() {
+        return concessionPercentage != null ? concessionPercentage : 0.0;
+    }
+
+    public void setConcessionPercentage(Double concessionPercentage) {
+        this.concessionPercentage = concessionPercentage;
+    }
+
+    public BigDecimal getConcessionAmount() {
+        return concessionAmount != null ? concessionAmount : BigDecimal.ZERO;
+    }
+
+    public void setConcessionAmount(BigDecimal concessionAmount) {
+        this.concessionAmount = concessionAmount;
+    }
+
+    public String getConcessionReason() {
+        return concessionReason;
+    }
+
+    public void setConcessionReason(String concessionReason) {
+        this.concessionReason = concessionReason;
+    }
+
+    // --- Additional Identity Info Getters & Setters ---
+    public String getAadharNo() {
+        return aadharNo;
+    }
+
+    public void setAadharNo(String aadharNo) {
+        this.aadharNo = aadharNo;
+    }
+
+    public String getEmergencyContact() {
+        return emergencyContact;
+    }
+
+    public void setEmergencyContact(String emergencyContact) {
+        this.emergencyContact = emergencyContact;
     }
 }

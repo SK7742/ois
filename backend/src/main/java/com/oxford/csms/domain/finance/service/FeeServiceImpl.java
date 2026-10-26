@@ -73,6 +73,13 @@ public class FeeServiceImpl implements FeeService {
             gross = new BigDecimal("4500.00"); // Standard Oxford term tuition
         }
 
+        // Include transport fee if student opted for institutional transport
+        BigDecimal transportFee = BigDecimal.ZERO;
+        if (student.getTransportOpted() && student.getTransportFeeMonthly() != null && student.getTransportFeeMonthly().compareTo(BigDecimal.ZERO) > 0) {
+            transportFee = student.getTransportFeeMonthly();
+            gross = gross.add(transportFee);
+        }
+
         FeeCalculationService.FeeCalculationResult calcResult =
                 feeCalculationService.calculateNetFee(gross, student, scholarshipType);
 
@@ -95,7 +102,8 @@ public class FeeServiceImpl implements FeeService {
         invoice.setSection(student.getSection());
         invoice.setRollNo(student.getRollNo());
         invoice.setBillingMonth(billingPeriod != null ? billingPeriod : "Term 1 - 2026");
-        invoice.setTuitionFee(calcResult.getGrossAmount());
+        invoice.setTuitionFee(calcResult.getGrossAmount().subtract(transportFee));
+        invoice.setConveyanceFee(transportFee);
 
         student.setFeeStatus(Student.StudentFeeStatus.PENDING);
         studentRepository.save(student);

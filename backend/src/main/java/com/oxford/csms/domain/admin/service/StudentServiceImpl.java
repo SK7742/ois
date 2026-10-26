@@ -33,6 +33,8 @@ public class StudentServiceImpl implements StudentService {
         existing.setCurrentClass(details.getCurrentClass());
         existing.setSection(details.getSection());
         existing.setRollNo(details.getRollNo());
+        existing.setDateOfBirth(details.getDateOfBirth());
+        existing.setGender(details.getGender());
         existing.setGuardianName(details.getGuardianName());
         existing.setGuardianPhone(details.getGuardianPhone());
         existing.setGuardianEmail(details.getGuardianEmail());
@@ -43,6 +45,23 @@ public class StudentServiceImpl implements StudentService {
         existing.setFeeStatus(details.getFeeStatus());
         existing.setNotesSummary(details.getNotesSummary());
         existing.setActive(details.isActive());
+
+        // Transportation Option
+        existing.setTransportOpted(details.getTransportOpted());
+        existing.setBusRouteName(details.getBusRouteName());
+        existing.setPickupDropPoint(details.getPickupDropPoint());
+        existing.setTransportFeeMonthly(details.getTransportFeeMonthly());
+
+        // Fee Detail & Concession
+        existing.setFeeCategory(details.getFeeCategory());
+        existing.setConcessionPercentage(details.getConcessionPercentage());
+        existing.setConcessionAmount(details.getConcessionAmount());
+        existing.setConcessionReason(details.getConcessionReason());
+
+        // Additional Identity
+        existing.setAadharNo(details.getAadharNo());
+        existing.setEmergencyContact(details.getEmergencyContact());
+
         return studentRepository.save(existing);
     }
 
