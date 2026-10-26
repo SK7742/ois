@@ -55,8 +55,8 @@ exit /b 0
 echo ===============================================================================
 echo           OXFORD INTERNATIONAL SCHOOL - CSMS [STATUS DASHBOARD]
 echo ===============================================================================
-echo 1. Checking MySQL Database on Port 3306...
-powershell -NoProfile -Command "if ((Test-NetConnection -ComputerName localhost -Port 3306 -WarningAction SilentlyContinue).TcpTestSucceeded) { Write-Host '   [OK] Local MySQL is ACTIVE on port 3306' -ForegroundColor Green } else { Write-Host '   [WARN] Local MySQL is NOT responding on port 3306' -ForegroundColor Red }"
+echo 1. Checking Database Connectivity (Supabase PostgreSQL Port 5432)...
+powershell -NoProfile -Command "if ((Test-NetConnection -ComputerName db.byjfotbnqblbkbqdmxsw.supabase.co -Port 5432 -WarningAction SilentlyContinue).TcpTestSucceeded) { Write-Host '   [OK] Supabase PostgreSQL is ACTIVE on port 5432 (db.byjfotbnqblbkbqdmxsw.supabase.co)' -ForegroundColor Green } else { Write-Host '   [WARN] Supabase PostgreSQL is NOT reachable on port 5432' -ForegroundColor Red }"
 
 echo 2. Checking Docker Engine Daemon...
 docker info >nul 2>&1
@@ -96,7 +96,7 @@ echo ===========================================================================
 echo                OXFORD INTERNATIONAL SCHOOL - CSMS
 echo                 Harpur, Raxaul, East Champaran, Bihar
 echo ===============================================================================
-echo  Architecture   : Docker Container (App) + Local MySQL Host (Port 3306)
+echo  Architecture   : Docker Container (App) + Cloud PostgreSQL (Supabase)
 echo  Authorized By  : Anil Kumar Gupt [Management]
 echo  Lead Architect : Shivam Kumar
 echo  Target Scale   : 1,500 - 2,000 Students
