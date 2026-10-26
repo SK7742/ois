@@ -4,7 +4,8 @@
 OXFORD INTERNATIONAL SCHOOL - CSMS SUPERUSER CONFIGURATION TOOL
 ===================================================================================
 Configures and initializes the primary institutional Superuser Administrator
-account directly in the MySQL datastore with secure BCrypt password hashing.
+account directly in the datastore (PostgreSQL / Supabase or MySQL) with secure
+BCrypt password hashing.
 ===================================================================================
 """
 
@@ -19,13 +20,6 @@ try:
 except ImportError:
     print("[ERROR] Python 'bcrypt' package is missing.")
     print("Please run: pip install bcrypt")
-    sys.exit(1)
-
-try:
-    import mysql.connector
-except ImportError:
-    print("[ERROR] Python 'mysql-connector-python' package is missing.")
-    print("Please run: pip install mysql-connector-python")
     sys.exit(1)
 
 
@@ -50,35 +44,59 @@ Examples:
     parser.add_argument("-n", "--name", default="System Administrator", help="Full display name (default: System Administrator)")
     parser.add_argument("-e", "--email", default="admin@oxford.edu", help="Admin email address (default: admin@oxford.edu)")
     parser.add_argument("--phone", default="+91-7870335141", help="Contact phone number (default: +91-7870335141)")
-    parser.add_argument("--db-host", default=os.getenv("SPRING_DATASOURCE_HOST", "localhost"), help="MySQL host (default: localhost)")
-    parser.add_argument("--db-port", type=int, default=int(os.getenv("SPRING_DATASOURCE_PORT", "3306")), help="MySQL port (default: 3306)")
-    parser.add_argument("--db-user", default=os.getenv("SPRING_DATASOURCE_USERNAME", "root"), help="MySQL user (default: root)")
-    parser.add_argument("--db-pass", default=os.getenv("SPRING_DATASOURCE_PASSWORD", "root"), help="MySQL password (default: root)")
-    parser.add_argument("--db-name", default=os.getenv("SPRING_DATASOURCE_DATABASE", "school"), help="MySQL database (default: school)")
+    parser.add_argument("--db-host", default=os.getenv("SPRING_DATASOURCE_HOST", "aws-0-ap-northeast-1.pooler.supabase.com"), help="DB host (default: aws-0-ap-northeast-1.pooler.supabase.com)")
+    parser.add_argument("--db-port", type=int, default=int(os.getenv("SPRING_DATASOURCE_PORT", "5432")), help="DB port (default: 5432)")
+    parser.add_argument("--db-user", default=os.getenv("SPRING_DATASOURCE_USERNAME", "postgres.byjfotbnqblbkbqdmxsw"), help="DB user (default: postgres.byjfotbnqblbkbqdmxsw)")
+    parser.add_argument("--db-pass", default=os.getenv("SPRING_DATASOURCE_PASSWORD", "ois-db@123#"), help="DB password (default: ois-db@123#)")
+    parser.add_argument("--db-name", default=os.getenv("SPRING_DATASOURCE_DATABASE", "postgres"), help="DB name (default: postgres)")
     parser.add_argument("-y", "--yes", action="store_true", help="Non-interactive confirmation")
     return parser.parse_args()
 
 
 def get_db_connection(args):
-    try:
-        conn = mysql.connector.connect(
-            host=args.db_host,
-            port=args.db_port,
-            user=args.db_user,
-            password=args.db_pass,
-            database=args.db_name,
-            autocommit=False
-        )
-        return conn
-    except mysql.connector.Error as err:
-        print(f"\n[FATAL] Database connection failed to {args.db_user}@{args.db_host}:{args.db_port}/{args.db_name}")
-        print(f"Details: {err}")
-        print("\nPlease ensure MySQL is running (e.g., local MySQL on port 3306 or via Docker).")
-        sys.exit(1)
+    # Determine if PostgreSQL or MySQL based on port/host
+    is_postgres = (args.db_port == 5432 or "supabase" in args.db_host.lower() or "postgres" in args.db_user.lower())
+    if is_postgres:
+        try:
+            import psycopg2
+            from psycopg2.extras import RealDictCursor
+            conn = psycopg2.connect(
+                host=args.db_host,
+                port=args.db_port,
+                user=args.db_user,
+                password=args.db_pass,
+                dbname=args.db_name,
+                sslmode="require",
+                cursor_factory=RealDictCursor
+            )
+            return conn, "POSTGRESQL"
+        except ImportError:
+            print("[ERROR] 'psycopg2' is required for PostgreSQL connections.")
+            print("Please run: pip install psycopg2-binary")
+            sys.exit(1)
+        except Exception as err:
+            print(f"\n[FATAL] PostgreSQL connection failed to {args.db_user}@{args.db_host}:{args.db_port}/{args.db_name}")
+            print(f"Details: {err}")
+            sys.exit(1)
+    else:
+        try:
+            import mysql.connector
+            conn = mysql.connector.connect(
+                host=args.db_host,
+                port=args.db_port,
+                user=args.db_user,
+                password=args.db_pass,
+                database=args.db_name,
+                autocommit=False
+            )
+            return conn, "MYSQL"
+        except Exception as err:
+            print(f"\n[FATAL] MySQL connection failed to {args.db_user}@{args.db_host}:{args.db_port}/{args.db_name}")
+            print(f"Details: {err}")
+            sys.exit(1)
 
 
 def hash_password(plain_password: str) -> str:
-    # Generate standard Spring Security compatible BCrypt hash ($2a$ / $2b$ with 10 work rounds)
     salt = bcrypt.gensalt(rounds=10, prefix=b"2a")
     hashed = bcrypt.hashpw(plain_password.encode("utf-8"), salt)
     return hashed.decode("utf-8")
@@ -132,8 +150,8 @@ def main():
     hashed_password = hash_password(password)
 
     print("[2/3] Connecting to institutional database...")
-    conn = get_db_connection(args)
-    cursor = conn.cursor(dictionary=True)
+    conn, engine = get_db_connection(args)
+    cursor = conn.cursor()
 
     try:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
@@ -145,23 +163,33 @@ def main():
         if existing_user:
             user_id = existing_user["id"]
             print(f"[3/3] Updating existing Superuser account ID #{user_id} ('{username}')...")
+            enabled_val = True if engine == "POSTGRESQL" else b'1'
             cursor.execute("""
                 UPDATE users
                 SET password = %s,
                     full_name = %s,
                     email = %s,
                     phone = %s,
-                    enabled = b'1',
+                    enabled = %s,
                     updated_at = %s
                 WHERE id = %s
-            """, (hashed_password, full_name, email, phone, now, user_id))
+            """, (hashed_password, full_name, email, phone, enabled_val, now, user_id))
         else:
             print(f"[3/3] Creating new Superuser account for '{username}'...")
-            cursor.execute("""
-                INSERT INTO users (username, password, full_name, email, phone, enabled, created_at, updated_at)
-                VALUES (%s, %s, %s, %s, %s, b'1', %s, %s)
-            """, (username, hashed_password, full_name, email, phone, now, now))
-            user_id = cursor.lastrowid
+            enabled_val = True if engine == "POSTGRESQL" else b'1'
+            if engine == "POSTGRESQL":
+                cursor.execute("""
+                    INSERT INTO users (username, password, full_name, email, phone, enabled, created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id
+                """, (username, hashed_password, full_name, email, phone, enabled_val, now, now))
+                user_id = cursor.fetchone()["id"]
+            else:
+                cursor.execute("""
+                    INSERT INTO users (username, password, full_name, email, phone, enabled, created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, (username, hashed_password, full_name, email, phone, enabled_val, now, now))
+                user_id = cursor.lastrowid
 
         # Update roles: Ensure ROLE_ADMIN and ROLE_MANAGEMENT are present
         cursor.execute("SELECT role FROM user_roles WHERE user_id = %s", (user_id,))
@@ -177,6 +205,7 @@ def main():
         print("\n" + "=" * 80)
         print("          SUPERUSER ADMINISTRATOR CONFIGURATION SUCCESSFUL!")
         print("=" * 80)
+        print("  Database     : %s (Supabase / Cloud)" % engine)
         print("  Superuser ID : #%d" % user_id)
         print("  Username     : %s" % username)
         print("  Full Name    : %s" % full_name)

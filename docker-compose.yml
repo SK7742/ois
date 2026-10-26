@@ -1,12 +1,8 @@
 version: '3.8'
 
 # ==============================================================================
-# Oxford International School CSMS - Containerized Application (Local MySQL DB)
-# ==============================================================================
-# In this topology:
-# - Application (Spring Boot + Static Web UI) runs inside Docker on port 8080.
-# - MySQL Database stays on the LOCAL HOST machine on port 3306.
-# - The container connects to the host database via 'host.docker.internal'.
+# Oxford International School CSMS - Containerized Application
+# Cloud Managed Database: Supabase PostgreSQL (Port 5432)
 # ==============================================================================
 
 services:
@@ -20,10 +16,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Connects directly to local MySQL running on host machine
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/school?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      # Connects directly to Supabase Managed PostgreSQL
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require
+      - SPRING_DATASOURCE_USERNAME=postgres.byjfotbnqblbkbqdmxsw
+      - SPRING_DATASOURCE_PASSWORD=ois-db@123#
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SERVER_PORT=8080
     extra_hosts:
