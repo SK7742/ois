@@ -27,4 +27,5 @@ public interface FeeService {
     List<PaymentRecord> getPaymentsForInvoice(Long invoiceId);
 
     Map<String, Object> getFeeCollectionSummary();
+    String getFeeStructureConfigJson();
 }

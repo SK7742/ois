@@ -68,9 +68,9 @@ public class FeeServiceImpl implements FeeService {
                 .map(FeeStructure::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Fallback default amount if no structure defined yet
+        // Fallback default amount from .fee-structure-2026 if no database structure defined yet
         if (gross.compareTo(BigDecimal.ZERO) == 0) {
-            gross = new BigDecimal("4500.00"); // Standard Oxford term tuition
+            gross = getTuitionForGradeFromConfig(student.getCurrentClass());
         }
 
         // Include transport fee if student opted for institutional transport
@@ -305,5 +305,46 @@ public class FeeServiceImpl implements FeeService {
         summary.put("collectionPercentage", totalBilled.compareTo(BigDecimal.ZERO) > 0 ?
                 totalCollected.multiply(new BigDecimal(100)).divide(totalBilled, 2, RoundingMode.HALF_UP) : BigDecimal.ZERO);
         return summary;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getFeeStructureConfigJson() {
+        String[] candidatePaths = {
+            ".fee-structure-2026",
+            "backend/.fee-structure-2026",
+            "../.fee-structure-2026",
+            "/app/.fee-structure-2026"
+        };
+        for (String p : candidatePaths) {
+            java.io.File file = new java.io.File(p);
+            if (file.exists() && file.isFile()) {
+                try {
+                    return java.nio.file.Files.readString(file.toPath(), java.nio.charset.StandardCharsets.UTF_8);
+                } catch (Exception ignored) {}
+            }
+        }
+        try (java.io.InputStream is = getClass().getResourceAsStream("/.fee-structure-2026")) {
+            if (is != null) {
+                return new String(is.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+            }
+        } catch (Exception ignored) {}
+        return "{}";
+    }
+
+    private BigDecimal getTuitionForGradeFromConfig(String grade) {
+        try {
+            String json = getFeeStructureConfigJson();
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(json);
+            com.fasterxml.jackson.databind.JsonNode tuitionNode = root.path("tuitionByClass");
+            if (grade != null && tuitionNode.has(grade)) {
+                return new BigDecimal(tuitionNode.get(grade).asText());
+            }
+            if (tuitionNode.has("DEFAULT")) {
+                return new BigDecimal(tuitionNode.get("DEFAULT").asText());
+            }
+        } catch (Exception ignored) {}
+        return new BigDecimal("4500.00");
     }
 }

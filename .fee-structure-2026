@@ -1,0 +1,169 @@
+{
+  "academicYear": "2026-2027",
+  "schoolName": "Oxford International School",
+  "currency": "INR",
+  "version": "1.0.0",
+  "description": "Official institutional fee structure schedule for Academic Year 2026-2027",
+  "tuitionByClass": {
+    "NURSERY": 1800.00,
+    "LKG": 2000.00,
+    "UKG": 2200.00,
+    "Class 1": 2500.00,
+    "Class 2": 2600.00,
+    "Class 3": 2800.00,
+    "Class 4": 3000.00,
+    "Class 5": 3200.00,
+    "Class 6": 3500.00,
+    "Class 7": 3800.00,
+    "Class 8": 4000.00,
+    "Class 9": 4200.00,
+    "Class 10": 4500.00,
+    "Class 11": 5000.00,
+    "Class 12": 5500.00,
+    "DEFAULT": 4500.00
+  },
+  "particulars": {
+    "1": {
+      "id": 1,
+      "code": "ADMISSION",
+      "name": "Admission Fee",
+      "field": "admissionFee",
+      "defaultAmount": 2500.00,
+      "description": "One-time admission and pupil registration fee",
+      "defaultChecked": false,
+      "category": "ONE_TIME"
+    },
+    "2": {
+      "id": 2,
+      "code": "TUITION",
+      "name": "Tuition Fee",
+      "field": "tuitionFee",
+      "isClassBased": true,
+      "defaultAmount": 4500.00,
+      "description": "Monthly instructional and academic tuition fee",
+      "defaultChecked": true,
+      "category": "RECURRING"
+    },
+    "3": {
+      "id": 3,
+      "code": "CONVEYANCE",
+      "name": "Conveyance / Transport",
+      "field": "conveyanceFee",
+      "isTransportBased": true,
+      "defaultAmount": 800.00,
+      "description": "Institutional bus transit and commute fare",
+      "defaultChecked": false,
+      "category": "OPTIONAL"
+    },
+    "4": {
+      "id": 4,
+      "code": "SMART_CLASS",
+      "name": "Smart Class / A.C./ Electric Fee",
+      "field": "smartClassFee",
+      "defaultAmount": 350.00,
+      "description": "Interactive smart board and climate infrastructure fee",
+      "defaultChecked": true,
+      "category": "RECURRING"
+    },
+    "5": {
+      "id": 5,
+      "code": "COMPUTER",
+      "name": "Computer Fee",
+      "field": "computerFee",
+      "defaultAmount": 300.00,
+      "description": "Computer laboratory, internet, and digital literacy fee",
+      "defaultChecked": true,
+      "category": "RECURRING"
+    },
+    "6": {
+      "id": 6,
+      "code": "LATE_FEE",
+      "name": "Late Fee",
+      "field": "lateFee",
+      "defaultAmount": 150.00,
+      "description": "Arrears / overdue bill settlement surcharge",
+      "defaultChecked": false,
+      "category": "PENALTY"
+    },
+    "7": {
+      "id": 7,
+      "code": "EXAM",
+      "name": "Exam. Fee",
+      "field": "examFee",
+      "defaultAmount": 500.00,
+      "description": "Evaluation, printed papers, and progress reports fee",
+      "defaultChecked": false,
+      "category": "TERM_BASED"
+    },
+    "8": {
+      "id": 8,
+      "code": "SPORT_GAMES",
+      "name": "Sport & Games",
+      "field": "sportGamesFee",
+      "defaultAmount": 250.00,
+      "description": "Physical education and games equipment charge",
+      "defaultChecked": false,
+      "category": "TERM_BASED"
+    },
+    "9": {
+      "id": 9,
+      "code": "MEDICAL",
+      "name": "Medical",
+      "field": "medicalFee",
+      "defaultAmount": 150.00,
+      "description": "First-aid, pediatric checkup, and health registry charge",
+      "defaultChecked": false,
+      "category": "TERM_BASED"
+    },
+    "10": {
+      "id": 10,
+      "code": "LIBRARY",
+      "name": "Library Fee",
+      "field": "libraryFee",
+      "defaultAmount": 200.00,
+      "description": "Library accession and reading room facility",
+      "defaultChecked": false,
+      "category": "TERM_BASED"
+    },
+    "11": {
+      "id": 11,
+      "code": "ANNUAL_DEV",
+      "name": "Annual Development Fee",
+      "field": "annualDevelopmentFee",
+      "defaultAmount": 1200.00,
+      "description": "Annual institutional facility & infrastructure upkeep",
+      "defaultChecked": false,
+      "category": "ANNUAL"
+    },
+    "12": {
+      "id": 12,
+      "code": "MISCELLANEOUS",
+      "name": "Miscellaneous",
+      "field": "miscellaneousFee",
+      "defaultAmount": 200.00,
+      "description": "General activity, diary, and communication consumables",
+      "defaultChecked": false,
+      "category": "MISC"
+    },
+    "13": {
+      "id": 13,
+      "code": "OTHERS",
+      "name": "Others",
+      "field": "othersFee",
+      "defaultAmount": 100.00,
+      "description": "Co-curricular activities & celebration charge",
+      "defaultChecked": false,
+      "category": "MISC"
+    },
+    "14": {
+      "id": 14,
+      "code": "PREVIOUS_DUES",
+      "name": "Previous Dues",
+      "field": "previousDues",
+      "defaultAmount": 0.00,
+      "description": "Outstanding arrears brought forward",
+      "defaultChecked": false,
+      "category": "ARREARS"
+    }
+  }
+}

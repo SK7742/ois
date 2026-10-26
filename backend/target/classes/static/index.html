@@ -1994,18 +1994,10 @@
             <form id="form-generate-invoice" onsubmit="handleGenerateInvoice(event)" style="padding: 20px;">
                 <div class="form-grid" style="margin-bottom: 16px;">
                     <div class="form-group" style="grid-column: span 2;">
-                        <label style="display: flex; justify-content: space-between; align-items: center;">
-                            <span>Select Enrolled Student *</span>
-                            <span id="inv-student-lock-badge" style="display: none; font-size: 0.78rem; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 10px; border-radius: 6px; font-weight: 700;">
-                                <i class="fa-solid fa-lock"></i> Locked to Selected Student
-                            </span>
-                        </label>
+                        <label>Select Enrolled Student *</label>
                         <select id="inv-student-id" required onchange="handleStudentSelectForInvoice(this.value)">
                             <option value="">-- Choose Enrolled Student --</option>
                         </select>
-                        <small id="inv-student-help-text" style="color: #64748b; font-size: 0.8rem; display: block; margin-top: 4px;">
-                            Choose the student for whom this fee receipt / invoice is being generated.
-                        </small>
                     </div>
                     <div class="form-group">
                         <label>Billing Month *</label>
@@ -2041,85 +2033,249 @@
                     </div>
                 </div>
 
-                <h4 style="color: #065f46; border-bottom: 2px solid #a7f3d0; padding-bottom: 6px; margin: 16px 0 12px 0;">
-                    <i class="fa-solid fa-list-check"></i> 14 Particulars Fee Breakdown (INR)
-                </h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">1. Admission Fee</label>
-                        <input type="number" id="inv-item-1" value="0" min="0" oninput="calculateInvoiceTotal()">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #a7f3d0; padding-bottom: 8px; margin: 18px 0 12px 0;">
+                    <div>
+                        <h4 style="color: #065f46; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-list-check"></i> 14 Particulars Fee Breakdown (INR)
+                        </h4>
+                        <small style="color: #059669; font-size: 0.76rem; font-weight: 600;">
+                            <i class="fa-solid fa-file-shield"></i> Synced with .fee-structure-2026 &bull; Check fee types to add to invoice
+                        </small>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem; font-weight: 700; color: #047857;">2. Tuition Fee *</label>
-                        <input type="number" id="inv-item-2" value="4500" min="0" required oninput="calculateInvoiceTotal()">
+                    <div style="display: flex; gap: 6px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="applyPresetFeePlan('standard')" style="padding: 3px 8px; font-size: 0.75rem; border-color: #059669; color: #047857;">
+                            <i class="fa-solid fa-calendar-check"></i> Standard Monthly
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="applyPresetFeePlan('tuitionOnly')" style="padding: 3px 8px; font-size: 0.75rem; border-color: #64748b; color: #475569;">
+                            <i class="fa-solid fa-book-open"></i> Tuition Only
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="applyPresetFeePlan('clearAll')" style="padding: 3px 8px; font-size: 0.75rem; border-color: #cbd5e1; color: #64748b;">
+                            <i class="fa-solid fa-rotate-left"></i> Clear All
+                        </button>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem; font-weight: 700; color: #047857;">3. Conveyance / Transport <span id="inv-conveyance-tag" style="font-size: 0.75rem; font-weight: 600; color: #059669;"></span></label>
-                        <input type="number" id="inv-item-3" value="0" min="0" oninput="calculateInvoiceTotal()">
+                </div>
+
+                <div id="particulars-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <!-- 1. Admission Fee -->
+                    <div class="fee-item-card" id="fee-card-1" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-1" onchange="toggleFeeItem(1)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">1. Admission Fee</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-1" style="font-size: 0.72rem; color: #64748b;">(₹2,500)</span>
+                            <input type="number" id="inv-item-1" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">4. Smart Class / A.C./ Electric Fee</label>
-                        <input type="number" id="inv-item-4" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 2. Tuition Fee -->
+                    <div class="fee-item-card" id="fee-card-2" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-2" checked onchange="toggleFeeItem(2)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: #065f46;">2. Tuition Fee *</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-2" style="font-size: 0.72rem; color: #059669; font-weight: 600;">(₹4,500)</span>
+                            <input type="number" id="inv-item-2" value="4500" min="0" required oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #fff; font-weight: 700; color: #047857; padding: 4px 6px; border-radius: 4px; border: 1px solid #6ee7b7; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">5. Computer Fee</label>
-                        <input type="number" id="inv-item-5" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 3. Conveyance / Transport -->
+                    <div class="fee-item-card" id="fee-card-3" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-3" onchange="toggleFeeItem(3)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">3. Conveyance / Transport</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-3" style="font-size: 0.72rem; color: #64748b;">(₹800)</span>
+                            <input type="number" id="inv-item-3" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">6. Late Fee</label>
-                        <input type="number" id="inv-item-6" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 4. Smart Class / A.C./ Electric Fee -->
+                    <div class="fee-item-card" id="fee-card-4" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-4" onchange="toggleFeeItem(4)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">4. Smart Class / A.C./ Elec.</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-4" style="font-size: 0.72rem; color: #64748b;">(₹350)</span>
+                            <input type="number" id="inv-item-4" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">7. Exam. Fee</label>
-                        <input type="number" id="inv-item-7" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 5. Computer Fee -->
+                    <div class="fee-item-card" id="fee-card-5" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-5" onchange="toggleFeeItem(5)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">5. Computer Fee</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-5" style="font-size: 0.72rem; color: #64748b;">(₹300)</span>
+                            <input type="number" id="inv-item-5" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">8. Sport & Games</label>
-                        <input type="number" id="inv-item-8" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 6. Late Fee -->
+                    <div class="fee-item-card" id="fee-card-6" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-6" onchange="toggleFeeItem(6)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">6. Late Fee</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-6" style="font-size: 0.72rem; color: #64748b;">(₹150)</span>
+                            <input type="number" id="inv-item-6" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">9. Medical</label>
-                        <input type="number" id="inv-item-9" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 7. Exam. Fee -->
+                    <div class="fee-item-card" id="fee-card-7" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-7" onchange="toggleFeeItem(7)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">7. Exam. Fee</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-7" style="font-size: 0.72rem; color: #64748b;">(₹500)</span>
+                            <input type="number" id="inv-item-7" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">10. Library Fee</label>
-                        <input type="number" id="inv-item-10" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 8. Sport & Games -->
+                    <div class="fee-item-card" id="fee-card-8" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-8" onchange="toggleFeeItem(8)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">8. Sport & Games</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-8" style="font-size: 0.72rem; color: #64748b;">(₹250)</span>
+                            <input type="number" id="inv-item-8" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">11. Annual Development Fee</label>
-                        <input type="number" id="inv-item-11" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 9. Medical -->
+                    <div class="fee-item-card" id="fee-card-9" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-9" onchange="toggleFeeItem(9)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">9. Medical</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-9" style="font-size: 0.72rem; color: #64748b;">(₹150)</span>
+                            <input type="number" id="inv-item-9" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">12. Miscellaneous</label>
-                        <input type="number" id="inv-item-12" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 10. Library Fee -->
+                    <div class="fee-item-card" id="fee-card-10" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-10" onchange="toggleFeeItem(10)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">10. Library Fee</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-10" style="font-size: 0.72rem; color: #64748b;">(₹200)</span>
+                            <input type="number" id="inv-item-10" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">13. Others</label>
-                        <input type="number" id="inv-item-13" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 11. Annual Development Fee -->
+                    <div class="fee-item-card" id="fee-card-11" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-11" onchange="toggleFeeItem(11)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">11. Annual Dev. Fee</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-11" style="font-size: 0.72rem; color: #64748b;">(₹1,200)</span>
+                            <input type="number" id="inv-item-11" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <label style="font-size: 0.82rem;">14. Previous Dues</label>
-                        <input type="number" id="inv-item-14" value="0" min="0" oninput="calculateInvoiceTotal()">
+
+                    <!-- 12. Miscellaneous -->
+                    <div class="fee-item-card" id="fee-card-12" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-12" onchange="toggleFeeItem(12)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">12. Miscellaneous</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-12" style="font-size: 0.72rem; color: #64748b;">(₹200)</span>
+                            <input type="number" id="inv-item-12" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
+                    </div>
+
+                    <!-- 13. Others -->
+                    <div class="fee-item-card" id="fee-card-13" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-13" onchange="toggleFeeItem(13)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">13. Others</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-13" style="font-size: 0.72rem; color: #64748b;">(₹100)</span>
+                            <input type="number" id="inv-item-13" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
+                    </div>
+
+                    <!-- 14. Previous Dues -->
+                    <div class="fee-item-card" id="fee-card-14" style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1;">
+                            <input type="checkbox" id="inv-check-14" onchange="toggleFeeItem(14)" style="width: 16px; height: 16px; accent-color: #059669;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: #1e293b;">14. Previous Dues</span>
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="rate-badge" id="rate-badge-14" style="font-size: 0.72rem; color: #64748b;">(Arrears)</span>
+                            <input type="number" id="inv-item-14" value="0" min="0" oninput="calculateInvoiceTotal()" style="width: 85px; text-align: right; background: #f8fafc; font-weight: 600; padding: 4px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                        </div>
                     </div>
                 </div>
 
                 <!-- Concession & Total Summary Card -->
-                <div style="background: #ecfdf5; border: 1.5px solid #059669; border-radius: 8px; padding: 16px; margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: center;">
-                    <div>
-                        <label style="font-size: 0.84rem; font-weight: 700; color: #065f46;">Scholarship / Fee Concession Policy</label>
-                        <select id="inv-scholarship-type" onchange="calculateInvoiceTotal()">
-                            <option value="NONE">Standard Tuition Rate</option>
-                            <option value="MERIT">Merit Academic Excellence (25% Waiver)</option>
-                            <option value="SIBLING">Sibling Enrollment Concession (15% Waiver)</option>
-                            <option value="EWS">EWS Affirmative Action (50% Concession)</option>
-                            <option value="STAFF_WARD">Oxford Staff Ward Benefit (75% Waiver)</option>
-                        </select>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 0.85rem; color: #475569;">Gross Particulars Total: <span style="font-weight: 700; color: #0f172a;" id="display-inv-gross">₹ 4,500</span></div>
-                        <div style="font-size: 0.85rem; color: #059669;">Concession Waiver: <span style="font-weight: 700;" id="display-inv-discount">- ₹ 0</span></div>
-                        <div style="font-size: 1.25rem; font-weight: 800; color: #065f46; margin-top: 4px;">
-                            Net Payable: <span id="display-inv-net">₹ 4,500</span>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #059669; border-radius: 10px; padding: 18px; margin-top: 18px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.08);">
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: start;">
+                        <div>
+                            <label style="font-size: 0.88rem; font-weight: 700; color: #064e3b; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-gift" style="color: #059669;"></i> Scholarship & Concession Policy
+                            </label>
+                            <!-- Stylish Concession Select -->
+                            <div style="position: relative;">
+                                <select id="inv-scholarship-type" onchange="handleConcessionTypeChange(this.value)"
+                                        style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 2px solid #059669; font-weight: 600; font-size: 0.90rem; background: #ffffff; color: #064e3b; box-shadow: 0 2px 6px rgba(5, 150, 105, 0.12); cursor: pointer; outline: none; transition: border-color 0.2s, box-shadow 0.2s;">
+                                    <option value="NONE">Standard Rate (No Concession)</option>
+                                    <option value="MERIT">🎓 Merit Academic Excellence (25% Waiver)</option>
+                                    <option value="SIBLING">👨‍👩‍👧 Sibling Enrollment Concession (15% Waiver)</option>
+                                    <option value="EWS">🤝 EWS Affirmative Action (50% Concession)</option>
+                                    <option value="STAFF_WARD">🏫 Oxford Staff Ward Benefit (75% Waiver)</option>
+                                    <option value="ADHOC">⭐ Adhoc Discretionary Concession (Custom Waiver)</option>
+                                </select>
+                            </div>
+
+                            <!-- Stylish Adhoc Concession Input Panel -->
+                            <div id="inv-adhoc-panel" style="display: none; background: #ffffff; border: 1.5px dashed #059669; border-radius: 8px; padding: 12px 14px; margin-top: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="font-weight: 700; font-size: 0.82rem; color: #065f46;">
+                                        <i class="fa-solid fa-sliders"></i> Adhoc Concession Configuration
+                                    </span>
+                                    <div style="display: flex; gap: 4px;">
+                                        <button type="button" id="adhoc-mode-pct" onclick="setAdhocMode('PCT')" style="padding: 2px 10px; font-size: 0.74rem; font-weight: 700; background: #059669; color: white; border-radius: 4px; border: none; cursor: pointer;">Percent (%)</button>
+                                        <button type="button" id="adhoc-mode-fix" onclick="setAdhocMode('FIX')" style="padding: 2px 10px; font-size: 0.74rem; font-weight: 700; background: #e2e8f0; color: #475569; border-radius: 4px; border: none; cursor: pointer;">Fixed (₹)</button>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 110px 1fr; gap: 10px;">
+                                    <div>
+                                        <label style="font-size: 0.75rem; color: #064e3b; font-weight: 600; display: block; margin-bottom: 2px;" id="adhoc-val-label">Discount Rate (%) *</label>
+                                        <input type="number" id="inv-adhoc-value" min="0" max="100" placeholder="e.g. 20" value="0" oninput="calculateInvoiceTotal()" style="padding: 5px 8px; font-weight: 700; border: 1.5px solid #6ee7b7; border-radius: 6px; width: 100%; font-size: 0.86rem;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.75rem; color: #064e3b; font-weight: 600; display: block; margin-bottom: 2px;">Mandatory Adhoc Reason *</label>
+                                        <input type="text" id="inv-adhoc-reason" placeholder="e.g. Principal sanction / sports scholarship" style="padding: 5px 8px; border: 1.5px solid #6ee7b7; border-radius: 6px; width: 100%; font-size: 0.84rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right; background: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #d1fae5; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                            <div style="font-size: 0.85rem; color: #475569; margin-bottom: 4px;">Gross Particulars Total: <span style="font-weight: 700; color: #0f172a;" id="display-inv-gross">₹ 5,150</span></div>
+                            <div style="font-size: 0.85rem; color: #059669; margin-bottom: 6px;">Concession Waiver: <span style="font-weight: 700;" id="display-inv-discount">- ₹ 0</span></div>
+                            <div style="border-top: 1px dashed #cbd5e1; padding-top: 6px;">
+                                <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Net Invoice Payable</div>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: #065f46;" id="display-inv-net">₹ 5,150</div>
+                            </div>
                         </div>
                     </div>
                 </div>

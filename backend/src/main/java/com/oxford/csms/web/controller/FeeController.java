@@ -37,6 +37,11 @@ public class FeeController {
         return ResponseEntity.ok(ApiResponse.ok(feeService.getAllFeeStructures()));
     }
 
+    @GetMapping("/structure-config")
+    public ResponseEntity<ApiResponse<String>> getFeeStructureConfig() {
+        return ResponseEntity.ok(ApiResponse.ok("Fee structure configuration loaded", feeService.getFeeStructureConfigJson()));
+    }
+
     @PostMapping("/invoices/generate")
     public ResponseEntity<ApiResponse<Invoice>> generateInvoice(@RequestBody Map<String, Object> payload) {
         Long studentId = Long.parseLong(payload.get("studentId").toString());
