@@ -462,7 +462,7 @@
                     </div>
 
                     <!-- Financial & Enrollment KPI Summary Cards -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 22px;">
+                    <div class="student-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 22px;">
                         <div class="card" style="padding: 16px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 14px;">
                             <div style="width: 48px; height: 48px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 <i class="fa-solid fa-users"></i>
@@ -507,8 +507,8 @@
                     <!-- Main Student Directory Card with Enhanced Filters -->
                     <div class="card">
                         <div class="card-header" style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-bottom: 1.5px solid #e2e8f0; padding: 18px 22px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 16px;">
-                                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                            <div class="student-filter-toolbar" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 16px;">
+                                <div class="student-filter-row" style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
                                     <div>
                                         <label style="font-size: 0.76rem; font-weight: 700; color: #065f46; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
                                             <i class="fa-solid fa-graduation-cap" style="color: #059669;"></i> Academic Class
@@ -557,7 +557,7 @@
                                     </div>
                                 </div>
 
-                                <div style="flex: 1; max-width: 320px; min-width: 220px;">
+                                <div class="student-search-box-wrap" style="flex: 1; max-width: 320px; min-width: 220px;">
                                     <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
                                         <i class="fa-solid fa-magnifying-glass" style="color: #64748b;"></i> Quick Pupil Search
                                     </label>
