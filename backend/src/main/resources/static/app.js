@@ -1251,6 +1251,7 @@ async function loadEmployees() {
 }
 async function loadFees() {
     try {
+        loadStudentsForFeeClass();
         const resSummary = await fetch(`${API_BASE}/api/finance/fees/summary`, { headers: getAuthHeaders() });
         const dSummary = await resSummary.json();
         if (dSummary.data) {
@@ -1308,13 +1309,17 @@ async function loadFees() {
                             ${escapeHtml(inv.status)}
                         </span>
                     </td>
-                    <td>
-                        ${inv.status !== 'PAID' ? `
-                            <button class="btn btn-outline btn-sm" onclick="printFeeReceipt(${inv.id})" style="border-color: #047857; color: #047857; font-weight: 600; margin-right: 6px;" title="Print Official Fee Receipt"><i class="fa-solid fa-receipt"></i> Print Receipt</button>
-                            <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${inv.netPayable - inv.paidAmount})">
-                                Collect
+                    <td style="white-space: nowrap;">
+                        <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-start; flex-wrap: nowrap;">
+                            <button class="btn btn-outline btn-sm" onclick="printFeeReceipt(${inv.id})" style="border-color: #047857; color: #047857; font-weight: 600; padding: 4px 8px; font-size: 0.78rem; white-space: nowrap;" title="Print Official Fee Receipt">
+                                <i class="fa-solid fa-receipt"></i> Print Receipt
                             </button>
-                        ` : `<span class="text-success"><i class="fa-solid fa-check"></i> Cleared</span>`}
+                            ${inv.status !== 'PAID' ? `
+                                <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${inv.netPayable - inv.paidAmount})" style="padding: 4px 10px; font-size: 0.78rem; white-space: nowrap;">
+                                    <i class="fa-solid fa-money-bill-wave"></i> Collect
+                                </button>
+                            ` : `<span class="badge badge-success" style="font-size: 0.75rem; padding: 4px 8px; white-space: nowrap;"><i class="fa-solid fa-check"></i> Cleared</span>`}
+                        </div>
                     </td>
                 </tr>
             `
@@ -3702,26 +3707,49 @@ async function printFeeReceipt(invoiceId) {
             inv.previousDues
         ];
 
-        let total = 0;
-        for (let i = 1; i <= 14; i++) {
-            const val = parseFloat(particulars[i - 1]) || 0;
-            total += val;
-            const cell = document.getElementById(`rcpt-val-${i}`);
-            if (cell) {
-                cell.textContent = val > 0 ? Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
-            }
+        let sumGross = 0;
+        for (let i = 0; i < 14; i++) {
+            sumGross += (parseFloat(particulars[i]) || 0);
         }
 
-        const totalToDisplay = inv.netPayable != null && inv.netPayable > 0 ? inv.netPayable : (total > 0 ? total : inv.grossAmount);
-        document.getElementById('rcpt-val-total').textContent = `Rs. ${Number(totalToDisplay).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-        document.getElementById('rcpt-words').textContent = numberToWords(totalToDisplay);
+        const discountTotal = parseFloat(inv.discountAmount) || 0;
+        const grossTotal = parseFloat(inv.grossAmount) || sumGross;
+        const netTotal = parseFloat(inv.netPayable) || Math.max(0, grossTotal - discountTotal);
+
+        // Populate each of the 14 rows: Gross, Discount, Net
+        for (let i = 1; i <= 14; i++) {
+            const grossVal = parseFloat(particulars[i - 1]) || 0;
+            // Attribute discount primarily to Tuition Fee (row 2) or proportional
+            let itemDisc = 0;
+            if (discountTotal > 0 && i === 2) {
+                itemDisc = Math.min(grossVal, discountTotal);
+            }
+            const itemNet = Math.max(0, grossVal - itemDisc);
+
+            const valCell = document.getElementById(`rcpt-val-${i}`);
+            const discCell = document.getElementById(`rcpt-disc-${i}`);
+            const netCell = document.getElementById(`rcpt-net-${i}`);
+
+            if (valCell) valCell.textContent = grossVal > 0 ? Number(grossVal).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+            if (discCell) discCell.textContent = itemDisc > 0 ? ('- ' + Number(itemDisc).toLocaleString('en-IN', { minimumFractionDigits: 2 })) : '-';
+            if (netCell) netCell.textContent = grossVal > 0 ? Number(itemNet).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+        }
+
+        const grossTotalEl = document.getElementById('rcpt-val-gross-total');
+        const discTotalEl = document.getElementById('rcpt-val-disc-total');
+        const netTotalEl = document.getElementById('rcpt-val-total');
+
+        if (grossTotalEl) grossTotalEl.textContent = `Rs. ${Number(grossTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        if (discTotalEl) discTotalEl.textContent = discountTotal > 0 ? `- Rs. ${Number(discountTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'Rs. 0.00';
+        if (netTotalEl) netTotalEl.textContent = `Rs. ${Number(netTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+        document.getElementById('rcpt-words').textContent = numberToWords(netTotal);
 
         openModal('modal-print-fee-receipt');
     } catch (e) {
         showToast("Error", e.message, "error");
     }
 }
-
 function numberToWords(amount) {
     if (amount == null || isNaN(amount)) return 'Zero Rupees Only';
     const num = Math.round(Number(amount));
@@ -4243,4 +4271,341 @@ function openModal(modalId) {
 
 function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
+}
+
+
+// ==============================================================
+// CLASS-WISE STUDENT DIRECTORY & FEE TRANSACTION HISTORY
+// ==============================================================
+
+let currentClassStudentsCache = [];
+let currentFeeHistoryStudent = null;
+let currentRosterStatusFilter = 'ALL';
+let currentSelectedFeeClass = 'Class 10';
+
+function switchFeeSubtab(tabName, btnEl) {
+    document.querySelectorAll('#view-fees .fee-nav-btn').forEach(btn => btn.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const rosterTab = document.getElementById('subtab-fee-class-roster');
+    const invoicesTab = document.getElementById('subtab-fee-all-invoices');
+
+    if (tabName === 'class-roster') {
+        if (rosterTab) rosterTab.style.display = 'block';
+        if (invoicesTab) invoicesTab.style.display = 'none';
+        loadStudentsForFeeClass(currentSelectedFeeClass);
+    } else {
+        if (rosterTab) rosterTab.style.display = 'none';
+        if (invoicesTab) invoicesTab.style.display = 'block';
+    }
+}
+
+function selectFeeClassChip(grade, btnEl) {
+    currentSelectedFeeClass = grade;
+    document.querySelectorAll('.class-pill').forEach(p => p.classList.remove('active'));
+    if (btnEl) {
+        btnEl.classList.add('active');
+    } else {
+        const matching = document.querySelector(`.class-pill[data-class="${grade}"]`);
+        if (matching) matching.classList.add('active');
+    }
+
+    const selectEl = document.getElementById('select-fee-class');
+    if (selectEl) selectEl.value = grade;
+
+    // Reset search and status filter on class change
+    const searchInput = document.getElementById('search-class-student');
+    if (searchInput) searchInput.value = '';
+    currentRosterStatusFilter = 'ALL';
+    document.querySelectorAll('.status-chip').forEach(c => c.classList.remove('active'));
+    const allChip = document.getElementById('filter-chip-all');
+    if (allChip) allChip.classList.add('active');
+
+    loadStudentsForFeeClass(grade);
+}
+
+function filterByFeeStatus(status, chipEl) {
+    currentRosterStatusFilter = status;
+    document.querySelectorAll('.status-chip').forEach(c => c.classList.remove('active'));
+    if (chipEl) chipEl.classList.add('active');
+    applyCombinedRosterFilter();
+}
+
+function filterClassStudentRows(query) {
+    applyCombinedRosterFilter();
+}
+
+function applyCombinedRosterFilter() {
+    const q = (document.getElementById('search-class-student')?.value || '').toLowerCase().trim();
+    let filtered = currentClassStudentsCache;
+
+    if (currentRosterStatusFilter === 'CLEARED') {
+        filtered = filtered.filter(s => s.feeStatus === 'CLEARED');
+    } else if (currentRosterStatusFilter === 'PENDING') {
+        filtered = filtered.filter(s => s.feeStatus !== 'CLEARED');
+    }
+
+    if (q) {
+        filtered = filtered.filter(s => {
+            const name = ((s.firstName || '') + ' ' + (s.lastName || '')).toLowerCase();
+            const adm = (s.admissionNo || '').toLowerCase();
+            const roll = String(s.rollNo != null ? s.rollNo : '');
+            const parent = (s.guardianName || '').toLowerCase();
+            return name.includes(q) || adm.includes(q) || roll.includes(q) || parent.includes(q);
+        });
+    }
+
+    renderClassStudentsTable(filtered, false);
+}
+
+async function loadStudentsForFeeClass(grade) {
+    const selectedGrade = grade || currentSelectedFeeClass || 'Class 10';
+    currentSelectedFeeClass = selectedGrade;
+
+    // Ensure corresponding chip is active
+    document.querySelectorAll('.class-pill').forEach(p => {
+        if (p.getAttribute('data-class') === selectedGrade) {
+            p.classList.add('active');
+        } else {
+            p.classList.remove('active');
+        }
+    });
+
+    const tbody = document.getElementById('class-students-table-body');
+    if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="padding: 28px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color: #047857; margin-bottom: 8px;"></i><br>Loading enrolled students for <strong>${escapeHtml(selectedGrade)}</strong>...</td></tr>`;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/admin/students?grade=${encodeURIComponent(selectedGrade)}`, { headers: getAuthHeaders() });
+        const d = await res.json();
+        const students = d.data || [];
+        currentClassStudentsCache = students;
+
+        renderClassStudentsTable(students, true);
+    } catch (e) {
+        console.error("Class students load error:", e);
+        if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger" style="padding: 24px;">Failed to load class students: ${escapeHtml(e.message)}</td></tr>`;
+    }
+}
+
+function renderClassStudentsTable(students, updateStats = true) {
+    const tbody = document.getElementById('class-students-table-body');
+    if (!tbody) return;
+
+    let clearedCount = 0;
+    let pendingCount = 0;
+
+    currentClassStudentsCache.forEach(s => {
+        if (s.feeStatus === 'CLEARED') clearedCount++; else pendingCount++;
+    });
+
+    if (updateStats) {
+        updateClassRosterKpis(currentClassStudentsCache.length, clearedCount, pendingCount);
+    }
+
+    if (students.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center" style="padding: 32px 16px; color: #64748b;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2rem; color: #cbd5e1; margin-bottom: 10px;"></i>
+                    <div style="font-weight: 600; font-size: 1rem; color: #334155;">No student records match the selected criteria</div>
+                    <div style="font-size: 0.85rem; margin-top: 4px;">Try selecting another class or clearing your search filter.</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = students.map(s => {
+        const fullName = `${s.firstName || ''} ${s.lastName || ''}`.trim();
+        const isCleared = (s.feeStatus === 'CLEARED');
+        const initial = (s.firstName || 'S')[0].toUpperCase();
+
+        return `
+            <tr class="student-row-interactive" onclick="openStudentFeeHistory(${s.id})" title="Click anywhere on row to view fee ledger for ${escapeHtml(fullName)}">
+                <td style="text-align: center; font-weight: 800; color: #047857;">
+                    ${s.rollNo != null ? ('#' + s.rollNo) : '-'}
+                </td>
+                <td>
+                    <code style="font-weight: 700; color: #1e3a8a; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">${escapeHtml(s.admissionNo)}</code>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="student-avatar-badge">
+                            ${escapeHtml(initial)}
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem;">${escapeHtml(fullName)}</div>
+                            <small style="color: #64748b; font-size: 0.76rem;"><i class="fa-solid fa-arrow-pointer"></i> Click row for transaction history</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="font-weight: 600; color: #334155;">${escapeHtml(s.guardianName || 'Guardian')}</div>
+                    <small style="color: #64748b;"><i class="fa-solid fa-phone" style="font-size: 0.72rem;"></i> ${escapeHtml(s.guardianPhone || 'N/A')}</small>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-secondary" style="font-weight: 700; padding: 3px 8px;">${escapeHtml(s.section || 'A')}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge ${isCleared ? 'badge-success' : 'badge-warning'}" style="font-weight: 700; padding: 4px 10px; font-size: 0.78rem;">
+                        ${isCleared ? '<i class="fa-solid fa-circle-check"></i> CLEARED' : '<i class="fa-solid fa-clock"></i> PENDING DUES'}
+                    </span>
+                </td>
+                <td style="text-align: center;" onclick="event.stopPropagation()">
+                    <div class="action-btn-group">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openStudentFeeHistory(${s.id})" style="background: #047857; border-color: #047857; color: white; padding: 5px 12px; font-weight: 600;" title="View Complete Fee Ledger & Transaction History">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Fee Ledger
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="quickIssueInvoiceForStudent(${s.id})" style="padding: 5px 10px; font-weight: 600; color: #0f172a; border-color: #cbd5e1;" title="Issue New Fee Invoice for this Student">
+                            <i class="fa-solid fa-file-circle-plus"></i> Invoice
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function quickIssueInvoiceForStudent(studentId) {
+    const student = currentClassStudentsCache.find(s => s.id === studentId);
+    const selectEl = document.getElementById('inv-student-id');
+    if (selectEl && studentId) {
+        selectEl.value = studentId;
+    }
+    calculateInvoiceTotal();
+    openModal('modal-generate-invoice');
+}
+
+function updateClassRosterKpis(total, cleared, pending) {
+    const kpiTotal = document.getElementById('kpi-roster-total');
+    const kpiCleared = document.getElementById('kpi-roster-cleared');
+    const kpiPending = document.getElementById('kpi-roster-pending');
+    if (kpiTotal) kpiTotal.textContent = `${total} Students`;
+    if (kpiCleared) kpiCleared.textContent = `${cleared} Cleared`;
+    if (kpiPending) kpiPending.textContent = `${pending} Pending Dues`;
+}
+
+async function openStudentFeeHistory(studentId) {
+    try {
+        // 1. Fetch Student Details
+        const resStudent = await fetch(`${API_BASE}/api/admin/students/${studentId}`, { headers: getAuthHeaders() });
+        const dStudent = await resStudent.json();
+        if (!dStudent.success || !dStudent.data) {
+            showToast("Error", "Student details could not be loaded", "error");
+            return;
+        }
+        const student = dStudent.data;
+        currentFeeHistoryStudent = student;
+
+        const fullName = `${student.firstName || ''} ${student.lastName || ''}`.trim();
+        document.getElementById('sfh-student-name').textContent = fullName;
+        document.getElementById('sfh-admission-no').textContent = student.admissionNo || 'N/A';
+        document.getElementById('sfh-class').textContent = student.currentClass || 'Class 10';
+        document.getElementById('sfh-section').textContent = student.section || 'A';
+        document.getElementById('sfh-roll').textContent = student.rollNo != null ? student.rollNo : '-';
+        document.getElementById('sfh-father-name').textContent = student.guardianName || 'Guardian';
+        document.getElementById('sfh-phone').textContent = student.guardianPhone || 'N/A';
+
+        const isCleared = (student.feeStatus === 'CLEARED');
+        const badgeEl = document.getElementById('sfh-fee-badge');
+        if (badgeEl) {
+            badgeEl.className = `badge ${isCleared ? 'badge-success' : 'badge-warning'}`;
+            badgeEl.innerHTML = isCleared ? '<i class="fa-solid fa-circle-check"></i> CLEARED' : '<i class="fa-solid fa-triangle-exclamation"></i> PENDING DUES';
+        }
+
+        // 2. Fetch Invoices for this Student
+        const resInvoices = await fetch(`${API_BASE}/api/finance/fees/invoices?studentId=${studentId}`, { headers: getAuthHeaders() });
+        const dInvoices = await resInvoices.json();
+        const invoices = dInvoices.data || [];
+
+        let totalBilled = 0;
+        let totalPaid = 0;
+        let totalDiscount = 0;
+
+        invoices.forEach(inv => {
+            totalBilled += parseFloat(inv.grossAmount) || 0;
+            totalDiscount += parseFloat(inv.discountAmount) || 0;
+            totalPaid += parseFloat(inv.paidAmount) || 0;
+        });
+
+        const totalNet = Math.max(0, totalBilled - totalDiscount);
+        const balanceDue = Math.max(0, totalNet - totalPaid);
+
+        document.getElementById('sfh-total-billed').textContent = `₹ ${Math.round(totalBilled).toLocaleString()}`;
+        document.getElementById('sfh-total-paid').textContent = `₹ ${Math.round(totalPaid).toLocaleString()}`;
+        document.getElementById('sfh-total-discount').textContent = `₹ ${Math.round(totalDiscount).toLocaleString()}`;
+        document.getElementById('sfh-balance-due').textContent = `₹ ${Math.round(balanceDue).toLocaleString()}`;
+        document.getElementById('sfh-invoices-count').textContent = `${invoices.length} Invoices`;
+
+        const tbody = document.getElementById('sfh-invoices-tbody');
+        if (invoices.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="text-center" style="padding: 28px; color: #64748b;">
+                        <i class="fa-solid fa-file-circle-xmark" style="font-size: 1.8rem; color: #cbd5e1; margin-bottom: 8px;"></i>
+                        <div>No fee records or invoices have been issued for ${escapeHtml(fullName)} yet.</div>
+                        <button class="btn btn-primary btn-sm" onclick="issueInvoiceForCurrentStudent()" style="margin-top: 10px;">
+                            <i class="fa-solid fa-file-invoice"></i> Issue First Invoice
+                        </button>
+                    </td>
+                </tr>
+            `;
+        } else {
+            tbody.innerHTML = invoices.map(inv => {
+                const gross = parseFloat(inv.grossAmount) || 0;
+                const disc = parseFloat(inv.discountAmount) || 0;
+                const net = parseFloat(inv.netPayable) || (gross - disc);
+                const paid = parseFloat(inv.paidAmount) || 0;
+                const balance = Math.max(0, net - paid);
+                const isPaid = (inv.status === 'PAID');
+
+                return `
+                    <tr>
+                        <td><code>${escapeHtml(inv.invoiceNumber)}</code></td>
+                        <td><strong>${escapeHtml(inv.billingPeriod || inv.billingMonth || 'Current Term')}</strong></td>
+                        <td style="text-align: right;">₹ ${Math.round(gross).toLocaleString()}</td>
+                        <td style="text-align: right; color: #047857;">${disc > 0 ? ('- ₹ ' + Math.round(disc).toLocaleString()) : '-'}</td>
+                        <td style="text-align: right; font-weight: 700; color: #0f172a;">₹ ${Math.round(net).toLocaleString()}</td>
+                        <td style="text-align: right; color: #059669;">₹ ${Math.round(paid).toLocaleString()}</td>
+                        <td style="text-align: right; font-weight: 700; color: ${balance > 0 ? '#dc2626' : '#059669'};">₹ ${Math.round(balance).toLocaleString()}</td>
+                        <td style="text-align: center;">
+                            <span class="badge ${isPaid ? 'badge-success' : (inv.status === 'PARTIALLY_PAID' ? 'badge-warning' : 'badge-danger')}">
+                                ${escapeHtml(inv.status)}
+                            </span>
+                        </td>
+                        <td style="white-space: nowrap; text-align: center;">
+                            <div style="display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: nowrap;">
+                                <button class="btn btn-outline btn-sm" onclick="printFeeReceipt(${inv.id})" style="border-color: #047857; color: #047857; font-weight: 600; padding: 4px 8px; font-size: 0.78rem; white-space: nowrap;" title="Print Official Oxford Fee Receipt">
+                                    <i class="fa-solid fa-receipt"></i> Print Receipt
+                                </button>
+                                ${!isPaid ? `
+                                    <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${inv.id}, '${escapeHtml(inv.invoiceNumber)}', ${balance})" style="padding: 4px 10px; font-size: 0.78rem; white-space: nowrap;">
+                                        <i class="fa-solid fa-money-bill-wave"></i> Collect
+                                    </button>
+                                ` : `<span class="badge badge-success" style="font-size: 0.75rem; padding: 4px 8px; white-space: nowrap;"><i class="fa-solid fa-check"></i> Cleared</span>`}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        openModal('modal-student-fee-history');
+    } catch (e) {
+        console.error("Student fee history error:", e);
+        showToast("Error", e.message, "error");
+    }
+}
+
+function issueInvoiceForCurrentStudent() {
+    if (!currentFeeHistoryStudent) return;
+    closeModal('modal-student-fee-history');
+    const selectEl = document.getElementById('inv-student-id');
+    if (selectEl) {
+        selectEl.value = currentFeeHistoryStudent.id;
+    }
+    calculateInvoiceTotal();
+    openModal('modal-generate-invoice');
 }

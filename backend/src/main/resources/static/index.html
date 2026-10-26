@@ -578,7 +578,7 @@
                         <div class="card-header">
                             <div>
                                 <h2>Institutional Fee Management</h2>
-                                <p>Automated fee invoicing, merit scholarship deductions, payment processing, and receipts.</p>
+                                <p>Class student directory, fee ledgers, transaction history, automated invoicing & official receipts.</p>
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-outline" onclick="openModal('modal-generate-invoice')">
@@ -590,32 +590,189 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="finance-overview-bar">
-                                <div class="metric-pill">Billed: <strong id="fee-bar-billed">₹ 0</strong></div>
-                                <div class="metric-pill pill-success">Collected: <strong id="fee-bar-collected">₹ 0</strong></div>
-                                <div class="metric-pill pill-warning">Outstanding: <strong id="fee-bar-pending">₹ 0</strong></div>
-                                <div class="metric-pill pill-info">Collection Efficiency: <strong id="fee-bar-rate">0%</strong></div>
+                            <!-- Modern Executive Fee KPI Grid -->
+                            <div class="fee-analytics-grid">
+                                <div class="fee-stat-card card-billed">
+                                    <div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Total Invoiced</span>
+                                        <h3 id="fee-bar-billed">₹ 0</h3>
+                                        <span class="stat-sub">Gross institutional billing</span>
+                                    </div>
+                                </div>
+                                <div class="fee-stat-card card-collected">
+                                    <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Total Collected</span>
+                                        <h3 id="fee-bar-collected">₹ 0</h3>
+                                        <span class="stat-sub">Realized in school treasury</span>
+                                    </div>
+                                </div>
+                                <div class="fee-stat-card card-pending">
+                                    <div class="stat-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Outstanding Dues</span>
+                                        <h3 id="fee-bar-pending">₹ 0</h3>
+                                        <span class="stat-sub">Pending receivables</span>
+                                    </div>
+                                </div>
+                                <div class="fee-stat-card card-rate">
+                                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Collection Rate</span>
+                                        <h3 id="fee-bar-rate">0%</h3>
+                                        <span class="stat-sub">Fee recovery efficiency</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="table-container">
-                                <table id="invoices-table" class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th data-sort="invoiceNumber">Invoice #</th>
-                                            <th data-sort="studentName">Student Name</th>
-                                            <th data-sort="billingPeriod">Term Period</th>
-                                            <th data-sort="grossAmount" data-sort-type="number">Gross Fee</th>
-                                            <th data-sort="discountAmount" data-sort-type="number">Scholarship / Concession</th>
-                                            <th data-sort="netPayable" data-sort-type="number">Net Amount</th>
-                                            <th data-sort="paidAmount" data-sort-type="number">Paid</th>
-                                            <th data-sort="status">Status</th>
-                                            <th style="width: 110px; text-align: center;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="invoices-table-body">
-                                        <tr><td colspan="9" class="text-center">Loading invoices...</td></tr>
-                                    </tbody>
-                                </table>
+                            <!-- Executive Segmented Navigation -->
+                            <div class="fee-segmented-nav">
+                                <button type="button" class="fee-nav-btn active" id="btn-fee-subtab-class" onclick="switchFeeSubtab('class-roster', this)">
+                                    <i class="fa-solid fa-users-viewfinder"></i>
+                                    <span>Class Roster & Student Fee Ledgers</span>
+                                    <span class="badge badge-success" id="badge-fee-class-count">13 Classes</span>
+                                </button>
+                                <button type="button" class="fee-nav-btn" id="btn-fee-subtab-all" onclick="switchFeeSubtab('all-invoices', this)">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                    <span>Master Invoices Register</span>
+                                    <span class="badge badge-secondary" id="badge-fee-inv-count">All Invoices</span>
+                                </button>
+                            </div>
+
+                            <!-- Subtab 1: Class-Wise Student Directory & Fee Ledger -->
+                            <div id="subtab-fee-class-roster">
+                                <!-- Interactive Class Selector Card -->
+                                <div class="class-selector-card">
+                                    <div class="class-selector-header">
+                                        <div class="class-selector-title">
+                                            <i class="fa-solid fa-graduation-cap"></i>
+                                            <span>Select Academic Class:</span>
+                                        </div>
+                                        <div class="class-selector-help">
+                                            <i class="fa-solid fa-hand-pointer"></i> Click any class below to load its student roster and fee ledger
+                                        </div>
+                                    </div>
+                                    <div class="class-pills-container" id="class-pills-bar">
+                                        <button type="button" class="class-pill active" data-class="Class 10" onclick="selectFeeClassChip('Class 10', this)">
+                                            <span class="pill-dot"></span> Class 10
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 9" onclick="selectFeeClassChip('Class 9', this)">
+                                            <span class="pill-dot"></span> Class 9
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 8" onclick="selectFeeClassChip('Class 8', this)">
+                                            <span class="pill-dot"></span> Class 8
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 7" onclick="selectFeeClassChip('Class 7', this)">
+                                            <span class="pill-dot"></span> Class 7
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 6" onclick="selectFeeClassChip('Class 6', this)">
+                                            <span class="pill-dot"></span> Class 6 (VIth)
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 5" onclick="selectFeeClassChip('Class 5', this)">
+                                            <span class="pill-dot"></span> Class 5 (Vth)
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 4" onclick="selectFeeClassChip('Class 4', this)">
+                                            <span class="pill-dot"></span> Class 4 (IVth)
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 3" onclick="selectFeeClassChip('Class 3', this)">
+                                            <span class="pill-dot"></span> Class 3 (IIIrd)
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 2" onclick="selectFeeClassChip('Class 2', this)">
+                                            <span class="pill-dot"></span> Class 2 (IInd)
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Class 1" onclick="selectFeeClassChip('Class 1', this)">
+                                            <span class="pill-dot"></span> Class 1 (Ist)
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="UKG" onclick="selectFeeClassChip('UKG', this)">
+                                            <span class="pill-dot"></span> UKG
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="LKG" onclick="selectFeeClassChip('LKG', this)">
+                                            <span class="pill-dot"></span> LKG
+                                        </button>
+                                        <button type="button" class="class-pill" data-class="Nur." onclick="selectFeeClassChip('Nur.', this)">
+                                            <span class="pill-dot"></span> Nursery (Nur.)
+                                        </button>
+                                    </div>
+                                    <!-- Keep hidden select for backward-compatibility -->
+                                    <select id="select-fee-class" onchange="loadStudentsForFeeClass(this.value)" style="display: none;">
+                                        <option value="Class 10" selected>Class 10</option>
+                                        <option value="Class 9">Class 9</option>
+                                        <option value="Class 8">Class 8</option>
+                                        <option value="Class 7">Class 7</option>
+                                        <option value="Class 6">Class 6</option>
+                                        <option value="Class 5">Class 5</option>
+                                        <option value="Class 4">Class 4</option>
+                                        <option value="Class 3">Class 3</option>
+                                        <option value="Class 2">Class 2</option>
+                                        <option value="Class 1">Class 1</option>
+                                        <option value="UKG">UKG</option>
+                                        <option value="LKG">LKG</option>
+                                        <option value="Nur.">Nur.</option>
+                                    </select>
+                                </div>
+
+                                <!-- Roster Filter & Search Toolbar -->
+                                <div class="roster-toolbar">
+                                    <div class="roster-search-box">
+                                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                        <input type="text" id="search-class-student" placeholder="Filter by student name, roll #, or father..." oninput="filterClassStudentRows(this.value)">
+                                    </div>
+                                    <div class="roster-status-filter">
+                                        <button type="button" class="status-chip active" id="filter-chip-all" onclick="filterByFeeStatus('ALL', this)">All</button>
+                                        <button type="button" class="status-chip chip-cleared" id="filter-chip-cleared" onclick="filterByFeeStatus('CLEARED', this)">Cleared</button>
+                                        <button type="button" class="status-chip chip-pending" id="filter-chip-pending" onclick="filterByFeeStatus('PENDING', this)">Pending Dues</button>
+                                    </div>
+                                    <div class="roster-kpis-summary" id="class-roster-kpis">
+                                        <span class="badge badge-primary" id="kpi-roster-total">0 Students</span>
+                                        <span class="badge badge-success" id="kpi-roster-cleared">0 Cleared</span>
+                                        <span class="badge badge-warning" id="kpi-roster-pending">0 Pending</span>
+                                    </div>
+                                </div>
+
+                                <!-- Class Student Table -->
+                                <div class="table-container">
+                                    <table id="class-students-table" class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 75px; text-align: center;">Roll #</th>
+                                                <th style="width: 140px;">Admission No</th>
+                                                <th>Student Name</th>
+                                                <th>Father / Guardian Name</th>
+                                                <th style="width: 90px; text-align: center;">Section</th>
+                                                <th style="width: 130px; text-align: center;">Fee Status</th>
+                                                <th style="width: 240px; text-align: center;">Fee Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="class-students-table-body">
+                                            <tr><td colspan="7" class="text-center" style="padding: 24px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading students for selected class...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Subtab 2: All Issued Invoices Register -->
+                            <div id="subtab-fee-all-invoices" style="display: none;">
+                                <div class="table-container">
+                                    <table id="invoices-table" class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th data-sort="invoiceNumber">Invoice #</th>
+                                                <th data-sort="studentName">Student Name</th>
+                                                <th data-sort="billingPeriod">Term Period</th>
+                                                <th data-sort="grossAmount" data-sort-type="number">Gross Fee</th>
+                                                <th data-sort="discountAmount" data-sort-type="number">Scholarship / Concession</th>
+                                                <th data-sort="netPayable" data-sort-type="number">Net Amount</th>
+                                                <th data-sort="paidAmount" data-sort-type="number">Paid</th>
+                                                <th data-sort="status">Status</th>
+                                                <th style="min-width: 200px; width: 210px; text-align: center;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="invoices-table-body">
+                                            <tr><td colspan="9" class="text-center">Loading invoices...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2170,31 +2327,35 @@
                 <table class="receipt-particulars-table">
                     <thead>
                         <tr>
-                            <th style="width: 48px;">SL. NO.</th>
+                            <th style="width: 44px; text-align: center;">SL. NO.</th>
                             <th>PARTICULARS</th>
-                            <th style="width: 110px;">Rs.</th>
-                            <th style="width: 44px;">P.</th>
+                            <th style="width: 100px; text-align: right;">AMOUNT (Rs.)</th>
+                            <th style="width: 100px; text-align: right; background: #ecfdf5; color: #047857;">DISCOUNT (Rs.)</th>
+                            <th style="width: 100px; text-align: right;">NET (Rs.)</th>
+                            <th style="width: 38px; text-align: center;">P.</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td style="text-align: center;">1.</td><td>Admission Fee</td><td style="text-align: right;" id="rcpt-val-1">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">2.</td><td>Tuition Fee</td><td style="text-align: right; font-weight: 600;" id="rcpt-val-2">4,500.00</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">3.</td><td>Conveyance</td><td style="text-align: right;" id="rcpt-val-3">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">4.</td><td>Smart Class / A.C./ Electric Fee</td><td style="text-align: right;" id="rcpt-val-4">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">5.</td><td>Computer Fee</td><td style="text-align: right;" id="rcpt-val-5">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">6.</td><td>Late Fee</td><td style="text-align: right;" id="rcpt-val-6">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">7.</td><td>Exam. Fee</td><td style="text-align: right;" id="rcpt-val-7">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">8.</td><td>Sport & Games</td><td style="text-align: right;" id="rcpt-val-8">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">9.</td><td>Medical</td><td style="text-align: right;" id="rcpt-val-9">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">10.</td><td>Library Fee</td><td style="text-align: right;" id="rcpt-val-10">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">11.</td><td>Annual Development Fee</td><td style="text-align: right;" id="rcpt-val-11">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">12.</td><td>Miscellaneous</td><td style="text-align: right;" id="rcpt-val-12">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">13.</td><td>Others</td><td style="text-align: right;" id="rcpt-val-13">-</td><td style="text-align: center;">00</td></tr>
-                        <tr><td style="text-align: center;">14.</td><td>Previous dues</td><td style="text-align: right;" id="rcpt-val-14">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">1.</td><td>Admission Fee</td><td style="text-align: right;" id="rcpt-val-1">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-1">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-1">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">2.</td><td>Tuition Fee</td><td style="text-align: right; font-weight: 600;" id="rcpt-val-2">4,500.00</td><td style="text-align: right; color: #047857;" id="rcpt-disc-2">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-2">4,500.00</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">3.</td><td>Conveyance</td><td style="text-align: right;" id="rcpt-val-3">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-3">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-3">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">4.</td><td>Smart Class / A.C./ Electric Fee</td><td style="text-align: right;" id="rcpt-val-4">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-4">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-4">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">5.</td><td>Computer Fee</td><td style="text-align: right;" id="rcpt-val-5">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-5">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-5">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">6.</td><td>Late Fee</td><td style="text-align: right;" id="rcpt-val-6">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-6">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-6">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">7.</td><td>Exam. Fee</td><td style="text-align: right;" id="rcpt-val-7">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-7">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-7">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">8.</td><td>Sport & Games</td><td style="text-align: right;" id="rcpt-val-8">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-8">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-8">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">9.</td><td>Medical</td><td style="text-align: right;" id="rcpt-val-9">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-9">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-9">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">10.</td><td>Library Fee</td><td style="text-align: right;" id="rcpt-val-10">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-10">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-10">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">11.</td><td>Annual Development Fee</td><td style="text-align: right;" id="rcpt-val-11">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-11">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-11">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">12.</td><td>Miscellaneous</td><td style="text-align: right;" id="rcpt-val-12">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-12">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-12">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">13.</td><td>Others</td><td style="text-align: right;" id="rcpt-val-13">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-13">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-13">-</td><td style="text-align: center;">00</td></tr>
+                        <tr><td style="text-align: center;">14.</td><td>Previous dues</td><td style="text-align: right;" id="rcpt-val-14">-</td><td style="text-align: right; color: #047857;" id="rcpt-disc-14">-</td><td style="text-align: right; font-weight: 600;" id="rcpt-net-14">-</td><td style="text-align: center;">00</td></tr>
                     </tbody>
                     <tfoot>
                         <tr class="total-row">
                             <td colspan="2" style="text-align: right; padding-right: 12px;"><strong>TOTAL:</strong></td>
+                            <td style="text-align: right;" id="rcpt-val-gross-total">Rs. 4,500.00</td>
+                            <td style="text-align: right; color: #047857;" id="rcpt-val-disc-total">Rs. 0.00</td>
                             <td style="text-align: right; color: #047857;"><strong id="rcpt-val-total">Rs. 4,500.00</strong></td>
                             <td style="text-align: center;">00</td>
                         </tr>
@@ -2502,6 +2663,110 @@
     </div>
 
     <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- MODAL: STUDENT FEE TRANSACTION HISTORY & STATEMENT             -->
+    <!-- ============================================================== -->
+    <div id="modal-student-fee-history" class="modal">
+        <div class="modal-content" style="max-width: 940px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #065f46, #047857); color: #fff; padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="background: rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: #fff; font-size: 1.25rem;">Student Fee Transaction History & Ledger</h3>
+                        <small style="color: #a7f3d0;">Oxford International School &bull; Harpur, Raxaul</small>
+                    </div>
+                </div>
+                <span class="close-btn" style="color: #fff; font-size: 1.8rem;" onclick="closeModal('modal-student-fee-history')">&times;</span>
+            </div>
+
+            <div class="modal-body" style="padding: 20px;">
+                <!-- Student Profile Banner & Balance Metrics -->
+                <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h3 id="sfh-student-name" style="margin: 0; font-size: 1.35rem; color: #0f172a; text-transform: uppercase;">AARAV KUMAR</h3>
+                                <span id="sfh-fee-badge" class="badge badge-success">CLEARED</span>
+                            </div>
+                            <div style="margin-top: 6px; font-size: 0.88rem; color: #475569; display: flex; gap: 14px; flex-wrap: wrap;">
+                                <span><strong>Admission No:</strong> <code id="sfh-admission-no">OIS-2026-1001</code></span>
+                                <span><strong>Class:</strong> <span id="sfh-class">Class 10</span> (<span id="sfh-section">A</span>)</span>
+                                <span><strong>Roll No:</strong> #<span id="sfh-roll">12</span></span>
+                            </div>
+                            <div style="margin-top: 4px; font-size: 0.84rem; color: #64748b;">
+                                <span><i class="fa-solid fa-user-shield"></i> Father / Guardian: <strong id="sfh-father-name">Ramesh Kumar</strong></span> &bull; 
+                                <span><i class="fa-solid fa-phone"></i> <span id="sfh-phone">+91-9801XXXXXX</span></span>
+                            </div>
+                        </div>
+
+                        <!-- 1-Click Action: Issue Invoice for this student -->
+                        <div>
+                            <button type="button" class="btn btn-primary btn-sm" id="btn-sfh-issue-invoice" onclick="issueInvoiceForCurrentStudent()">
+                                <i class="fa-solid fa-file-circle-plus"></i> Issue New Fee Invoice
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Financial Summary Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 16px;">
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;">
+                            <small style="color: #64748b; font-weight: 600;">Total Billed</small>
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #0f172a;" id="sfh-total-billed">₹ 0</div>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;">
+                            <small style="color: #059669; font-weight: 600;">Total Paid</small>
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #059669;" id="sfh-total-paid">₹ 0</div>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;">
+                            <small style="color: #b45309; font-weight: 600;">Total Discount Granted</small>
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #b45309;" id="sfh-total-discount">₹ 0</div>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;">
+                            <small style="color: #dc2626; font-weight: 600;">Outstanding Balance</small>
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #dc2626;" id="sfh-balance-due">₹ 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Ledger Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4 style="margin: 0; color: #0f172a; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: #047857;"></i> Chronological Fee Invoices & Payment Ledger
+                    </h4>
+                    <span class="badge badge-primary" id="sfh-invoices-count">0 Records</span>
+                </div>
+
+                <!-- Invoices Table -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Billing Period</th>
+                                <th style="text-align: right;">Gross</th>
+                                <th style="text-align: right;">Discount</th>
+                                <th style="text-align: right;">Net Payable</th>
+                                <th style="text-align: right;">Paid</th>
+                                <th style="text-align: right;">Balance</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="min-width: 200px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sfh-invoices-tbody">
+                            <tr><td colspan="9" class="text-center" style="padding: 20px; color: #64748b;">No fee records found for this student.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #e2e8f0;">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modal-student-fee-history')">Close Ledger</button>
+            </div>
+        </div>
+    </div>
+
     <!-- CUSTOM ENTERPRISE DIALOG MODAL (CONFIRM & ALERT)               -->
     <!-- ============================================================== -->
     <div id="modal-custom-dialog" class="modal">
